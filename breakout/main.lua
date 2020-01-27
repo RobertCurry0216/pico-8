@@ -3,7 +3,7 @@ version 18
 __lua__
 
 function _init()
-  cls()
+  
 end
 
 function _update()
@@ -16,4 +16,7 @@ function _draw()
   cls(1)
   ball_draw()
   paddle_draw()
+
+  --debug
+  draw_debug()
 end

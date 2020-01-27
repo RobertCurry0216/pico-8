@@ -7,6 +7,7 @@ __lua__
 #include ball.lua
 #include paddle.lua
 #include utilities.lua
+#include debug.lua
 #include main.lua
 
 
