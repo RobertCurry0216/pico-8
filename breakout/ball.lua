@@ -25,8 +25,10 @@ end
 -------------------------------
 
 function bounce_ball_paddle()
+  -- pre checks
+  if (ball_dy < 0) return
   if ((ball_y - ball_dy - 8) > paddle_y) return
-
+  -- bounce
   if (ball_y + ball_radius) > paddle_y then
     local _ball = flr(ball_x)
     if clamp(paddle_x, paddle_x + paddle_width, _ball) == _ball then
