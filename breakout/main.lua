@@ -3,11 +3,11 @@ version 18
 __lua__
 
 function _init()
-  
+  frame = 0
 end
 
 function _update()
-  frame = frame + 1
+  frame += 1
   ball_update()
   paddle_update()
 end
