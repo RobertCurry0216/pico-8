@@ -11,15 +11,20 @@ diry={0,0,-1,1,-1,1,1,-1}
 -------------------------------
 --text functions
 -------------------------------
-function oprint8(_t,_x,_y,_c,_c2)
-  for i=1,8 do
-   print(_t,_x+dirx[i],_y+diry[i],_c2)
-  end
-  print(_t,_x,_y,_c)
- end
+function oprint8(str,startx,starty,col,	col_bg)
+	print(str,startx+1,starty,col_bg)
+	print(str,startx-1,starty,col_bg)
+	print(str,startx,starty+1,col_bg)
+	print(str,startx,starty-1,col_bg)
+	print(str,startx+1,starty-1,col_bg)
+	print(str,startx-1,starty-1,col_bg)
+	print(str,startx-1,starty+1,col_bg)
+	print(str,startx+1,starty+1,col_bg)
+	print(str,startx,starty,col)
+end
 
 -------------------------------
---integer functions
+--math functions
 -------------------------------
 function clamp(lower, upper, value)
   if value < lower then return lower end
@@ -29,6 +34,32 @@ end
 
 function bounce()
 	return sin(time())>0.4 and 1 or 0
+end
+
+--round to the nearest whole number.
+function round(a) return flr(a+0.5) end
+
+function sqr(a) return a*a end
+
+--make 2d vector
+function m_vec(x,y)
+	local v=
+	{
+		x=x,
+		y=y,
+		
+  --get the length of the vector
+		get_length=function(self)
+			return sqrt(self.x^2+self.y^2)
+		end,
+		
+  --get the normal of the vector
+		get_norm=function(self)
+			local l = self:get_length()
+			return m_vec(self.x / l, self.y / l),l;
+		end,
+	}
+	return v
 end
 
 -------------------------------
