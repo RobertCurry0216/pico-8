@@ -60,7 +60,7 @@ function m_player(x,y)
 
 		jump_hold_time=0,--how long jump is held
 		min_jump_press=5,--min time jump can be held
-		max_jump_press=15,--max time jump can be held
+		max_jump_press=10,--max time jump can be held
 
 		jump_btn_released=true,--can we jump again?
 		grounded=false,--on ground
@@ -71,22 +71,22 @@ function m_player(x,y)
 		--use with set_anim()
 		anims=
 		{
-			["stand"]=
+			stand=
 			{
 				ticks=1,--how long is each frame shown.
 				frames={1},--what frames are shown.
 			},
-			["walk"]=
+			walk=
 			{
 				ticks=5,
 				frames={1,2},
 			},
-			["jump"]=
+			jump=
 			{
 				ticks=1,
 				frames={2},
 			},
-			["slide"]=
+			slide=
 			{
 				ticks=1,
 				frames={1},
@@ -181,7 +181,7 @@ function m_player(x,y)
 
 			--floor
 			if not collide_floor(self) then
-				self:set_anim("jump")
+				self:set_anim"jump"
 				self.grounded=false
 				self.airtime+=1
 			end
@@ -195,19 +195,19 @@ function m_player(x,y)
 				if br then
 					if self.dx<0 then
 						--pressing right but still moving left.
-						self:set_anim("slide")
+						self:set_anim"slide"
 					else
-						self:set_anim("walk")
+						self:set_anim"walk"
 					end
 				elseif bl then
 					if self.dx>0 then
 						--pressing left but still moving right.
-						self:set_anim("slide")
+						self:set_anim"slide"
 					else
-						self:set_anim("walk")
+						self:set_anim"walk"
 					end
 				else
-					self:set_anim("stand")
+					self:set_anim"stand"
 				end
 			end
 
@@ -298,7 +298,7 @@ function collide_side(self)
 			self.x=(flr((self.x-(offset))/8)*8)+8+(offset)
 			return true
 		end
---	end
+	--end
 	end
 	--didn't hit a solid tile.
 	return false

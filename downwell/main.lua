@@ -17,6 +17,7 @@ end
 
 function _draw()
   cls()
+  camera(cam:cam_pos())
   map(0,0,0,0)
   player:draw()
   draw_debug()
@@ -28,6 +29,7 @@ end
 function start_game()
   time = 0
   player = m_player(64, 16)
+  cam = m_cam(player)
 end
 
 -------------------------------
@@ -35,4 +37,5 @@ end
 -------------------------------
 function upd_game()
   player:update()
+  cam:update()
 end
