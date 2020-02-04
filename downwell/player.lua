@@ -13,8 +13,7 @@ function m_player(x,y)
 	--todo: refactor with m_vec.
 	--local p=
 	return {
-		x=x,
-		y=y,
+		pos=m_vec(x, y),
 
 		dx=0,
 		dy=0,
@@ -31,6 +30,8 @@ function m_player(x,y)
 		air_dcc=1,--air decceleration
 		grav=0.15,
 		
+		last_shot_y=0, --y pos last time the player shot
+
 		--helper for more complex
 		--button press tracking.
 		--todo: generalize button index.
@@ -109,8 +110,6 @@ function m_player(x,y)
 		
 		--call once per tick.
 		update=function(self)
-	
-			--todo: kill enemies.
 			
 			--track button presses
 			local bl=btn(0) --left
@@ -134,7 +133,7 @@ function m_player(x,y)
 			self.dx=mid(-self.max_dx,self.dx,self.max_dx)
 			
 			--move in x
-			self.x+=self.dx
+			self.pos.x+=self.dx
 			
 			--hit walls
 			collide_side(self)
@@ -174,10 +173,19 @@ function m_player(x,y)
 				self.jump_hold_time=0
 			end
 			
+			--shooting
+			if not self.grounded and self.pos.y >= self.last_shot_y then
+				if btn(5) then
+					self.last_shot_y = self.pos.y
+					local _dy = new_bullet(self.pos)
+					if (_dy) self.dy = _dy
+				end
+			end
+
 			--move in y
 			self.dy+=self.grav
 			self.dy=mid(-self.max_dy,self.dy,self.max_dy)
-			self.y+=self.dy
+			self.pos.y+=self.dy
 
 			--floor
 			if not collide_floor(self) then
@@ -189,9 +197,14 @@ function m_player(x,y)
 			--roof
 			collide_roof(self)
 
-			--handle playing correct animation when
-			--on the ground.
+			-- update settings when landed
 			if self.grounded then
+				-- reload and reset last shot y
+				-- to allow shooting after jumping up a ledge
+				self.last_shot_y = 0
+
+				--handle playing correct animation when
+				--on the ground.
 				if br then
 					if self.dx<0 then
 						--pressing right but still moving left.
@@ -236,8 +249,8 @@ function m_player(x,y)
 			local a=self.anims[self.curanim]
 			local frame=a.frames[self.curframe]
 			spr(frame,
-				self.x-(self.w/2),
-				self.y-(self.h/2),
+				self.pos.x-(self.w/2),
+				self.pos.y-(self.h/2),
 				self.w/8,self.h/8,
 				self.flipx,
 				false)
@@ -285,17 +298,18 @@ end
 function collide_side(self)
 
 	local offset=self.w/3
+	local _x, _y = self.pos.x, self.pos.y
 	for i=-(self.w/3),(self.w/3),2 do
 	--if self.dx>0 then
-		if fget(mget((self.x+(offset))/8,(self.y+i)/8),0) then
+		if fget(mget((_x+(offset))/8,(_y+i)/8),0) then
 			self.dx=0
-			self.x=(flr(((self.x+(offset))/8))*8)-(offset)
+			self.pos.x=(flr(((_x+(offset))/8))*8)-(offset)
 			return true
 		end
 	--elseif self.dx<0 then
-		if fget(mget((self.x-(offset))/8,(self.y+i)/8),0) then
+		if fget(mget((_x-(offset))/8,(_y+i)/8),0) then
 			self.dx=0
-			self.x=(flr((self.x-(offset))/8)*8)+8+(offset)
+			self.pos.x=(flr((_x-(offset))/8)*8)+8+(offset)
 			return true
 		end
 	--end
@@ -316,10 +330,10 @@ function collide_floor(self)
 	--check for collision at multiple points along the bottom
 	--of the sprite: left, center, and right.
 	for i=-(self.w/3),(self.w/3),2 do
-		local tile=mget((self.x+i)/8,(self.y+(self.h/2))/8)
+		local tile=mget((self.pos.x+i)/8,(self.pos.y+(self.h/2))/8)
 		if fget(tile,0) or (fget(tile,1) and self.dy>=0) then
 			self.dy=0
-			self.y=(flr((self.y+(self.h/2))/8)*8)-(self.h/2)
+			self.pos.y=(flr((self.pos.y+(self.h/2))/8)*8)-(self.h/2)
 			self.grounded=true
 			self.airtime=0
 			landed=true
@@ -335,9 +349,9 @@ function collide_roof(self)
 	--check for collision at multiple points along the top
 	--of the sprite: left, center, and right.
 	for i=-(self.w/3),(self.w/3),2 do
-		if fget(mget((self.x+i)/8,(self.y-(self.h/2))/8),0) then
+		if fget(mget((self.pos.x+i)/8,(self.pos.y-(self.h/2))/8),0) then
 			self.dy=0
-			self.y=flr((self.y-(self.h/2))/8)*8+8+(self.h/2)
+			self.pos.y=flr((self.pos.y-(self.h/2))/8)*8+8+(self.h/2)
 			self.jump_hold_time=0
 		end
 	end
