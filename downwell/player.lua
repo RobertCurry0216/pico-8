@@ -9,7 +9,7 @@ __lua__
 
 --make the player
 function m_player(x,y)
-
+	ammo = ammo_clip_size
 	--todo: refactor with m_vec.
 	--local p=
 	return {
@@ -30,7 +30,20 @@ function m_player(x,y)
 		air_dcc=1,--air decceleration
 		grav=0.15,
 		
+		-- shooting vars
+		gun=new_machinegun(),
 		last_shot_y=0, --y pos last time the player shot
+		can_shoot=function(self)
+			if btn(5) 
+				and not self.grounded 
+				and self.pos.y >= self.last_shot_y
+				and bullet_fire_rate < 1
+				and self.jump_btn_released
+				then
+					return true
+			end
+			return false
+		end,
 
 		--helper for more complex
 		--button press tracking.
@@ -65,7 +78,7 @@ function m_player(x,y)
 
 		jump_btn_released=true,--can we jump again?
 		grounded=false,--on ground
-
+		jump_anim="jump",
 		airtime=0,--time since grounded
 		
 		--animation definitions.
@@ -86,6 +99,10 @@ function m_player(x,y)
 			{
 				ticks=1,
 				frames={2},
+			},
+			shoot={
+				ticks=1,
+				frames={3}
 			},
 			slide=
 			{
@@ -138,48 +155,35 @@ function m_player(x,y)
 			--hit walls
 			collide_side(self)
 
-			--jump buttons
+			--shooting
+			if self:can_shoot() then
+				self.last_shot_y = self.pos.y
+				local _dy = self.gun:shoot(self.pos)
+				if (_dy < 0) then
+					self.dy = _dy
+					self.jump_anim = "shoot"
+				end
+			end
+	
+			-------------------------------
+			--jumping
+			-------------------------------
 			self.jump_button:update()
-			
-			--jump is complex.
-			--we allow jump if:
-			--	on ground
-			--	recently on ground
-			--	pressed btn right before landing
-			--also, jump velocity is
-			--not instant. it applies over
-			--multiple frames.
 			if self.jump_button.is_down then
-				--is player on ground recently.
-				--allow for jump right after 
-				--walking off ledge.
 				local on_ground=(self.grounded or self.airtime<5)
-				--was btn presses recently?
-				--allow for pressing right before
-				--hitting ground.
 				local new_jump_btn=self.jump_button.ticks_down<10
-				--is player continuing a jump
-				--or starting a new one?
 				if self.jump_hold_time>0 or (on_ground and new_jump_btn) then
-					--if(self.jump_hold_time==0)sfx(snd.jump)--new jump snd
+					if(self.jump_hold_time==0) then
+						--sfx(snd.jump)--new jump snd
+						part_jump_smoke(self.pos)
+					end
 					self.jump_hold_time+=1
-					--keep applying jump velocity
-					--until max jump time.
 					if self.jump_hold_time<self.max_jump_press then
 						self.dy=self.jump_speed--keep going up while held
 					end
 				end
 			else
 				self.jump_hold_time=0
-			end
-			
-			--shooting
-			if not self.grounded and self.pos.y >= self.last_shot_y then
-				if btn(5) then
-					self.last_shot_y = self.pos.y
-					local _dy = new_bullet(self.pos)
-					if (_dy) self.dy = _dy
-				end
 			end
 
 			--move in y
@@ -189,19 +193,25 @@ function m_player(x,y)
 
 			--floor
 			if not collide_floor(self) then
-				self:set_anim"jump"
+				self:set_anim(self.jump_anim)
 				self.grounded=false
 				self.airtime+=1
+				if (not btn(5)) self.jump_btn_released = true
 			end
 
 			--roof
 			collide_roof(self)
 
-			-- update settings when landed
+			-------------------------------
+			--landing
+			-------------------------------
 			if self.grounded then
 				-- reload and reset last shot y
 				-- to allow shooting after jumping up a ledge
 				self.last_shot_y = 0
+				self.jump_btn_released = false
+				self.jump_anim = "jump"
+				self.gun:reload""
 
 				--handle playing correct animation when
 				--on the ground.
@@ -261,7 +271,7 @@ function m_player(x,y)
 end
 
 -------------------------------
---collision function
+--player collision function
 -------------------------------
 --point to box intersection.
 function intersects_point_box(px,py,x,y,w,h)
