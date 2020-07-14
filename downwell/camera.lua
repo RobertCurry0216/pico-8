@@ -2,36 +2,11 @@ pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
 
---make 2d vector
-function m_vec(x,y)
-	return {
-		x=x,
-		y=y,
-		
-  --get the length of the vector
-		get_length=function(self)
-			return sqrt(self.x^2+self.y^2)
-		end,
-		
-  --get the normal of the vector
-		get_norm=function(self)
-			local l = self:get_length()
-			return m_vec(self.x / l, self.y / l),l;
-		end,
-	}
-end
-
---square root.
-function sqr(a) return a*a end
-
---round to the nearest whole number.
-function round(a) return flr(a+0.5) end
-
 --make the camera.
 function m_cam(target)
 	return {
 		tar=target,--target to follow.
-		pos=m_vec(target.x,target.y),
+		pos=target.pos:copy"",
 		
 		--how far from center of screen target must
 		--be before camera starts following.
@@ -52,18 +27,19 @@ function m_cam(target)
 			self.shake_remaining=max(0,self.shake_remaining-1)
 			
 			--follow target outside of
+			local _x, _y = self.tar.pos.x, self.tar.pos.y
 			--pull range.
-			if self:pull_max_x()<self.tar.x then
-				self.pos.x+=min(self.tar.x-self:pull_max_x(),4)
+			if self:pull_max_x""<_x then
+				self.pos.x+=min(_x-self:pull_max_x"",4)
 			end
-			if self:pull_min_x()>self.tar.x then
-				self.pos.x+=min((self.tar.x-self:pull_min_x()),4)
+			if self:pull_min_x"()">_x then
+				self.pos.x+=min((_x-self:pull_min_x"()"),4)
 			end
-			if self:pull_max_y()<self.tar.y then
-				self.pos.y+=min(self.tar.y-self:pull_max_y(),4)
+			if self:pull_max_y"()"<_y then
+				self.pos.y+=min(_y-self:pull_max_y"()",4)
 			end
-			if self:pull_min_y()>self.tar.y then
-				self.pos.y+=min((self.tar.y-self:pull_min_y()),4)
+			if self:pull_min_y"()">_y then
+				self.pos.y+=min((_y-self:pull_min_y"()"),4)
 			end
 
 			--lock to edge

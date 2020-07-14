@@ -20,6 +20,9 @@ function _draw()
   camera(cam:cam_pos())
   map(0,0,0,0)
   player:draw()
+  drw_bullets()
+  drw_particles()
+
   draw_debug()
 end
 
@@ -38,4 +41,6 @@ end
 function upd_game()
   player:update()
   cam:update()
+  upd_bullets()
+  upd_particles()
 end
