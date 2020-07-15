@@ -10,6 +10,7 @@ black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,oran
 #include utils.p8
 --classes
 #include block.p8
+#include block_group.p8
 --screens
 #include game_screen.p8
 
@@ -17,6 +18,9 @@ black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,oran
 function _init()
   _upd=upd_game
   _drw=drw_game
+
+  --global vars
+  board_x, board_y=64, 32
 end
 
 function _update60()
