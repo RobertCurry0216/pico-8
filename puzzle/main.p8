@@ -10,7 +10,7 @@ black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,oran
 #include utils.p8
 --classes
 #include block.p8
-#include block_group.p8
+#include game_board.p8
 --screens
 #include game_screen.p8
 
@@ -20,7 +20,11 @@ function _init()
   _drw=drw_game
 
   --global vars
-  board_x, board_y=64, 32
+  board_x, board_y=8, 4
+  tile=8
+  new_board(5,8)
+  player = new_block(1,1)
+  board_add(player)
 end
 
 function _update60()

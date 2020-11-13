@@ -6,7 +6,5 @@
   ],
   "settings": {
     "editor.tabSize": 2,
-    "editor.fontFamily": "hack",
-    "editor.fontSize": 14
   }
 }

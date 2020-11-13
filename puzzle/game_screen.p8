@@ -5,7 +5,10 @@ __lua__
 --update functions
 -------------------------------
 function upd_game()
-
+  if (btnp(left)) then block_move(player, -1, 0) end
+  if (btnp(right)) then block_move(player, 1, 0) end
+  if (btnp(up)) then block_move(player, 0, -1) end
+  if (btnp(down)) then block_move(player, 0, 1) end
 end
 
 -------------------------------
@@ -13,7 +16,6 @@ end
 -------------------------------
 function drw_game()
   cls(peach)
-  rectfill(32,16,96,80,indigo)
-  rect(32,16,96,80,brown)
   print("puzzle game",4,4,dark_gray)
+  draw_board()
 end
