@@ -3,7 +3,7 @@ version 18
 __lua__
 
 
-function set_pallette(p)
+function set_palette(p)
   cls()
   spr(num,0,0)
   for y=1,6 do

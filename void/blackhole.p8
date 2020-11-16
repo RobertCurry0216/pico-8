@@ -12,8 +12,8 @@ function bh_upd()
   end
 end
 
-function bh_drw()
-  circ(64,64,escape_radius,dark_blue)
+function bh_drw(drw_circ)
+  if (drw_circ == nil) circ(64,64,escape_radius,dark_blue)
 
   bh_particles_drw()
   circfill(64,64,bh_size+1,dark_blue)

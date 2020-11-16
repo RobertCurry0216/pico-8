@@ -8,7 +8,8 @@ function new_spaceman(r, a, s)
     radius = r,
     drawangle = rnd(360),
     speed = s,
-    decent = rnd(0.03) + 0.01
+    decent = rnd(0.03) + 0.01,
+    sprite = flr(rnd(4)) + 2
   }
   add(spacemen, s)
   return s
@@ -53,6 +54,6 @@ end
 function spacemen_draw()
   for s in all(spacemen) do
     local pos = angle(64, 64, s.radius, s.angle)
-    scalespr("spaceman", pos.x, pos.y, 1, s.drawangle, black)
+    spr(s.sprite,pos.x-4, pos.y-4)
   end
 end

@@ -28,7 +28,7 @@ function asteroids_upd()
       --blackhole
     if (ast.radius <= bh_size) then
       del(asteroids, ast)  
-      bh_size += 4
+      bh_size += 2
       for _=1,8 do
         add_bh_particle(rnd(360), rnd(2)+1, rnd(4)+1, rnd(10)+15)
       end

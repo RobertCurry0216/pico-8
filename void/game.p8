@@ -4,7 +4,7 @@ __lua__
 
 function new_game()
   --start level 1
-  l1_cutscene()
+  l5_cutscene()
 end
 
 ------------------------
