@@ -30,7 +30,7 @@ function add_bh_particle(a, s, r, l)
       local dir = angle(0,0,s,a)
       circfill(x,y,r+1,dark_blue)
       yield()
-      circfill(x,y,r,c)
+      circfill(x,y,r,black)
       x += dir.x
       y += dir.y
       s *= 0.94
@@ -55,6 +55,18 @@ function add_float(x, y, text, c)
   add(particles, cocreate(function()
     for i=1,30 do
       print(text,x,y + (cos(i/60)*5),c)
+      yield()
+    end
+  end))
+end
+
+function add_explosion(x, y)
+  add(bh_particles, cocreate(function()
+    for i=1,60 do
+      local r = abs(sin(i/120)) * 15
+      circfill(x,y,r+1,indigo)
+      yield()
+      circfill(x,y,r,black)
       yield()
     end
   end))

@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 18
+version 29
 __lua__
 
 function reset_vars()
@@ -8,6 +8,7 @@ function reset_vars()
   score_text = ""
   current_task = "rescue"
   spacemen = {}
+  asteroids = {}
   particles = {}
   bh_particles = {}
   bh_size = 16
@@ -32,7 +33,7 @@ function l1_cs_upd()
 end
 
 function l1_cs_drw()
-  cls()
+  rectfill(0,0,128,128,black)
   spr(8,32,32,8,8)
   print_centered(sub("my friend is lost",1, substr), light_gray, 0, 40)
   print("❎", 62, 108, indigo)
@@ -74,7 +75,7 @@ function l2_cs_upd()
 end
 
 function l2_cs_drw()
-  cls()
+  rectfill(0,0,128,128,black)
   spr(8,32,32,8,8)
   print_centered(sub(text, 1, substr), light_gray, 0, 40)
   print("❎", 62, 108, indigo)
@@ -118,7 +119,7 @@ function l3_cs_upd()
 end
 
 function l3_cs_drw()
-  cls()
+  rectfill(0,0,128,128,black)
   spr(8,32,32,8,8)
   print_centered(sub(text, 1, substr), light_gray, 0, 40)
   print("❎", 62, 108, indigo)

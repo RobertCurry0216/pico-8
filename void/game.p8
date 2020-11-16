@@ -5,12 +5,11 @@ __lua__
 function new_game()
   --start level 1
   l1_cutscene()
-  
 end
 
 ------------------------
 --game states
-------------------------
+------------------------1
 
 function goto_splash()
   bh_particles = {}
@@ -21,7 +20,6 @@ end
 
 --splash screen
 function splash_upd()
-  cls()
   bh_upd()
   if (btn(fire2)) then
     new_game()
@@ -29,6 +27,7 @@ function splash_upd()
 end
 
 function splash_drw()
+  rectfill(0,0,128,128,black)
   bh_drw()
   spr(128,0,32,16,8)
   print("❎", 62, 108, indigo)
@@ -38,12 +37,14 @@ end
 function game_upd()
   bh_upd()
   spacemen_upd()
+  asteroids_upd()
   plr:update()
 end
 
 function game_drw()
-  cls()
+  rectfill(0,0,128,128,black)
   spacemen_draw()
+  asteroids_draw()
   bh_drw()
   particles_drw()
   plr:draw()
@@ -62,7 +63,7 @@ function death_upd()
 end
 
 function death_drw()
-  cls()
+  rectfill(0,0,128,128,black)
   spacemen_draw()
   particles_drw()
   ui_drw()
@@ -77,7 +78,7 @@ function print_centered(str, c, dx, dy)
 end
 
 function continue_drw()
-  cls()
+  rectfill(0,0,128,128,black)
   print_centered("you were consumed by the void", dark_blue)
   print("❎", 62, 108, indigo)
 end

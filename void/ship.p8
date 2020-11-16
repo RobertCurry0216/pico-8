@@ -11,12 +11,15 @@ function new_player()
     radius = 48,
     dead = false,
     update = player_upd,
+    pos = {x=102, y=64},
     draw = player_drw
   }
 end
 
 function player_upd()
   if (plr.dead) return
+
+  plr.pos = angle(64, 64, plr.radius, plr.angle)
   --check dead
   if (plr.radius <= bh_size - 4) then
     _upd = death_upd
@@ -27,7 +30,6 @@ function player_upd()
 
   --check escaped
   if (plr.radius > escape_radius) then
-    plr.pos = angle(64, 64, plr.radius, plr.angle)
     plr.delta = angle(0, 0, plr.maxspeed, plr.angle + 90)
     plr.update = player_escaped_upd
     plr.draw = player_escaped_drw
@@ -40,8 +42,7 @@ function player_upd()
     dr += 0.08
     -- smoke
     if (rnd(100) > 40) then 
-      local pos = angle(64, 64, plr.radius, plr.angle)
-      add_smoke(pos.x, pos.y)
+      add_smoke(plr.pos.x, plr.pos.y)
     end
   else
     plr.speed *= 0.9
@@ -54,8 +55,7 @@ end
 
 function player_drw()
   if (plr.dead) return
-  local pos = angle(64, 64, plr.radius, plr.angle)
-  scalespr("plr", pos.x, pos.y, 1, plr.angle + 180, black)
+  scalespr("plr", plr.pos.x, plr.pos.y, 1, plr.angle + 180, black)
 end
 
 --escaped movement
