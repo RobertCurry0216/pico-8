@@ -6,7 +6,7 @@ __lua__
 function new_player()
   return {
     angle = 0,
-    maxspeed = 2,
+    maxspeed = 2.4,
     speed = 0,
     radius = 48,
     dead = false,

@@ -4,6 +4,7 @@ __lua__
 
 
 function set_palette(p)
+  pal()
   cls()
   spr(num,0,0)
   for y=1,6 do

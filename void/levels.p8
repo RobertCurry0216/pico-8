@@ -18,6 +18,7 @@ end
 --level 1
 
 function l1_cutscene()
+  set_palette(1)
   _upd = l1_cs_upd
   _drw = l1_cs_drw
   t = 0
@@ -122,11 +123,11 @@ function start_l3()
   reset_vars()
   bh_size = 24
 
-  new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
+  new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.5)
   new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.5)
   new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()-1.5)
 
-  new_asteroid(30, rnd(270)+45, 3, 0.4)
+  new_asteroid(45, rnd(270)+45, 3, 0.8)
 
   _upd = game_upd
   _drw = game_drw
@@ -168,13 +169,12 @@ end
 
 function start_l4()
   reset_vars()
-  bh_size = 18
+  bh_size = 26
 
-  new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
-  new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.5)
+  new_spaceman(rnd(12) + 40, rnd(270)+45, rnd()+0.6)
+  new_spaceman(rnd(12) + 40, rnd(270)+45, rnd()+0.5)
 
-  new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(3)+2, rnd())
-  new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(3)+2, rnd())
+  new_asteroid(rnd(20) + 32, rnd(270)+45, rnd(3)+2, rnd())
 
   _upd = game_upd
   _drw = game_drw
@@ -191,7 +191,7 @@ function l5_cutscene()
   t = 0
   substr = 1
   count = 0
-  text = "i can feels it pull"
+  text = "i can feel its pull"
 end
 
 function l5_cs_upd()
@@ -200,7 +200,7 @@ function l5_cs_upd()
   if (t%5 == 0) substr +=1
   if (btnp(fire2)) then
     if (count == 0) then
-      text = "it is stairing back"
+      text = "it is staring back"
       count += 1
       substr = 1
     else
@@ -219,13 +219,13 @@ end
 
 function start_l5()
   reset_vars()
-  bh_size = 22
+  bh_size = 28
 
   for _=1,2 do
-    new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
+    new_spaceman(rnd(12) + 40, rnd(270)+45, rnd()+0.6)
   end
   for _=1,3 do
-    new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(3)+2, rnd()+0.8)
+    new_asteroid(rnd(20) + 32, rnd(270)+45, rnd(3)+2, rnd()+0.8)
   end
 
   _upd = game_upd
@@ -272,13 +272,13 @@ end
 
 function start_l6()
   reset_vars()
-  bh_size = 26
+  bh_size = 30
 
   for _=1,4 do
-    new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
+    new_spaceman(rnd(12) + 40, rnd(270)+45, rnd()+0.6)
   end
-  for _=1,3 do
-    new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(4), rnd()-1.4)
+  for _=1,2 do
+    new_asteroid(rnd(20) + 40, rnd(270)+45, rnd(4)+1, rnd()-1.4)
   end
 
   _upd = game_upd
@@ -327,14 +327,15 @@ end
 
 function start_l7()
   reset_vars()
-  bh_size = 26
+  plr.radius = 52
+  bh_size = 32
 
   for _=1,4 do
-    new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
+    new_spaceman(rnd(6) + 46, rnd(270)+45, rnd()+0.6)
   end
-  for _=1,3 do
-    new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(4), rnd()-1.4)
-  end
+
+  new_asteroid(rnd(10) + 40, rnd(270)+45, rnd(4)+1, rnd()-1.4)
+
 
   _upd = game_upd
   _drw = game_drw
@@ -379,13 +380,14 @@ end
 
 function start_l8()
   reset_vars()
-  bh_size = 26
+  plr.radius = 52
+  bh_size = 36
 
   for _=1,4 do
-    new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
+    new_spaceman(rnd(6) + 46, rnd(270)+45, rnd()+0.6)
   end
-  for _=1,3 do
-    new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(4), rnd()-1.4)
+  for _=1,2 do
+    new_asteroid(rnd(6) + 44, rnd(270)+45, rnd(4)+1, rnd()-1.4)
   end
 
   _upd = game_upd
@@ -431,14 +433,13 @@ end
 
 function start_l9()
   reset_vars()
-  bh_size = 26
+  plr.radius = 52
+  bh_size = 40
 
   for _=1,4 do
-    new_spaceman(rnd(12) + 36, rnd(270)+45, rnd()+0.6)
+    new_spaceman(rnd(2) + 50, rnd(270)+45, rnd()+0.6)
   end
-  for _=1,3 do
-    new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(4), rnd()-1.4)
-  end
+  new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(3) + 1, rnd()-1.4)
 
   _upd = game_upd
   _drw = game_drw
