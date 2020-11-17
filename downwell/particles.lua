@@ -36,7 +36,7 @@ function new_basic_particle(pos)
     end,
 
     draw=function(self)
-      circfill(self.pos.x, self.pos.y, self.radius, 6)
+      circfill(self.pos.x, self.pos.y, self.radius, cmain)
     end,
   }
   add(particles, p)

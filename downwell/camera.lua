@@ -17,7 +17,7 @@ function m_cam(target)
 		--min and max positions of camera.
 		--the edges of the level.
 		pos_min=m_vec(64, 64),
-		pos_max=m_vec(64, 192),
+		pos_max=m_vec(64, 448),
 		
 		shake_remaining=0,
 		shake_force=0,

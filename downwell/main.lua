@@ -3,6 +3,19 @@ version 18
 __lua__
 
 -------------------------------
+--pallets
+-------------------------------
+pallet_main = {1, 6, 8, 12}
+cbg, cmain, csec, ctrd = 0, 7, 8, 12
+function set_pallet(pallet)
+  pal(0, pallet[1])
+  pal(7, pallet[2])
+  pal(8, pallet[3])
+  pal(12, pallet[4])
+end
+
+
+-------------------------------
 --main game functions
 -------------------------------
 
@@ -16,13 +29,9 @@ function _update60()
 end
 
 function _draw()
-  cls()
-  camera(cam:cam_pos())
-  map(0,0,0,0)
-  player:draw()
-  drw_bullets()
-  drw_particles()
-
+  set_pallet(pallet_main)
+  rectfill(0, 0, 127, 512, 0)
+  drw_game()
   draw_debug()
 end
 
@@ -43,4 +52,15 @@ function upd_game()
   cam:update()
   upd_bullets()
   upd_particles()
+end
+
+-------------------------------
+--draw functions
+-------------------------------
+function drw_game()
+  camera(cam:cam_pos())
+  map(0,0,0,0,128,64)
+  player:draw()
+  drw_bullets()
+  drw_particles()
 end

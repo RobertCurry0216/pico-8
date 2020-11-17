@@ -14,10 +14,11 @@ function new_machinegun()
     max_ammo = 8,
 
     shoot=function(self, pos)
+      
       --check ammo
       -- if ammo empty
       if self.ammo < 1 then
-        -- TODO: smoke clouds
+        part_jump_smoke(pos)
         bullet_fire_rate = 6
         player.jump_btn_released = false --don't love this
         return -0.1
@@ -55,7 +56,7 @@ function new_basic_bullet(pos, dx, dy)
 
     -- draw to screen
     draw=function(self)
-      rectfill2(self.pos.x-1,self.pos.y, 2, 5, 6)
+      rectfill2(self.pos.x-1,self.pos.y, 2, 5, cmain)
     end
   })
 end
