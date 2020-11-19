@@ -22,12 +22,18 @@ function oprint8(_t,_x,_y,_c,_c2)
 --debug functions
 -------------------------------
 
-debug = {}
+log = {}
 
-function draw_debug()
+function draw_log()
 	local _x, _y = 2, 2
-	for k, txt in pairs(debug) do
+	for k, txt in pairs(log) do
 		oprint8(k..":"..tostr(txt), _x, _y, 8, 0)
 		_y += 6
 	end
+end
+
+function log_stats()
+	log.fr = stat(7)
+  log.mem = stat(0)
+  log.cpu = stat(1)
 end

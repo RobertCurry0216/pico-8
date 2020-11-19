@@ -6,13 +6,25 @@ function reset_vars()
   plr = new_player()
   score = 0
   score_text = ""
-  current_task = "rescue"
   spacemen = {}
   asteroids = {}
   particles = {}
   bh_particles = {}
   bh_size = 16
   escape_radius = 52
+  victory_text = "you saved "
+  set_mode()
+end
+
+function set_mode(m)
+  if (m == "consume") then
+    current_task = "consume"
+    end_task = "be consumed"
+    victory_text = "you consumed "
+    return
+  end
+  current_task = "rescue"
+  end_task = "escape"
 end
 
 --level 1
@@ -243,7 +255,6 @@ function l6_cutscene()
   bh_size = 45
   t = 0
   substr = 1
-  count = 0
   text = "there is nothing left of me"
 end
 
@@ -252,13 +263,7 @@ function l6_cs_upd()
   t+= 1
   if (t%5 == 0) substr +=1
   if (btnp(fire2)) then
-    if (count == 0) then
-      text = "i am void"
-      count += 1
-      substr = 1
-    else
-      start_l6()
-    end
+    start_l6()
   end
 end
 
@@ -327,6 +332,7 @@ end
 
 function start_l7()
   reset_vars()
+  set_mode("consume")
   plr.radius = 52
   bh_size = 32
 
@@ -380,6 +386,7 @@ end
 
 function start_l8()
   reset_vars()
+  set_mode("consume")
   plr.radius = 52
   bh_size = 36
 
@@ -404,8 +411,7 @@ function l9_cutscene()
   bh_size = 56
   t = 0
   substr = 1
-  count = 0
-  text = " . . . "
+  text = "i must consume"
 end
 
 function l9_cs_upd()
@@ -413,13 +419,7 @@ function l9_cs_upd()
   t+= 1
   if (t%5 == 0) substr +=1
   if (btnp(fire2)) then
-    if (count == 0) then
-      text = "i like this"
-      count += 1
-      substr = 1
-    else
-      start_l8()
-    end
+    start_l10()
   end
 end
 
@@ -433,15 +433,43 @@ end
 
 function start_l9()
   reset_vars()
+  set_mode("consume")
   plr.radius = 52
   bh_size = 40
 
-  for _=1,4 do
+  for _=1,6 do
     new_spaceman(rnd(2) + 50, rnd(270)+45, rnd()+0.6)
   end
   new_asteroid(rnd(20) + 28, rnd(270)+45, rnd(3) + 1, rnd()-1.4)
 
   _upd = game_upd
   _drw = game_drw
-  next_level = l9_cutscene
+  next_level = l10_cutscene
+end
+
+--level 10
+
+function l10_cutscene()
+  _upd = l10_cs_upd
+  _drw = l10_cs_drw
+  bh_particles = {}
+  bh_size = 56
+  t = 0
+  substr = 1
+  text = "i am void"
+end
+
+function l10_cs_upd()
+  bh_upd()
+  t+= 1
+  if (t%5 == 0) substr +=1
+  if (btnp(fire2)) then
+    goto_splash()
+  end
+end
+
+function l10_cs_drw()
+  rectfill(0,0,128,128,black)
+  bh_drw()
+  print_centered(sub(text, 1, substr), light_gray, 0, 0)
 end

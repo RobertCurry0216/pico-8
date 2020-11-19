@@ -23,7 +23,10 @@ function asteroids_upd()
       --die
       plr.dead = true
       add_explosion(plr.pos.x, plr.pos.y)
-      
+      _upd = exploded_upd
+      _drw = exploded_drw
+      del(asteroids, ast)  
+      return 
     end
       --blackhole
     if (ast.radius <= bh_size) then
@@ -32,6 +35,7 @@ function asteroids_upd()
       for _=1,8 do
         add_bh_particle(rnd(360), rnd(2)+1, rnd(4)+1, rnd(10)+15)
       end
+      return
     end
 
     --adjust values

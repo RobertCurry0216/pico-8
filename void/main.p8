@@ -15,7 +15,7 @@ __lua__
 #include rotate_sprite.p8
 
 
-#include debug.p8
+#include log.p8
 
 left,right,up,down,fire1,fire2=0,1,2,3,4,5
 black,dark_blue,dark_purple,dark_green,brown,dark_gray,light_gray,white,red,orange,yellow,green,blue,indigo,pink,peach=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
@@ -31,14 +31,11 @@ end
 
 function _update60()
   _upd()
-  -- debug.fr = stat(7)
-  -- debug.mem = stat(0)
-  -- debug.cpu = stat(1)
 end
 
 function _draw()
   _drw()
-  draw_debug()
+  draw_log()
 end
 
 __gfx__

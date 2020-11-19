@@ -22,6 +22,12 @@ function player_upd()
   plr.pos = angle(64, 64, plr.radius, plr.angle)
   --check dead
   if (plr.radius <= bh_size - 4) then
+    if (current_task == "be consumed") then
+      _upd = victory_upd
+      _drw = victory_drw
+      plr.dead = true
+      return
+    end
     _upd = death_upd
     _drw = death_drw
     plr.dead = true
@@ -30,6 +36,12 @@ function player_upd()
 
   --check escaped
   if (plr.radius > escape_radius) then
+    if (current_task == "be consumed") then
+      _upd = victory_upd
+      _drw = victory_drw
+      plr.dead = true
+      return
+    end
     plr.delta = angle(0, 0, plr.maxspeed, plr.angle + 90)
     plr.update = player_escaped_upd
     plr.draw = player_escaped_drw

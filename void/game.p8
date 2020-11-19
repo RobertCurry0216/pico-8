@@ -4,7 +4,7 @@ __lua__
 
 function new_game()
   --start level 1
-  l1_cutscene()
+  l7_cutscene()
 end
 
 ------------------------
@@ -21,7 +21,7 @@ end
 --splash screen
 function splash_upd()
   bh_upd()
-  if (btn(fire2)) then
+  if (btnp(fire2)) then
     new_game()
   end
 end
@@ -80,7 +80,7 @@ end
 function continue_drw()
   rectfill(0,0,128,128,black)
   print_centered("you were consumed by the void", dark_blue)
-  print("❎", 62, 108, indigo)
+  print("❎", 62, 108, light_grey)
 end
 
 function continue_upd()
@@ -101,8 +101,8 @@ end
 function victory_drw()
   game_drw()
   print_centered("you escaped the void", indigo, 0, -4)
-  print_centered("you saved "..score.." soul"..(score==1 and "" or "s"), indigo, 0, 4)
-  print("❎", 62, 108, indigo)
+  print_centered(victory_text..score.." soul"..(score==1 and "" or "s"), indigo, 0, 4)
+  print("❎", 62, 108, light_grey)
 end
 
 --fail screen
@@ -118,5 +118,39 @@ function fail_drw()
   game_drw()
   print_centered("you failed to save anyone", indigo, 0, -8)
   print_centered("except yourself", dark_purple)
-  print_centered("❎", indigo, 0, 8)
+  print_centered("❎", light_grey, 0, 8)
+end
+
+--exploded screen
+function exploded_upd()
+  bh_upd()
+  spacemen_upd()
+  asteroids_upd()
+  if (btnp(fire2)) then
+    goto_splash()
+  end
+end
+
+function exploded_drw()
+  game_drw()
+  print_centered("you were destroyed", indigo, 0, -8)
+  print_centered("by an asteroid", indigo)
+  print_centered("❎", light_grey, 0, 8)
+end
+
+--not consumed screen
+function not_consumed_upd()
+  bh_upd()
+  spacemen_upd()
+  asteroids_upd()
+  if (btnp(fire2)) then
+    goto_splash()
+  end
+end
+
+function not_consumed_drw()
+  game_drw()
+  print_centered("you were not consumed", light_grey, 0, -8)
+  print_centered("by the void", light_grey)
+  print_centered("❎", light_grey, 0, 8)
 end

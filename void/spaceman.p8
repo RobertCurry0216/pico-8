@@ -17,7 +17,7 @@ end
 
 function spacemen_upd()
   if (#spacemen == 0) then
-    current_task = "escape"
+    current_task = end_task
     return
   end
 
@@ -26,7 +26,7 @@ function spacemen_upd()
     local pos = angle(64, 64, s.radius, s.angle)
     --intersection checks
       --player
-    if (abs(s.angle-plr.angle) <= 3 and abs(s.radius-plr.radius) <= 6) then
+    if (abs(s.angle-plr.angle) <= 3 and abs(s.radius-plr.radius) <= 6 and plr.dead == false) then
       --rescue
       del(spacemen, s)
       score_text = score_text.."웃"
