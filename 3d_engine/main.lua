@@ -34,9 +34,9 @@ function _init()
     polyface(vec(1,0,1),vec(0,0,1),vec(0,0,0)),
     polyface(vec(1,0,1),vec(0,0,0),vec(1,0,0))
   })
-  cube.scale = 50
-  cube.position.x = 2
-  cube.position.y = 4
+  cube.scale = 100
+  cube.position.x = 10
+  cube.position.y = 10
   cube.position.z = 5
 end
 
@@ -164,8 +164,8 @@ end
 --matricies
 -------------------------------
 f_near = 0.1
-f_far = 1000
-f_fov = 45
+f_far = 100
+f_fov = 60
 f_aspect = 1
 f_fov_rad = 1 / tan(f_fov / 360)
 
