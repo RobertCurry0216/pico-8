@@ -4,8 +4,8 @@ __lua__
 --componants
 #include math/math.p8
 
-#include objects/camera.p8
-#include objects/actors.p8
+#include raytrace/camera.p8
+#include raytrace/actors.p8
 
 function _init()
   cls(1)
