@@ -38,6 +38,9 @@ vector = {
     v.y = self.y / other
     v.z = self.z / other
     return v
+  end,
+  __len = function(self)
+    return sqrt(self.x*self.x + self.y*self.y + self.z*self.z)
   end
 }
 
@@ -50,6 +53,10 @@ function vector:new(x, y, z)
   v.z = z or 0
 
   --methods
+  function v:copy()
+    return vector:new(self.x, self.y, self.z)
+  end
+
   function v:dot(other)
 	  return (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
   end
@@ -61,5 +68,11 @@ function vector:new(x, y, z)
     v.z = (self.x * other.y) - (self.y * other.x)
     return v
   end
+
+  function v:norm()
+    local v = self:copy()
+    return v/#self
+  end
+
   return v
 end
