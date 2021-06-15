@@ -5,7 +5,23 @@ __lua__
 --constants
 inf =  32767
 
+-->8
+--helpers
+function interpol(i1,d1,i2,d2)
+  if i1 == i2 then
+    return {d1}
+  end
+  local values = {}
+  local a = (d2-d1)/(i2-i1)
+  local d = d1
+  for i=i1,i2 do
+    add(values, d)
+    d+=a
+  end
+  return values
+end
 
+-->8
 --vectors
 vector = {
   __tostring = function(self)

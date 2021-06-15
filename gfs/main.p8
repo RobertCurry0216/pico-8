@@ -4,26 +4,31 @@ __lua__
 --componants
 #include math/math.p8
 
-#include raytrace/camera.p8
-#include raytrace/actors.p8
+#include raster/primitaves.p8
 
 function _init()
-  cls(1)
-  cam = camera:new()
-  scene = {
-    sphere:new(0,1,3,1,8),
-    sphere:new(2,0,4,1,3),
-    sphere:new(-2,0,4,1,12)
-  }
-  
-  cam:render(scene)
+ cls(1)
+ p1 = vector:new(10,10)
+ p2 = vector:new(50,50)
+ l = lyne:new(p1, p2)
+	l:render()
+	
+	p1 = vector:new(90,10)
+ p2 = vector:new(64,64)
+ l = lyne:new(p1, p2, 12)
+	l:render()
+	
+	p2 = vector:new(126,100)
+ p1 = vector:new(20,80)
+ l = lyne:new(p1, p2,14)
+	l:render()
+	
+	p2 = vector:new(64,73)
+ p1 = vector:new(126,2)
+ l = lyne:new(p1, p2,3)
+	l:render()
 end
 
-function _update()
-end
-
-function _draw()
-end
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
