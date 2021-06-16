@@ -21,6 +21,17 @@ function interpol(i1,d1,i2,d2)
   return values
 end
 
+function join(a,b)
+  local t = {}
+  for v in all(a) do
+    add(t,v)
+  end
+  for v in all(b) do
+    add(t,v)
+  end
+  return t
+end
+
 -->8
 --vectors
 vector = {
@@ -88,6 +99,12 @@ function vector:new(x, y, z)
   function v:norm()
     local v = self:copy()
     return v/#self
+  end
+
+  function v:add(other)
+    self.x += other.x
+    self.y += other.y
+    self.z += other.z
   end
 
   return v

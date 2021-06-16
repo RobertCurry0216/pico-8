@@ -3,19 +3,35 @@ version 32
 __lua__
 --componants
 #include math/math.p8
-
 #include raster/primitaves.p8
 
 function _init()
- cls(1)
  p1 = vector:new(40,10)
+ p1.delta = vector:new(-1,1)
  p2 = vector:new(100,64)
+ p2.delta = vector:new(1,1.5)
  p3 = vector:new(50,100)
+ p3.delta = vector:new(1.5,1)
  t = triangle:new(p1,p2,p3,12)
- t:render()
-
 end
 
+function _update()
+	for p in all({p1,p2,p3}) do
+		p:add(p.delta)
+		if p.x < 0 or p.x > 127 then
+			p.delta.x *= -1
+		end
+		if p.y < 0 or p.y > 127 then
+			p.delta.y *= -1
+		end
+	end
+end
+
+function _draw()
+	cls(1)
+	t:render()
+	print(stat(7))
+end
 
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
