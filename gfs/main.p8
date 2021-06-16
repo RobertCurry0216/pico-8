@@ -30,8 +30,29 @@ end
 function _draw()
 	cls(1)
 	t:render()
+	
+	local shade = (flr(time())%6)+1
+	
+	for c=0,15 do
+		circfill(
+			4+(8*c),
+			32,
+			3,
+			darken(c,shade)
+		)
+		circ(
+			4+(8*c),
+			32,
+			4,
+			7
+		)
+	end
+	
+	color()
 	print("cpu:"..stat(1))
-	print("fps:"..stat(7))
+	print("fps:"..stat(7))	
+	print("shd:"..shade)
+	
 end
 
 __gfx__
