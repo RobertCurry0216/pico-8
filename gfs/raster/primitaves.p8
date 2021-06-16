@@ -52,3 +52,49 @@ function drawlyne(x1,y1,x2,y2,c)
     end
   end
 end
+
+-->8
+--triangles
+
+triangle = {
+  __tostring = function(self)
+    return "<tri:"..self.p1..":"..self.p2..":"..self.p3..">"
+  end
+}
+
+function triangle:new(p1, p2, p3, c)
+  --constructor
+  local t = {}
+  setmetatable(t, triangle)
+  t.p1 = p1 or vector:new()
+  t.p2 = p2 or vector:new()
+  t.p3 = p3 or vector:new()
+  t.color = c or 8
+
+  --methods
+  function t:render()
+    local p1,p2,p3 = self.p1,self.p2,self.p3
+    if p2.y < p1.y then p1, p2 = p2, p1 end
+    if p3.y < p1.y then p1, p3 = p3, p1 end
+    if p3.y < p2.y then p3, p2 = p2, p3 end
+    drawtri(
+      p1.x,
+      p1.y,
+      p2.x,
+      p2.y,
+      p3.x,
+      p3.y,
+      self.color
+    )
+  end
+  --end class
+  return t
+end
+
+function drawtri(x1,y1,x2,y2,x3,y3,c)
+  color(c)
+  line(x1,y1,x2,y2)
+  line(x3,y3)
+  line(x1,y1)
+  color()
+end

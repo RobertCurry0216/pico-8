@@ -8,25 +8,12 @@ __lua__
 
 function _init()
  cls(1)
- p1 = vector:new(10,10)
- p2 = vector:new(50,50)
- l = lyne:new(p1, p2)
-	l:render()
-	
-	p1 = vector:new(90,10)
- p2 = vector:new(64,64)
- l = lyne:new(p1, p2, 12)
-	l:render()
-	
-	p2 = vector:new(126,100)
- p1 = vector:new(20,80)
- l = lyne:new(p1, p2,14)
-	l:render()
-	
-	p2 = vector:new(64,73)
- p1 = vector:new(126,2)
- l = lyne:new(p1, p2,3)
-	l:render()
+ p1 = vector:new(40,10)
+ p2 = vector:new(100,64)
+ p3 = vector:new(50,100)
+ t = triangle:new(p1,p2,p3,12)
+ t:render()
+
 end
 
 
