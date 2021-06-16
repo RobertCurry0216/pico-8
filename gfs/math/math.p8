@@ -101,11 +101,12 @@ function vector:new(x, y, z)
     return v/#self
   end
 
-  function v:add(other)
-    self.x += other.x
-    self.y += other.y
-    self.z += other.z
-  end
-
   return v
+end
+
+--vector helpers
+function v_update(self,other)
+  self.x += other.x
+  self.y += other.y
+  self.z += other.z
 end

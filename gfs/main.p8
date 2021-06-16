@@ -17,7 +17,7 @@ end
 
 function _update()
 	for p in all({p1,p2,p3}) do
-		p:add(p.delta)
+		v_update(p, p.delta)
 		if p.x < 0 or p.x > 127 then
 			p.delta.x *= -1
 		end
@@ -30,7 +30,8 @@ end
 function _draw()
 	cls(1)
 	t:render()
-	print(stat(7))
+	print("cpu:"..stat(1))
+	print("fps:"..stat(7))
 end
 
 __gfx__
