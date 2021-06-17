@@ -4,54 +4,22 @@ __lua__
 --componants
 #include math/math.p8
 #include raster/primitaves.p8
+#include raster/camera.p8
 
 function _init()
- p1 = vector:new(40,10)
- p1.delta = vector:new(-1,1)
- p2 = vector:new(100,64)
- p2.delta = vector:new(1,1.5)
- p3 = vector:new(50,100)
- p3.delta = vector:new(1.5,1)
- t = triangle:new(p1,p2,p3,12)
+	c = camera:new()
 end
 
 function _update()
-	for p in all({p1,p2,p3}) do
-		v_update(p, p.delta)
-		if p.x < 0 or p.x > 127 then
-			p.delta.x *= -1
-		end
-		if p.y < 0 or p.y > 127 then
-			p.delta.y *= -1
-		end
-	end
+
 end
 
 function _draw()
 	cls(1)
-	t:render()
-	
-	local shade = (flr(time())%6)+1
-	
-	for c=0,15 do
-		circfill(
-			4+(8*c),
-			32,
-			3,
-			darken(c,shade)
-		)
-		circ(
-			4+(8*c),
-			32,
-			4,
-			7
-		)
-	end
-	
+	c:render()
 	color()
 	print("cpu:"..stat(1))
 	print("fps:"..stat(7))	
-	print("shd:"..shade)
 	
 end
 
