@@ -8,16 +8,49 @@ __lua__
 
 function _init()
 	c = camera:new()
+	vertexes = {
+		vector:new(-1, 1, 1),
+		vector:new(-1, -1, 1),
+		vector:new(1, -1, 1),
+		vector:new(1, 1, -1),
+		vector:new(-1, 1, -1),
+		vector:new(-1, -1, -1),
+		vector:new(1, -1, -1),
+		vector:new(1, 1, 1)
+	}
+
+	triangles = {
+		triangle:new(8, 1, 2, 8),
+		triangle:new(8, 2, 3, 8),
+		triangle:new(4, 8, 3, 3),
+		triangle:new(4, 3, 7, 3),
+		triangle:new(5, 4, 7, 12),
+		triangle:new(5, 7, 6, 12),
+		triangle:new(1, 5, 6, 10),
+		triangle:new(1, 6, 2, 10),
+		triangle:new(4, 5, 1, 14),
+		triangle:new(4, 1, 8, 14),
+		triangle:new(2, 6, 7, 15),
+		triangle:new(2, 7, 3, 15)
+	}
+
+	cube = model:new(vertexes, triangles, "cube")
+	cubeinst = instance:new(
+		cube, 
+		vector:new(2,2,14)
+	)
+	scene = {cubeinst}
 end
 
 function _update()
+	cubeinst.pos.x = sin(time()/5)*5
+	cubeinst.pos.y = cos(time()/5)*5
 
 end
 
 function _draw()
 	cls(1)
-	trifill(10,10,126,64,32,96,2)
-	c:render()
+	c:render(scene)
 	color()
 	print("cpu:"..stat(1))
 	print("fps:"..stat(7))	
