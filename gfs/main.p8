@@ -3,8 +3,8 @@ version 32
 __lua__
 --componants
 #include math/math.p8
-#include raster/primitaves.p8
-#include raster/camera.p8
+
+#include raster/engine.p8
 
 function _init()
 	c = camera:new()
@@ -16,6 +16,7 @@ end
 
 function _draw()
 	cls(1)
+	trifill(10,10,126,64,32,96,2)
 	c:render()
 	color()
 	print("cpu:"..stat(1))
