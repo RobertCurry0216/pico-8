@@ -5,9 +5,7 @@ __lua__
 --constants
 inf =  32767
 
---utils
-function darken(c,v)
-	local shademap = {
+darkenshademap = {
 		"0,0,0,0,0,0",
 		"1,1,1,0,0,0",
 		"2,2,1,1,0,0",
@@ -25,22 +23,14 @@ function darken(c,v)
 		"14,14,4,2,1,0",
 		"15,9,4,2,1,0",
 	}
-	return tonum(split(shademap[c+1])[v])
+
+--utils
+function round(v)
+  return flr(v+0.5)
 end
--->8
---helpers
-function interpol(i1,d1,i2,d2)
-  if i1 == i2 then
-    return {d1}
-  end
-  local values = {}
-  local a = (d2-d1)/(i2-i1)
-  local d = d1
-  for i=i1,i2 do
-    add(values, d)
-    d+=a
-  end
-  return values
+
+function darken(c,v)
+	return tonum(split(darkenshademap[c+1])[v])
 end
 
 function join(a,b)

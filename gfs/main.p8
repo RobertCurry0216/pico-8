@@ -35,26 +35,46 @@ function _init()
 	}
 
 	cube = model:new(vertexes, triangles, "cube")
-	cubeinst = instance:new(
+	cube1 = instance:new(
 		cube, 
 		vector:new(2,2,14)
 	)
-	scene = {cubeinst}
+	cube2 = instance:new(
+		cube, 
+		vector:new(2,2,14)
+	)
+	cube1.wireframe = true
+	scene = {cube1, cube2}
+
+	p1=vector:new(rnd(128),rnd(128))
+	p2=vector:new(rnd(128),rnd(128))
+	p3=vector:new(rnd(128),rnd(128))
+	p1.delta=vector:new(rnd(2)-1,rnd(2)-1)
+	p2.delta=vector:new(rnd(2)-1,rnd(2)-1)
+	p3.delta=vector:new(rnd(2)-1,rnd(2)-1)
 end
 
 function _update()
-	cubeinst.pos.x = sin(time()/5)*5
-	cubeinst.pos.y = cos(time()/5)*5
+	cube1.pos.x = sin(time()/5)*5
+	cube1.pos.y = cos(time()/5)*5
+	cube2.pos.x = sin(time()/5)*-5
+	cube2.pos.y = cos(time()/5)*-5
 
+	for p in all({p1,p2,p3}) do
+		p.x += p.delta.x
+		p.y += p.delta.y
+		if p.x < 0 or p.x > 128 then p.delta.x *= -1 end
+		if p.y < 0 or p.y > 128 then p.delta.y *= -1 end
+	end
 end
 
 function _draw()
 	cls(1)
+	trifill(p1.x,p1.y,p2.x,p2.y,p3.x,p3.y,2)
 	c:render(scene)
 	color()
 	print("cpu:"..stat(1))
-	print("fps:"..stat(7))	
-	
+	print("fps:"..stat(7))
 end
 
 __gfx__

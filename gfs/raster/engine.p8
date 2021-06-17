@@ -7,15 +7,27 @@ __lua__
 --[[
   math.p8
 ]]
+function interpol(i1,d1,i2,d2)
+  i1,i2 = round(i1), round(i2)
+  if i1 == i2 then
+    return {d1}
+  end
+  local values = {}
+  local a = (d2-d1)/(i2-i1)
+  local d = d1
+  for i=i1,i2 do
+    add(values, d)
+    d+=a
+  end
+  return values
+end
 
 --trifill
-function trifill(p1, p2, p3, c)
-  local x1,y1 = p1.x, p1.y
-  local x2,y2 = p2.x, p2.y
-  local x3,y3 = p3.x, p3.y
+function trifill(x1,y1,x2,y2,x3,y3,c)
   if y2 < y1 then x1,y1, x2,y2 = x2,y2, x1,y1 end
   if y3 < y1 then x1,y1, x3,y3 = x3,y3, x1,y1 end
   if y3 < y2 then x3,y3, x2,y2 = x2,y2, x3,y3 end
+  local ymax = ceil(y3-y1)
   color(c)
 
   -- find x values
@@ -26,7 +38,6 @@ function trifill(p1, p2, p3, c)
   local x123 = join(x12,x23)
 
   --draw lines
-  local ymax = ceil(y3-y1)
   for y=1,ymax do
     line(x13[y],y+y1,x123[y],y+y1,c)
   end
@@ -34,11 +45,11 @@ function trifill(p1, p2, p3, c)
   color()
 end
 
-function triwire(p1,p2,p3,c)
+function triwire(x1,y1,x2,y2,x3,y3,c)
   color(c)
-  line(p1.x,p1.y,p2.x,p2.y)
-  line(p3.x,p3.y)
-  line(p1.x,p1.y)
+  line(x1,y1,x2,y2)
+  line(x3,y3)
+  line(x1,y1)
   color()
 end
 
@@ -90,6 +101,7 @@ function instance:new(model, pos)
   setmetatable(i, instance)
   i.model = model
   i.pos = pos or vector:new()
+  i.wireframe = false
   --methods
 
   --end class
@@ -134,7 +146,8 @@ function camera:new()
       local p1 = proj[t.p1]
       local p2 = proj[t.p2]
       local p3 = proj[t.p3]
-      trifill(p1, p2, p3, t.col)
+      local renderfn = inst.wireframe and triwire or trifill
+      renderfn(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, t.col)
     end
   end
 
