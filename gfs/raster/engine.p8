@@ -100,12 +100,22 @@ function instance:new(model, pos)
   local i = {}
   setmetatable(i, instance)
   i.model = model
-  i.pos = pos or vector:new()
+  i.transform = transform:new(1, vector:new(), pos or vector:new())
   i.wireframe = false
   --methods
 
   --end class
   return i
+end
+
+function get_transformedpoints(inst, transform)
+  local points = {}
+  local tp
+  for p in all(inst.model.points) do
+    tp = v_applytransform(p, transform)
+    add(points, tp)
+  end
+  return points
 end
 
 -->8
@@ -120,7 +130,7 @@ function camera:new()
   --constructor
   local c = {}
   setmetatable(c, camera)
-  c.pos = vector:new()
+  c.transform = transform:new()
   c.vwidth = 1
   c.vheight = 1
   c.vdepth = 1
@@ -137,8 +147,9 @@ function camera:new()
   function c:renderinst(inst)
     --project all points into scene
     local proj = {}
-    for p in all(inst.model.points) do
-      add(proj, self:projectvertex(p + inst.pos))
+    local points = get_transformedpoints(inst, inst.transform)
+    for p in all(points) do
+      add(proj, self:projectvertex(p))
     end
 
     --draw projected triangles

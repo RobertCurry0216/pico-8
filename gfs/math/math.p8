@@ -116,9 +116,121 @@ function vector:new(x, y, z)
   return v
 end
 
+transform = {
+  __tostring = function(self)
+    return "<".."transform:"..self.scale..":"..tostr(self.translation)..":"..tostr(self.rotation)..">"
+  end
+}
+
+function transform:new(scale, rotation, translation)
+  --constructor
+  local t = {}
+  t.scale = scale or 1
+  t.rotation = rotation or vector:new()
+  t.translation = translation or vector:new()
+  --methods
+
+  --end class
+  return t
+end
+
 --vector helpers
 function v_update(self,other)
   self.x += other.x
   self.y += other.y
   self.z += other.z
+end
+
+function v_applytransform(v, transform)
+  local scaled = v_applyscale(v, transform.scale)
+  local rotated = v_applyrotation(scaled, transform.rotation)
+  local translated = v_applytranslation(rotated, transform.translation)
+  return translated
+end
+
+function v_applyscale(v, scale)
+  return v * scale
+end
+
+function v_applyrotation(v, rotation)
+  return v
+end
+
+function v_applytranslation(v, translation)
+  return v + translation
+end
+
+-->8
+--matrix
+
+function make_yrotmatrix(theta)
+  local _cos = cos(theta)
+  local _sin = sin(theta)
+  return {
+    {_cos, 0,-_sin, 0},
+    {   0, 1,    0, 0},
+    {_sin, 0, _cos, 0},
+    {   0, 0,    0, 1}
+  }
+end
+
+function make_transmatrix(trans)
+  return {
+    {1,0,0,trans.x},
+    {0,1,0,trans.y},
+    {0,0,1,trans.z},
+    {0,0,0,      1}
+  }
+end
+
+function make_scalematrix(s)
+  return {
+    {s,0,0,0},
+    {0,s,0,0},
+    {0,0,s,0},
+    {0,0,0,1},
+  }
+end
+
+function mul_matv(mat, v)
+  local result = {0,0,0,0}
+  local vec = {v.x,v.y,v.z,v.w}
+  for i=1,4 do
+    for j=1,4 do
+      result[i] += mat[i][j]*vec[j]
+    end
+  end
+  return result
+end
+
+function mul_matmm4(m1,m2)
+  local result = {
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0}
+  }
+  for i=1,4 do
+    for j=1,4 do
+      for k=1,4 do
+        result[i][j] += m1[i][k]*m2[k][j]
+      end
+    end
+  end
+  return result
+end
+
+function transpose_mat(m)
+  local result = {
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0}
+  }
+  for i=1,4 do
+    for j=1,4 do
+      result[i][j] = m1[j][i]
+    end
+  end
+  return result
 end

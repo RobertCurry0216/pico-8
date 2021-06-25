@@ -55,14 +55,13 @@ function _init()
 end
 
 function _update()
-	cube1.pos.x = sin(time()/5)*5
-	cube1.pos.y = cos(time()/5)*5
-	cube2.pos.x = sin(time()/5)*-5
-	cube2.pos.y = cos(time()/5)*-5
+	cube1.transform.translation.x = sin(time()/5)*5
+	cube1.transform.translation.y = cos(time()/5)*5
+	cube2.transform.translation.x = sin(time()/5)*-5
+	cube2.transform.translation.y = cos(time()/5)*-5
 
 	for p in all({p1,p2,p3}) do
-		p.x += p.delta.x
-		p.y += p.delta.y
+		v_update(p, p.delta)
 		if p.x < 0 or p.x > 128 then p.delta.x *= -1 end
 		if p.y < 0 or p.y > 128 then p.delta.y *= -1 end
 	end
