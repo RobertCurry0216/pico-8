@@ -1,6 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 32
 __lua__
+--main
 function _init()
 	p=player:new(64,64)
 end
@@ -31,8 +32,8 @@ function player:new(x,y)
 	p.maxspeed=1.5
 	
 	--sprites
-	p.width=1
-	p.height=1
+	p.width=8 --cel width
+	p.height=8 --cel height
 	p.anims={
 		idle={
 			ticks=1,
@@ -66,25 +67,35 @@ function player_draw(self)
 		print(self.curframe)
 	end
 	spr(a.frames[self.curframe],
-	self.pos.x-(self.width*4),
-	self.pos.y-(self.height*4),
-	self.width,
-	self.height,
+	self.pos.x-(self.width/2),
+	self.pos.y-(self.height/2),
+	self.width/8,
+	self.height/8,
 	self.flipx,
 	false)
 end
 
 function player_update(self)
-	local bl=btn(⬅️) and -1 or 0
+	local bl=btn(⬅️) and 1 or 0
 	local br=btn(➡️) and 1 or 0
-	local bu=btn(⬆️) and -1 or 0
+	local bu=btn(⬆️) and 1 or 0
 	local bd=btn(⬇️) and 1 or 0
 	
 	--calc movement
-	local delta=vector:new(bl+br,bu+bd)
+	local delta=vector:new(br-bl,bd-bu)
 	delta=delta:norm()*self.maxspeed
 
 	--calc collusion
+	if boxcollision(self.pos+delta,self.width,self.height) then
+		local dx,dy=0,0
+		while (dx < abs(delta.x)) do
+			if boxcollision(self.pos+delta,self.width,self.height,dx*sign(delta.x)) then
+				dx+=1
+			else
+				delta.x = dx
+			end
+		end
+	end
 	
 	--update pos
 	self.pos += delta
@@ -113,10 +124,10 @@ function player_update(self)
 	end
 end
 -->8
---utils
+--util
 
 --constants
-inf =  32767
+inf = 32767
 
 darkenshademap = {
 		"0,0,0,0,0,0",
@@ -157,9 +168,32 @@ function join(a,b)
   return t
 end
 
+--collision helpers
+function boxcollision(pos,w,h,f,dx,dy)
+	w=w and w/2 or 4
+	h=h and h/2 or 4
+	f=f or 1
+	dx=dx or 0
+	dy=dy or 0
+	local x1=(pos.x+w+dx-1)/8
+	local x2=(pos.x-w-dx)/8
+	local y1=(pos.y+h+dy-1)/8
+	local y2=(pos.y-h-dy)/8
+
+	local c_br=fget(mget(x1,y1))
+	local c_tr=fget(mget(x1,y2))
+	local c_bl=fget(mget(x2,y1))
+	local c_tl=fget(mget(x2,y2))
+
+	return (c_bl | c_br | c_tl | c_tr)&f == f
+end
 
 -->8
 --math
+
+function sign(x)
+	return x/abs(x)
+end
 
 --vectors
 vector = {
