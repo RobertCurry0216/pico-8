@@ -14,7 +14,6 @@ end
 function _draw()
 	cls(1)
 	map(cam.x,cam.y,0,0)
-	camera(12,12)
 	p:draw()
 end
 -->8
@@ -34,8 +33,8 @@ function player:new(x,y)
 	p.maxspeed=1.5
 	
 	--sprites
-	p.width=8 --cel width
-	p.height=8 --cel height
+	p.width=8 --pixel width
+	p.height=8 --pixel height
 	p.anims={
 		idle={
 			ticks=1,
