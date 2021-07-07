@@ -4,7 +4,10 @@ __lua__
 --game
 
 function _init()
-
+  b = board:new(5,4)
+  b:add(1,1,1)
+  b:add(2,2,18)
+  b:add(5,4,17)
 end
 
 function _update()
@@ -12,8 +15,98 @@ function _update()
 end
 
 function _draw()
-
+  cls()
+  b:draw(64,64)
 end
+
+-->8
+--board
+
+board={
+  __tostring=function(self) return "<board:"..self.width..":"..self.height..">" end
+}
+
+function board:new(w,h)
+  local b={}
+  setmetatable(b, board)
+  --constructor
+  b.width = w
+  b.height = h
+  b.tiles = {}
+  b.twidth = 8
+  b.theight = 8
+
+  b.bgcol = 5
+
+  --methods
+  b.get = board_get
+  b.add = board_add
+  b.remove = board_remove
+  b.clear = board_clear
+  b.draw = board_draw
+  b.hash = board_hash
+  b.unhash = board_unhash
+
+  --end class
+  return b
+end
+
+function board_hash(self,x,y) 
+  return (self.width*y)+x
+end
+
+function board_unhash(self,val) 
+  local dx,dy = val%self.width, val\self.height
+  if dx == 0 then
+    dx += self.width
+    dy -= 2
+  end
+  return dx, dy
+end
+
+function board_get(self,x,y)
+  return self.tiles[self:hash(x,y)]
+end
+
+function board_add(self,x,y,v)
+  self.tiles[self:hash(x,y)] = v
+end
+
+function board_remove(self,x,y)
+  deli(self.tiles, self:hash(x,y))
+end
+
+function board_clear(self)
+  self.tiles = {}
+end
+
+function board_draw(self, cx, cy)
+  local w,h = self.width*self.twidth, self.height*self.theight
+  local x,y = cx-w/2, cy-h/2
+  --draw rows
+  for i=0,self.height do
+    line(x,y,x+w,y,self.bgcol)
+    y+=self.theight
+  end
+  --draw cols
+  y=cy-h/2
+  for i=0,self.width do
+    line(x,y,x,y+h,self.bgcol)
+    x+=self.twidth
+  end
+  x=cx-w/2
+  --draw tiles
+  for k,v in pairs(self.tiles) do
+    local dx,dy = self:unhash(k)
+    print(k..":"..dx..":"..dy)
+    spr(v,
+    x+(dx-1)*self.twidth,
+    y+(dy-1)*self.theight,
+    self.twidth/8,
+    self.theight/8)
+  end
+end
+
 __gfx__
 00000000066666600666666006666660066666600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000d663b666d668e666d661c666d669a6660000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
