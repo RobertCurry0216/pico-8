@@ -14,7 +14,6 @@ end
 function _draw()
 	cls(1)
 	map(cam.x,cam.y,0,0)
-	camera(12,12)
 	p:draw()
 end
 -->8
@@ -51,11 +50,11 @@ function player:new(x,y)
 			frames={1,2}
 		},
     jump={
-      ticks=1
+      ticks=1,
       frames={2}
     },
     slide={
-      ticks=1
+      ticks=1,
       frames={1}
     }
 	}
@@ -65,13 +64,13 @@ function player:new(x,y)
 	p.flipx=false
 	
   --jump controller
-  jump={
-    is_pressed=false --pressed this frame
-    is_held=false --held btn down
-    ticks_held=0
-    is_released=true
-    min_press=5
-    max_press=15
+  p.jump={
+    is_pressed=false, --pressed this frame
+    is_held=false, --held btn down
+    ticks_held=0,
+    is_released=true,
+    min_press=5,
+    max_press=15,
     --update
     update=player_jump_update
   }
@@ -87,8 +86,8 @@ function player:new(x,y)
 		return self.anims[self.curanim]
 	end
 
-  function p:function(anim)
-    if(anim==self.curanim)return--early out.
+  function p:set_anim(anim)
+    if(anim==self.curanim) return--early out.
     local a=self.anims[anim]
     self.animtick=a.ticks--ticks count down.
     self.curanim=anim
