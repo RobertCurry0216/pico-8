@@ -34,12 +34,12 @@ function player:new(x,y)
 	--constructor
 	p.pos=vector:new(x,y)
 	p.speed=vector:new()
-	p.maxspeed=1.5
-  p.maxfallspeed=2
-  p.acc=0.08
-  p.dcc=0.8
-  p.airdcc=1
-  p.grav=0.15
+	p.speed.maxx=1.5
+	p.speed.maxy=2
+ p.acc=0.08
+ p.dcc=0.8
+ p.airdcc=1
+ p.grav=0.15
 	p.boost=3
 	
 	--sprites
@@ -100,6 +100,12 @@ function player:new(x,y)
 	function p:anim()
 		return self.anims[self.state]
 	end
+	
+	function p.speed:update(dx,dy)
+		self.x+=dx
+		self.y+=dy
+		self.x=mid(-self.maxx,self.x,self.maxx)
+	end
 
 	--end class
 	return p
@@ -155,8 +161,7 @@ function player_update(self)
 	end
 	
 	--update pos
-	self.speed.x+=dx
-	self.speed.y+=dy
+	self.speed:update(dx,dy)
 	self.pos+=self.speed
 
 	--dcc
@@ -171,6 +176,7 @@ function player_update(self)
 		self.pos.y-=((self.pos.y+self.height+1)%8)-1
 	end
 	if c_x then
+		--move out of the wall
 		self.pos.x-=((self.pos.x+self.width+1)%8)-1
 	end
 
@@ -269,9 +275,6 @@ end
 
 --collision helpers
 function collide_map(pos,w,h,f,dx,dy)
-	f=f or 1
-	dx=dx or 0
-	dy=dy or 0
 	local x1=pos.x+dx
 	local y1=pos.y+dy
 	local x2=pos.x+w+dx-1
