@@ -15,8 +15,9 @@ function _draw()
 	cls(1)
 	map(cam.x,cam.y,0,0)
 	p:draw()
-	print("\b2\#1colx:"..tostring(colx))
-	print("\b2\#1coly:"..tostring(coly))
+	print("\b2\#1c_x:"..tostring(c_x))
+	print("\b2\#1c_g:"..tostring(c_ground))
+	print("\b2\#1c_r:"..tostring(c_roof))
 end
 -->8
 --player
@@ -35,7 +36,7 @@ function player:new(x,y)
 	p.speed=vector:new()
 	p.maxspeed=1.5
   p.maxfallspeed=2
-  p.acc=0.05
+  p.acc=0.08
   p.dcc=0.8
   p.airdcc=1
   p.grav=0.15
@@ -49,7 +50,7 @@ function player:new(x,y)
 			ticks=1,
 			frames={1}
 		},
-		walk={
+		walking={
 			ticks=5,
 			frames={1,2}
 		},
@@ -61,7 +62,7 @@ function player:new(x,y)
 			ticks=1,
 			frames={2}
 		},
-    slide={
+    sliding={
       ticks=1,
       frames={1}
     }
@@ -92,6 +93,7 @@ function player:new(x,y)
 	p.update=player_update
 
 	function p:set_state(s)
+		if s != self.state then self.curframe=1 end
 		p.state=s
 	end
 	
@@ -115,49 +117,80 @@ function player_draw(self)
 end
 
 function player_update(self)
-	local bl=btn(⬅️) and 1 or 0
-	local br=btn(➡️) and 1 or 0
-	local bu=btn(⬆️) and 1 or 0
-	local bd=btn(⬇️) and 1 or 0
+	local bl=btn(⬅️)
+	local br=btn(➡️)
+	local bu=btn(⬆️)
+	local bd=btn(⬇️)
 	
 	--calc movement
-	local dx=(br-bl)*self.acc
-	local dy=self.grav
+	local dx=0
+	dx -= bl and 1 or 0
+	dx += br and 1 or 0
+	dx*=self.acc
+	local dy=self.jump.landed and 0 or self.grav
 
 
 	--calc collusion
-	colx = collide_map(self.pos,self.width,self.height,1,dx,0)
-	coly = collide_map(self.pos,self.width,self.height,1,0,dy)
+	c_x = collide_map(self.pos,self.width,self.height,1,dx,0)
+	c_ground = collide_map(self.pos,self.width,self.height,1,0,1)
+	c_roof = collide_map(self.pos,self.width,self.height,1,0,-1)
 
-	if dy>0 then --raising
-    self:set_state"jumping"
-		if coly then 
+	if c_ground then
+		self.jump.landed=true
+	elseif dy>0 then --raising
+		if c_roof then 
 			dy=0
 			self.speed.y=0
 		end
 	elseif dy<0 then
-    self:set_state"falling"
-		if coly then
+		if c_ground then
 			dy=0
 			self.speed.y=0
 			self.jump.landed=true
 		end
 	end
+	if c_x then
+		self.speed.x=0
+		dx=0
+	end
 	
 	--update pos
 	self.speed.x+=dx
 	self.speed.y+=dy
-	self.pos += self.speed
-	if coly then
-		self.pos.y-=(self.pos.y+self.height)%8
+	self.pos+=self.speed
+
+	--dcc
+	if not bl and not br then
+		self.speed.x*=self.dcc
+		if abs(self.speed.x)<0.2 then
+			self.speed.x=0
+		end
 	end
-	
-	--set anim
-	if dx == 0 then
-		self:set_state"idle"
-		self.curframe = 1
+	if c_ground or c_roof then 
+		--move out of the ground
+		self.pos.y-=((self.pos.y+self.height+1)%8)-1
+	end
+	if c_x then
+		self.pos.x-=((self.pos.x+self.width+1)%8)-1
+	end
+
+	--set state
+	if self.jump.landed then
+		if self.speed.x!= 0 then
+			if bl or br then
+				self:set_state"walking"
+			else
+				self:set_state"sliding"
+			end
+		else
+			self:set_state"idle"
+		end
 	else
-		self:set_state"walk"
+		if dy>0 then
+			self:set_state"jumping"
+		else
+			self:set_state"falling"
+		end
 	end
 	
 	if dx!=0 then
