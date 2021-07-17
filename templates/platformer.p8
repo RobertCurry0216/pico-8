@@ -15,6 +15,8 @@ function _draw()
 	cls(1)
 	map(cam.x,cam.y,0,0)
 	p:draw()
+	print("\b2\#1colx:"..tostring(colx))
+	print("\b2\#1coly:"..tostring(coly))
 end
 -->8
 --player
@@ -30,12 +32,14 @@ function player:new(x,y)
 	setmetatable(p,player)
 	--constructor
 	p.pos=vector:new(x,y)
+	p.speed=vector:new()
 	p.maxspeed=1.5
   p.maxfallspeed=2
   p.acc=0.05
   p.dcc=0.8
   p.airdcc=1
   p.grav=0.15
+	p.boost=3
 	
 	--sprites
 	p.width=8 --pixel width
@@ -49,22 +53,27 @@ function player:new(x,y)
 			ticks=5,
 			frames={1,2}
 		},
-    jump={
+    jumping={
       ticks=1,
       frames={2}
     },
+		falling={
+			ticks=1,
+			frames={2}
+		},
     slide={
       ticks=1,
       frames={1}
     }
 	}
-	p.curanim="idle"
+	p.state="idle"
 	p.curframe=1
 	p.animtick=0
 	p.flipx=false
 	
   --jump controller
   p.jump={
+		landed=false,
     is_pressed=false, --pressed this frame
     is_held=false, --held btn down
     ticks_held=0,
@@ -81,30 +90,24 @@ function player:new(x,y)
 	--methods
 	p.draw=player_draw
 	p.update=player_update
+
+	function p:set_state(s)
+		p.state=s
+	end
 	
 	function p:anim()
-		return self.anims[self.curanim]
+		return self.anims[self.state]
 	end
 
-  function p:set_anim(anim)
-    if(anim==self.curanim) return--early out.
-    local a=self.anims[anim]
-    self.animtick=a.ticks--ticks count down.
-    self.curanim=anim
-    self.curframe=1
-  end
 	--end class
 	return p
 end
 
 function player_draw(self)
 	local a=self:anim()
-	if self.curframe < 1 then
-		print(self.curframe)
-	end
 	spr(a.frames[self.curframe],
-	self.pos.x-(self.width/2),
-	self.pos.y-(self.height/2),
+	self.pos.x,
+	self.pos.y,
 	self.width/8,
 	self.height/8,
 	self.flipx,
@@ -118,36 +121,47 @@ function player_update(self)
 	local bd=btn(⬇️) and 1 or 0
 	
 	--calc movement
-	local delta=vector:new(br-bl,bd-bu)
-	delta=delta:norm()*self.maxspeed
+	local dx=(br-bl)*self.acc
+	local dy=self.grav
+
 
 	--calc collusion
-	if collide_map(self.pos+delta,self.width,self.height) then
-		local v=vector:new()
-		local dx=vector:new(delta.x/self.width/2,0)
-		local dy=vector:new(0,delta.y/self.height/2)
-		while (not collide_map(self.pos+v+dx,self.width,self.height) and abs(v.x)<abs(delta.x-dx.x)) do
-			v+=dx
+	colx = collide_map(self.pos,self.width,self.height,1,dx,0)
+	coly = collide_map(self.pos,self.width,self.height,1,0,dy)
+
+	if dy>0 then --raising
+    self:set_state"jumping"
+		if coly then 
+			dy=0
+			self.speed.y=0
 		end
-		while (not collide_map(self.pos+v+dy,self.width,self.height) and abs(v.y)<abs(delta.y-dy.y)) do
-			v+=dy
+	elseif dy<0 then
+    self:set_state"falling"
+		if coly then
+			dy=0
+			self.speed.y=0
+			self.jump.landed=true
 		end
-		delta = v
 	end
 	
 	--update pos
-	self.pos += delta
-	
-	--set anim
-	if #delta == 0 then
-		self.curanim = "idle"
-		self.curframe = 1
-	else
-		self.curanim = "walk"
+	self.speed.x+=dx
+	self.speed.y+=dy
+	self.pos += self.speed
+	if coly then
+		self.pos.y-=(self.pos.y+self.height)%8
 	end
 	
-	if delta.x!=0 then
-		self.flipx=delta.x<0
+	--set anim
+	if dx == 0 then
+		self:set_state"idle"
+		self.curframe = 1
+	else
+		self:set_state"walk"
+	end
+	
+	if dx!=0 then
+		self.flipx=dx<0
 	end
 	
 	--update anim
@@ -222,15 +236,16 @@ end
 
 --collision helpers
 function collide_map(pos,w,h,f,dx,dy)
-	w=w and w/2 or 4
-	h=h and h/2 or 4
 	f=f or 1
 	dx=dx or 0
 	dy=dy or 0
-	local x1=((pos.x+w+dx-1)/8)+cam.x
-	local x2=((pos.x-w-dx)/8)+cam.x
-	local y1=((pos.y+h+dy-1)/8)+cam.y
-	local y2=((pos.y-h-dy)/8)+cam.y
+	local x1=pos.x+dx
+	local y1=pos.y+dy
+	local x2=pos.x+w+dx-1
+	local y2=pos.y+h+dy-1
+
+	x1/=8 y1/=8
+	x2/=8 y2/=8
 
 	local c_br=fget(mget(x1,y1))
 	local c_tr=fget(mget(x1,y2))
