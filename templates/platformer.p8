@@ -2,6 +2,8 @@ pico-8 cartridge // http://www.pico-8.com
 version 32
 __lua__
 --main
+#include debug.lua 
+
 function _init()
 	p=player:new(64,64)
 	cam={x=0, y=0}
@@ -14,220 +16,14 @@ end
 function _draw()
 	cls(1)
 	map(cam.x,cam.y,0,0)
+	camera(0,0)
 	p:draw()
-	print("\b2\#1c_x:"..tostring(c_x))
-	print("\b2\#1c_g:"..tostring(c_ground))
-	print("\b2\#1c_r:"..tostring(c_roof))
-end
--->8
---player
+	debug.state = p:state()
+	debug.cpu = stat(1)
+  draw_debug()
 
-player={
-	__tostring=function(self)
-		return "<player>"
-	end
-}
-
-function player:new(x,y)
-	local p={}
-	setmetatable(p,player)
-	--constructor
-	p.pos=vector:new(x,y)
-	p.speed=vector:new()
-	p.speed.maxx=1.5
-	p.speed.maxy=2
- p.acc=0.08
- p.dcc=0.8
- p.airdcc=1
- p.grav=0.15
-	p.boost=3
-	
-	--sprites
-	p.width=8 --pixel width
-	p.height=8 --pixel height
-	p.anims={
-		idle={
-			ticks=1,
-			frames={1}
-		},
-		walking={
-			ticks=5,
-			frames={1,2}
-		},
-    jumping={
-      ticks=1,
-      frames={2}
-    },
-		falling={
-			ticks=1,
-			frames={2}
-		},
-    sliding={
-      ticks=1,
-      frames={1}
-    }
-	}
-	p.state="idle"
-	p.curframe=1
-	p.animtick=0
-	p.flipx=false
-	
-  --jump controller
-  p.jump={
-		landed=false,
-    is_pressed=false, --pressed this frame
-    is_held=false, --held btn down
-    ticks_held=0,
-    is_released=true,
-    min_press=5,
-    max_press=15,
-    --update
-    update=player_jump_update
-  }
-
-  p.grounded=false
-  p.airtime=0
-	
-	--methods
-	p.draw=player_draw
-	p.update=player_update
-
-	function p:set_state(s)
-		if s != self.state then self.curframe=1 end
-		p.state=s
-	end
-	
-	function p:anim()
-		return self.anims[self.state]
-	end
-	
-	function p.speed:update(dx,dy)
-		self.x+=dx
-		self.y+=dy
-		self.x=mid(-self.maxx,self.x,self.maxx)
-	end
-
-	--end class
-	return p
 end
 
-function player_draw(self)
-	local a=self:anim()
-	spr(a.frames[self.curframe],
-	self.pos.x,
-	self.pos.y,
-	self.width/8,
-	self.height/8,
-	self.flipx,
-	false)
-end
-
-function player_update(self)
-	local bl=btn(⬅️)
-	local br=btn(➡️)
-	local bu=btn(⬆️)
-	local bd=btn(⬇️)
-	
-	--calc movement
-	local dx=0
-	dx -= bl and 1 or 0
-	dx += br and 1 or 0
-	dx*=self.acc
-	local dy=self.jump.landed and 0 or self.grav
-
-
-	--calc collusion
-	c_x = collide_map(self.pos,self.width,self.height,1,dx,0)
-	c_ground = collide_map(self.pos,self.width,self.height,1,0,1)
-	c_roof = collide_map(self.pos,self.width,self.height,1,0,-1)
-
-	if c_ground then
-		self.jump.landed=true
-	elseif dy>0 then --raising
-		if c_roof then 
-			dy=0
-			self.speed.y=0
-		end
-	elseif dy<0 then
-		if c_ground then
-			dy=0
-			self.speed.y=0
-			self.jump.landed=true
-		end
-	end
-	if c_x then
-		self.speed.x=0
-		dx=0
-	end
-	
-	--update pos
-	self.speed:update(dx,dy)
-	self.pos+=self.speed
-
-	--dcc
-	if not bl and not br then
-		self.speed.x*=self.dcc
-		if abs(self.speed.x)<0.2 then
-			self.speed.x=0
-		end
-	end
-	if c_ground or c_roof then 
-		--move out of the ground
-		self.pos.y-=((self.pos.y+self.height+1)%8)-1
-	end
-	if c_x then
-		--move out of the wall
-		self.pos.x-=((self.pos.x+self.width+1)%8)-1
-	end
-
-	--set state
-	if self.jump.landed then
-		if self.speed.x!= 0 then
-			if bl or br then
-				self:set_state"walking"
-			else
-				self:set_state"sliding"
-			end
-		else
-			self:set_state"idle"
-		end
-	else
-		if dy>0 then
-			self:set_state"jumping"
-		else
-			self:set_state"falling"
-		end
-	end
-	
-	if dx!=0 then
-		self.flipx=dx<0
-	end
-	
-	--update anim
-	local a = self:anim()
-	self.animtick-=1
-	if self.animtick <= 0 then
-		self.curframe+=1
-		if self.curframe > #a.frames then
-			self.curframe=1
-		end
-		self.animtick=a.ticks
-	end
-end
-
-function player_jump_update(self, pressed)
-  self.is_pressed=false
-  if pressed then
-    if not self.is_held then
-      self.is_pressed=true
-    end
-    self.is_held=true
-    self.ticks_down+=1
-  else
-    self.is_held=false
-    self.ticks_down=0
-  end
-end
 -->8
 --util
 
@@ -258,6 +54,10 @@ function round(v)
   return flr(v+0.5)
 end
 
+function sign(v)
+	return round(v/abs(v))
+end
+
 function darken(c,v)
 	return tonum(split(darkenshademap[c+1])[v])
 end
@@ -274,29 +74,343 @@ function join(a,b)
 end
 
 --collision helpers
-function collide_map(pos,w,h,f,dx,dy)
-	local x1=pos.x+dx
-	local y1=pos.y+dy
-	local x2=pos.x+w+dx-1
-	local y2=pos.y+h+dy-1
+function collide_map(x,y,w,h,f,dx,dy)
+	w=w or 8
+	h=h or 8
+	f=f or 1
+	dx=dx or 0
+	dy=dy or 0
+	local x1=((x+dx)/8)+cam.x
+	local x2=((x+dx+(w/2))/8)+cam.x
+	local x3=((x+dx+w-1)/8)+cam.x
+	local y1=((y+dy)/8)+cam.y
+	local y2=((y+dy+(h/2))/8)+cam.y
+	local y3=((y+dy+h-1)/8)+cam.y
 
-	x1/=8 y1/=8
-	x2/=8 y2/=8
+	local c_tl=fget(mget(x1,y1))
+	local c_tm=fget(mget(x2,y1))
+	local c_tr=fget(mget(x3,y1))
 
-	local c_br=fget(mget(x1,y1))
-	local c_tr=fget(mget(x1,y2))
-	local c_bl=fget(mget(x2,y1))
-	local c_tl=fget(mget(x2,y2))
+	local c_ml=fget(mget(x1,y2))
+	local c_mr=fget(mget(x3,y2))
 
-	return (c_bl | c_br | c_tl | c_tr)&f == f
+	local c_bl=fget(mget(x1,y3))
+	local c_bm=fget(mget(x2,y3))
+	local c_br=fget(mget(x3,y3))
+
+	return (c_tl | c_tm | c_tr | c_ml | c_mr | c_bl | c_bm | c_br)&f == f
+end
+
+function get_collisions_x(x,y,dx,w,h,f)
+	local delta=0
+	local signx = sign(dx)
+	x=round(x)
+	dx = round(dx)
+
+	for d = 0,dx,signx do
+		if collide_map(x+d,y,w,h,f) then
+			break
+		end
+		delta = d
+	end
+	return delta
+end
+
+function get_collisions_y(x,y,dy,w,h,f)
+	local delta=0
+	local signy = sign(dy)
+	y=round(y)
+	dy = round(dy)
+
+
+	for d = 0,dy,signy do
+		if collide_map(x,y+d,w,h,f) then
+			break
+		end
+		delta = d
+	end
+ return	delta
+end
+
+--state machine
+statemachine = {}
+
+function statemachine:new()
+	local sm = {
+		-- properties
+		states = {},
+
+		-- methods
+		update = function(self, ...)
+			self.state:update(...)
+		end,
+
+		draw = function(self, ...)
+			self.state:draw(...)
+		end,
+
+		goto_state = function(self, name, ...)
+			self.state:on_exit(...)
+			self.state = self.states[name]
+			self.state:on_enter(...)
+		end,
+
+		add_state = function(self, state)
+			self.states[state.name] = state
+		end,
+	}
+	setmetatable(sm, statemachine)
+	return sm
+end
+
+-- states
+state = {
+	__tostring=function(self)
+		return "<state: "..self.name..">"
+	end
+}
+function state:new(name)
+	local s = {
+		name = name,
+		on_enter = function() end,
+		on_exit = function() end,
+		update = function() end,
+		draw = function() end
+	}
+	setmetatable(s, state)
+	return s
+end
+
+-->8
+--player helpers
+
+function move_player_x(plr, delta)
+	--calc collusion
+	local posx, posy = plr.pos.x, plr.pos.y
+	local collision = collide_map(posx,posy,plr.width,plr.height,nil,delta)
+	if collision then
+		delta = get_collisions_x(posx, posy, delta, plr.width, plr.height)
+	end
+	
+	--update pos
+	plr.pos.x += delta
+
+	--flip x
+	if delta != 0 then
+		plr.flipx = delta < 0
+	end
+
+	return delta
+end
+
+function move_player_y(plr, delta)
+	--calc collusion
+	local posx, posy = plr.pos.x, plr.pos.y
+	local collision = collide_map(posx,posy,plr.width,plr.height,nil,nil,delta)
+	if collision then
+		delta = get_collisions_y(posx, posy, delta, plr.width, plr.height)
+	end
+	
+	--update pos
+	plr.pos.y += delta
+	return delta
+end
+
+--player states
+
+run_state = state:new("run")
+run_state.maxspeed = 1.5
+run_state.sprite = {ticks=5, frames={1,2}}
+
+function run_state:update(plr, inputs)
+	--calc movement
+	move_player_x(plr, (inputs.right-inputs.left) *self.maxspeed)
+
+	if not plr:is_on_ground() then
+		plr:goto_state "fall"
+		return
+	end
+
+	if inputs.up > 0 then
+		plr:goto_state "jump"
+	end
+
+	if inputs.left - inputs.right == 0 then
+		plr:goto_state "idle"
+		return
+	end
+end
+
+idle_state = state:new("idle")
+idle_state.sprite = {ticks=1,frames={1}}
+
+function idle_state:update(plr, inputs)
+	if not plr:is_on_ground() then
+		plr:goto_state "fall"
+		return
+	end
+
+	if inputs.up > 0 then
+		plr:goto_state "jump"
+	end
+
+	if inputs.left - inputs.right != 0 then
+		plr:goto_state "run"
+		return
+	end
+end
+
+fall_state = state:new("fall")
+fall_state.sprite = {ticks=1, frames={2}}
+fall_state.maxfallspeed = 2
+fall_state.maxspeed = 1.5
+fall_state.grav = 0.15
+
+function fall_state:on_enter()
+	self.fallspeed = 0
+end
+
+function fall_state:update(plr, inputs)
+	self.fallspeed += self.grav
+	local delta = move_player_y(plr, self.fallspeed)
+	move_player_x(plr, (inputs.right-inputs.left) *self.maxspeed)
+
+	if plr:is_on_ground() or delta == 0 then
+		plr:goto_state "idle"
+	end
+end
+
+jump_state = state:new("jump")
+jump_state.sprite = {ticks=1, frames={2}}
+jump_state.speed = 1.5
+jump_state.lift = -4
+jump_state.max_time = 6
+jump_state.min_time = 3
+
+function jump_state:on_enter()
+	self.time = 0
+end
+
+function jump_state:update(plr, inputs)
+	local dy = move_player_y(plr, self.lift)
+	move_player_x(plr, (inputs.right-inputs.left) *self.speed)
+	self.time += 1
+	if (dy == 0 and self.time >= self.min_time)
+	or inputs.up != 1
+	or self.time >= self.max_time
+	then
+		plr:goto_state "fall"
+	end
+end
+
+--player class
+
+player={
+	__tostring=function(self)
+		return "<player>"
+	end
+}
+
+function player:new(x,y)
+	local p={}
+	setmetatable(p,player)
+	--constructor
+	p.pos=vector:new(x,y)
+	local sm=statemachine:new()
+	sm:add_state(run_state)
+	sm:add_state(idle_state)
+	sm:add_state(fall_state)
+	sm:add_state(jump_state)
+	sm.state = idle_state
+	p.sm = sm
+
+
+	p.width=8 --pixel width
+	p.height=8 --pixel height
+	p.flipx=false
+	
+	p.curframe=1
+	p.animtick=0
+	
+	--methods
+	function p:draw()
+		local a=self:sprite()
+		if self.curframe < 1 then
+			print(self.curframe)
+		end
+		spr(a.frames[self.curframe],
+		self.pos.x,
+		self.pos.y,
+		self.width/8,
+		self.height/8,
+		self.flipx,
+		false)
+
+		self.sm:draw(self)
+	end
+
+	function p:update()
+		local inputs = {
+			left=btn(⬅️) and 1 or 0,
+			right=btn(➡️) and 1 or 0,
+			up=btn(⬆️) and 1 or 0,
+			down=btn(⬇️) and 1 or 0,
+			x=btn(X),
+			o=btn(O)
+		}
+		
+		self.sm.state:update(self, inputs)
+		
+		--update anim
+		local a = self:sprite()
+		self.animtick-=1
+		if self.animtick <= 0 then
+			self.curframe+=1
+			if self.curframe > #a.frames then
+				self.curframe=1
+			end
+			self.animtick=a.ticks
+		end
+	end
+
+	function p:state()
+		return self.sm.state
+	end
+	
+	function p:sprite()
+		return self.sm.state.sprite
+	end
+
+	function p:goto_state(state, ...)
+		self.curframe = 1
+		self.animtick = 0
+		self.sm:goto_state(state, self, ...)
+	end
+
+	function p:is_on_ground()
+		return collide_map(self.pos.x,self.pos.y,self.width,self.height,nil,0,1)
+	end
+
+	--end class
+	return p
+end
+
+function player_jump_update(self, pressed)
+  self.is_pressed=false
+  if pressed then
+    if not self.is_held then
+      self.is_pressed=true
+    end
+    self.is_held=true
+    self.ticks_down+=1
+  else
+    self.is_held=false
+    self.ticks_down=0
+  end
 end
 
 -->8
 --math
-
-function sign(x)
-	return x/abs(x)
-end
 
 --vectors
 vector = {
@@ -395,7 +509,7 @@ __map__
 1000000000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1000000010101010000010101010001010001000000000000000000000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1000000010101010101010101010001010001000000000000000000000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000010000000000000000000001010001010101010101010101010100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000010000000000000000000001010000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
