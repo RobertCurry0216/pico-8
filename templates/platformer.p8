@@ -21,6 +21,7 @@ function _draw()
 	debug.state = p:state()
 	debug.cpu = stat(1)
   draw_debug()
+
 end
 
 -->8
@@ -120,6 +121,7 @@ function get_collisions_y(x,y,dy,w,h,f)
 	local signy = sign(dy)
 	y=round(y)
 	dy = round(dy)
+
 
 	for d = 0,dy,signy do
 		if collide_map(x,y+d,w,h,f) then
@@ -413,71 +415,63 @@ end
 --vectors
 vector = {
   __tostring = function(self)
-		return "<"..self.x..":"..self.y..":"..self.z..">"
+		return "<"..self.x..":"..self.y..">"
   end,
   __add = function(self, other)
-    local v = vector:new()
-    v.x = self.x + other.x
-    v.y = self.y + other.y
-    v.z = self.z + other.z
-    return v
+    return vector:new(
+    	self.x + other.x,
+    	self.y + other.y
+		)
   end,
   __sub = function(self, other)
-    local v = vector:new()
-    v.x = self.x - other.x
-    v.y = self.y - other.y
-    v.z = self.z - other.z
-    return v
+    return vector:new(
+    	self.x - other.x,
+    	self.y - other.y
+		)
   end,
   __mul = function(self, other)
-    local v = vector:new()
-    v.x = self.x * other
-    v.y = self.y * other
-    v.z = self.z * other
-    return v
+    return vector:new(
+    	self.x * other,
+    	self.y * other
+		)
   end,
   __div = function(self, other)
-    local v = vector:new()
-    v.x = self.x / other
-    v.y = self.y / other
-    v.z = self.z / other
-    return v
+    return vector:new(
+    	self.x / other,
+    	self.y / other
+		)
   end,
   __len = function(self)
-    return sqrt(self.x*self.x + self.y*self.y + self.z*self.z)
+    return sqrt(self.x*self.x + self.y*self.y)
   end
 }
 
-function vector:new(x, y, z)
+function vector:new(x, y)
   --constructor
   local v = {}
   setmetatable(v, vector)
   v.x = x or 0
   v.y = y or 0
-  v.z = z or 0
 
   --methods
   function v:copy()
-    return vector:new(self.x, self.y, self.z)
+    return vector:new(self.x, self.y)
   end
 
   function v:dot(other)
-	  return (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
+	  return self.x*other.x + self.y*other.y
   end
 
   function v:cross(other)
-    local v = vector:new()
-    v.x = (self.y * other.z) - (self.z * other.y)
-    v.y = (self.z * other.x) - (self.x * other.z)
-    v.z = (self.x * other.y) - (self.y * other.x)
-    return v
+    return self.x*other.y - self.y*other.x
   end
 
   function v:norm()
-  	if #self==0 then 
+		local l = #self
+  	if l==0 then 
   		return self:copy()
    end
-   return self/#self
+   return self/l
   end
 
   return v
