@@ -1,30 +1,35 @@
 {
 	"files": [
 		{
-			"path": "templates/topdown.p8",
+			"path": "templates/platformer.p8",
 			"bookmarks": [
 				{
-					"line": 3,
-					"column": 6,
-					"label": ""
-				},
-				{
-					"line": 18,
-					"column": 8,
-					"label": ""
-				},
-				{
-					"line": 128,
+					"line": 50,
 					"column": 7,
 					"label": ""
 				},
 				{
-					"line": 172,
+					"line": 74,
 					"column": 19,
 					"label": ""
 				},
 				{
-					"line": 193,
+					"line": 132,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 216,
+					"column": 15,
+					"label": ""
+				},
+				{
+					"line": 303,
+					"column": 15,
+					"label": ""
+				},
+				{
+					"line": 410,
 					"column": 6,
 					"label": ""
 				}
