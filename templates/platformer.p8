@@ -143,12 +143,29 @@ function get_collisions_y(x,y,dy,w,h,f)
  return	delta
 end
 
-function edge_bump(plr, dy)
+function edge_bump_vert(plr, dy)
 	local dx = plr.pos.x - (round(plr.pos.x / 8) * 8)
 	debug.dx = dx
 	debug.x = plr.pos.x
 	if not plr_collide_map(plr,-dx,dy) then
 		plr.pos.x -= dx
+	end
+end
+
+function edge_bump_horiz(plr, dy)
+	local dx = plr.pos.x - (round(plr.pos.x / 8) * 8)
+	debug.dx = dx
+	debug.x = plr.pos.x
+	if not plr_collide_map(plr,-dx,dy) then
+		plr.pos.x -= dx
+	end
+end
+
+function bump_out(plr)
+	if plr_collide_map(plr, 0, 0) then
+		local dx = plr.pos.x - (round(plr.pos.x / 8) * 8)
+		local dy = plr.pos.y - (round(plr.pos.y / 8) * 8)
+
 	end
 end
 
@@ -296,6 +313,7 @@ fall_state.coyote = 5
 function fall_state:on_enter(plr, initial_speed, coyote)
 	self.fallspeed = initial_speed or 0
 	self.coyote_time = coyote and self.coyote or 0
+	self.jump_buffer = 0
 end
 
 function fall_state:update(plr, inputs)
@@ -304,8 +322,17 @@ function fall_state:update(plr, inputs)
 	local delta = move_player_y(plr, self.fallspeed)
 	move_player_x(plr, get_dx(inputs)*self.maxspeed)
 
+	self.jump_buffer -= 1
+	if inputs.up_p then
+		self.jump_buffer = 5
+	end
+
 	if plr:collide_under() then
-		plr:goto_state "idle"
+		if self.jump_buffer > 0 then
+			plr:goto_state "jump"
+		else
+			plr:goto_state "idle"
+		end
 	end
 
 	if self.coyote_time > 0 and inputs.up_p then
@@ -328,7 +355,7 @@ end
 
 function jump_state:update(plr, inputs)
 	if plr:collide_over() then
-		edge_bump(plr, self.lift)
+		edge_bump_vert(plr, self.lift)
 	end
 	local dy = move_player_y(plr, self.lift)
 	move_player_x(plr, get_dx(inputs)*self.speed)
