@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 32
+version 35
 __lua__
 --main
 #include debug.lua 
@@ -362,7 +362,7 @@ jump_state.sprite = {ticks=4, frames={3,4,5,6}}
 jump_state.speed = 2
 jump_state.lift = -4
 jump_state.max_time = 6
-jump_state.min_time = 6
+jump_state.min_time = 3
 
 function jump_state:on_enter()
 	self.time = 0
