@@ -4,33 +4,43 @@
 			"path": "templates/platformer.p8",
 			"bookmarks": [
 				{
-					"line": 50,
-					"column": 7,
+					"line": 3,
+					"column": 6,
 					"label": ""
 				},
 				{
-					"line": 74,
-					"column": 19,
-					"label": ""
-				},
-				{
-					"line": 132,
+					"line": 56,
 					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 216,
-					"column": 15,
+					"line": 84,
+					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 303,
-					"column": 15,
+					"line": 140,
+					"column": 0,
 					"label": ""
 				},
 				{
-					"line": 410,
+					"line": 226,
+					"column": 3,
+					"label": ""
+				},
+				{
+					"line": 333,
+					"column": 14,
+					"label": ""
+				},
+				{
+					"line": 435,
 					"column": 6,
+					"label": ""
+				},
+				{
+					"line": 504,
+					"column": 0,
 					"label": ""
 				}
 			]

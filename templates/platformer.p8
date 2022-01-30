@@ -5,12 +5,15 @@ __lua__
 #include debug.lua 
 
 function _init()
+	--never repeat button presses
+	poke(0X5F5C, 255)
 	p=player:new(64,64)
 	cam={x=0, y=0}
 end
 
 function _update()
 	p:update()
+	particles:update()
 end
 
 function _draw()
@@ -18,10 +21,12 @@ function _draw()
 	map(cam.x,cam.y,0,0)
 	camera(0,0)
 	p:draw()
+	particles:draw()
+
+	-- debugging
 	debug.state = p:state()
 	debug.cpu = stat(1)
   draw_debug()
-
 end
 
 -->8
@@ -58,6 +63,10 @@ function sign(v)
 	return round(v/abs(v))
 end
 
+function xor(a, b)
+	return a != b
+end
+
 function darken(c,v)
 	return tonum(split(darkenshademap[c+1])[v])
 end
@@ -87,18 +96,15 @@ function collide_map(x,y,w,h,f,dx,dy)
 	local y2=((y+dy+(h/2))/8)+cam.y
 	local y3=((y+dy+h-1)/8)+cam.y
 
-	local c_tl=fget(mget(x1,y1))
-	local c_tm=fget(mget(x2,y1))
-	local c_tr=fget(mget(x3,y1))
-
-	local c_ml=fget(mget(x1,y2))
-	local c_mr=fget(mget(x3,y2))
-
-	local c_bl=fget(mget(x1,y3))
-	local c_bm=fget(mget(x2,y3))
-	local c_br=fget(mget(x3,y3))
-
-	return (c_tl | c_tm | c_tr | c_ml | c_mr | c_bl | c_bm | c_br)&f == f
+	return (
+		fget(mget(x1,y1)) |
+		fget(mget(x2,y1)) |
+		fget(mget(x3,y1)) |
+		fget(mget(x1,y2)) |
+		fget(mget(x3,y2)) |
+		fget(mget(x1,y3)) |
+		fget(mget(x2,y3)) |
+		fget(mget(x3,y3)))&f == f
 end
 
 function get_collisions_x(x,y,dx,w,h,f)
@@ -189,11 +195,12 @@ function move_player_x(plr, delta)
 	local posx, posy = plr.pos.x, plr.pos.y
 	local collision = collide_map(posx,posy,plr.width,plr.height,nil,delta)
 	if collision then
+		posx = round(posx)
 		delta = get_collisions_x(posx, posy, delta, plr.width, plr.height)
 	end
 	
 	--update pos
-	plr.pos.x += delta
+	plr.pos.x = posx + delta
 
 	--flip x
 	if delta != 0 then
@@ -208,78 +215,93 @@ function move_player_y(plr, delta)
 	local posx, posy = plr.pos.x, plr.pos.y
 	local collision = collide_map(posx,posy,plr.width,plr.height,nil,nil,delta)
 	if collision then
+		posy = round(posy)
 		delta = get_collisions_y(posx, posy, delta, plr.width, plr.height)
 	end
 	
 	--update pos
-	plr.pos.y += delta
+	plr.pos.y = posy + delta
 	return delta
 end
 
 --player states
 
+-- run state
 run_state = state:new("run")
 run_state.maxspeed = 1.5
 run_state.sprite = {ticks=5, frames={1,2}}
 
 function run_state:update(plr, inputs)
 	--calc movement
-	move_player_x(plr, (inputs.right-inputs.left) *self.maxspeed)
+	move_player_x(plr, get_dx(inputs) *self.maxspeed)
 
 	if not plr:is_on_ground() then
-		plr:goto_state "fall"
+		plr:goto_state("fall", nil, true)
 		return
 	end
 
-	if inputs.up > 0 then
+	if inputs.up_p then
 		plr:goto_state "jump"
 	end
 
-	if inputs.left - inputs.right == 0 then
+	if not xor(inputs.left, inputs.right) then
 		plr:goto_state "idle"
 		return
 	end
 end
 
+-- idle state
 idle_state = state:new("idle")
 idle_state.sprite = {ticks=1,frames={1}}
 
 function idle_state:update(plr, inputs)
 	if not plr:is_on_ground() then
-		plr:goto_state "fall"
+		plr:goto_state("fall", nil, true)
 		return
 	end
 
-	if inputs.up > 0 then
+	if inputs.up_p then
 		plr:goto_state "jump"
 	end
 
-	if inputs.left - inputs.right != 0 then
+	if xor(inputs.left, inputs.right) then
 		plr:goto_state "run"
 		return
 	end
 end
 
+
+-- fall state
 fall_state = state:new("fall")
 fall_state.sprite = {ticks=1, frames={2}}
-fall_state.maxfallspeed = 2
+fall_state.maxfallspeed = 2.5
 fall_state.maxspeed = 1.5
-fall_state.grav = 0.15
+fall_state.grav = 0.2
+fall_state.coyote = 5
 
-function fall_state:on_enter()
-	self.fallspeed = 0
+function fall_state:on_enter(plr, initial_speed, coyote)
+	self.fallspeed = initial_speed or 0
+	self.coyote_time = coyote and self.coyote or 0
+	debug.coyote = self.coyote_time
 end
 
 function fall_state:update(plr, inputs)
-	self.fallspeed += self.grav
+	self.coyote_time -= 1
+	self.fallspeed = min(self.fallspeed+self.grav, self.maxfallspeed)
 	local delta = move_player_y(plr, self.fallspeed)
-	move_player_x(plr, (inputs.right-inputs.left) *self.maxspeed)
+	move_player_x(plr, get_dx(inputs)*self.maxspeed)
 
-	if plr:is_on_ground() or delta == 0 then
+	if plr:is_on_ground() then
 		plr:goto_state "idle"
+	end
+
+	if self.coyote_time > 0 and inputs.up_p then
+		plr:goto_state "jump"
 	end
 end
 
+
+-- jump state
 jump_state = state:new("jump")
 jump_state.sprite = {ticks=1, frames={2}}
 jump_state.speed = 1.5
@@ -293,14 +315,20 @@ end
 
 function jump_state:update(plr, inputs)
 	local dy = move_player_y(plr, self.lift)
-	move_player_x(plr, (inputs.right-inputs.left) *self.speed)
+	move_player_x(plr, get_dx(inputs)*self.speed)
 	self.time += 1
 	if (dy == 0 and self.time >= self.min_time)
-	or inputs.up != 1
+	or not inputs.up
 	or self.time >= self.max_time
 	then
-		plr:goto_state "fall"
+		plr:goto_state("fall", -1, false)
 	end
+end
+
+--player helpers
+
+function get_dx(inputs)
+	return (inputs.right and 1 or 0) - (inputs.left and 1 or 0)
 end
 
 --player class
@@ -351,12 +379,18 @@ function player:new(x,y)
 
 	function p:update()
 		local inputs = {
-			left=btn(⬅️) and 1 or 0,
-			right=btn(➡️) and 1 or 0,
-			up=btn(⬆️) and 1 or 0,
-			down=btn(⬇️) and 1 or 0,
+			left=btn(⬅️),
+			right=btn(➡️),
+			up=btn(⬆️),
+			down=btn(⬇️),
 			x=btn(X),
-			o=btn(O)
+			o=btn(O),
+			left_p=btnp(⬅️),
+			right_p=btnp(➡️),
+			up_p=btnp(⬆️),
+			down_p=btnp(⬇️),
+			x_p=btnp(X),
+			o_p=btnp(O),
 		}
 		
 		self.sm.state:update(self, inputs)
@@ -371,6 +405,9 @@ function player:new(x,y)
 			end
 			self.animtick=a.ticks
 		end
+
+		print(tostr(self.pos.x))
+		particles:spawn("dot", self.pos.x+4, self.pos.y+4)
 	end
 
 	function p:state()
@@ -393,20 +430,6 @@ function player:new(x,y)
 
 	--end class
 	return p
-end
-
-function player_jump_update(self, pressed)
-  self.is_pressed=false
-  if pressed then
-    if not self.is_held then
-      self.is_pressed=true
-    end
-    self.is_held=true
-    self.ticks_down+=1
-  else
-    self.is_held=false
-    self.ticks_down=0
-  end
 end
 
 -->8
@@ -476,6 +499,59 @@ function vector:new(x, y)
 
   return v
 end
+
+
+-->8
+--particles
+
+particles = {}
+
+function particles:add_type(handler)
+	self[handler.name] = handler
+end
+
+function particles:spawn(name, ...)
+	local p = self[name].spawn(...)
+	add(self, p)
+end
+
+function particles:update()
+	for i=#self,1,-1 do
+		local p = self[i]
+		self[p.name].update(p)
+
+		if p.dead then
+			deli(self, i)
+		end
+	end
+end
+
+function particles:draw()
+	for p in all(self) do
+		self[p.name].draw(p)
+	end
+end
+
+--dot particle
+dot_particle = {
+	name="dot",
+	spawn=function(x,y)
+		return {name="dot", x=x, y=y, life=20, dead=false}
+	end,
+
+	update=function(p)
+		p.life -= 1
+		p.dead = p.life <= 0
+	end,
+
+	draw=function(p)
+		pset(p.x, p.y, 7)
+	end
+}
+
+particles:add_type(dot_particle)
+
+
 __gfx__
 00000000000000000009900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000990000099990000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -503,12 +579,12 @@ __map__
 1000000000000000000000000000001010000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000010101010101010001010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000000000000001010001000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1000101000000000000000000000001010001000101010101010101000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1000101000000000100000000000001010001000101010101010101000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000001000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1010101010100000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1000000000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1000000000000000000000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1000000000000000100000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1000000000000000101000000000001010001000100000000000001000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000010101010101010101010001010001000000000000000000000100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000010000000000000000000001010001010101010101010101010100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000010000000000000000000001010000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
