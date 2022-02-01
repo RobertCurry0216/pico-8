@@ -4,48 +4,163 @@
 			"path": "templates/platformer.p8",
 			"bookmarks": [
 				{
-					"line": 3,
-					"column": 6,
+					"line": 291,
+					"column": 9,
+					"label": ""
+				}
+			]
+		},
+		{
+			"path": "pico-8_manual.txt",
+			"bookmarks": [
+				{
+					"line": 44,
+					"column": 19,
 					"label": ""
 				},
 				{
-					"line": 76,
-					"column": 0,
+					"line": 138,
+					"column": 12,
 					"label": ""
 				},
 				{
-					"line": 104,
-					"column": 0,
+					"line": 169,
+					"column": 12,
 					"label": ""
 				},
 				{
-					"line": 185,
-					"column": 0,
+					"line": 237,
+					"column": 12,
 					"label": ""
 				},
 				{
-					"line": 234,
-					"column": 7,
+					"line": 370,
+					"column": 17,
 					"label": ""
 				},
 				{
-					"line": 310,
-					"column": 16,
-					"label": ""
-				},
-				{
-					"line": 346,
+					"line": 377,
 					"column": 15,
 					"label": ""
 				},
 				{
-					"line": 470,
+					"line": 424,
+					"column": 17,
+					"label": ""
+				},
+				{
+					"line": 507,
+					"column": 14,
+					"label": ""
+				},
+				{
+					"line": 539,
+					"column": 14,
+					"label": ""
+				},
+				{
+					"line": 630,
+					"column": 16,
+					"label": ""
+				},
+				{
+					"line": 691,
+					"column": 16,
+					"label": ""
+				},
+				{
+					"line": 839,
+					"column": 16,
+					"label": ""
+				},
+				{
+					"line": 999,
+					"column": 28,
+					"label": ""
+				},
+				{
+					"line": 1076,
+					"column": 19,
+					"label": ""
+				},
+				{
+					"line": 1094,
+					"column": 6,
+					"label": ""
+				},
+				{
+					"line": 1106,
+					"column": 17,
+					"label": ""
+				},
+				{
+					"line": 1121,
+					"column": 10,
+					"label": ""
+				},
+				{
+					"line": 1340,
+					"column": 12,
+					"label": ""
+				},
+				{
+					"line": 1680,
+					"column": 19,
+					"label": ""
+				},
+				{
+					"line": 1769,
+					"column": 9,
+					"label": ""
+				},
+				{
+					"line": 1814,
+					"column": 0,
+					"label": ""
+				},
+				{
+					"line": 1859,
+					"column": 7,
+					"label": ""
+				},
+				{
+					"line": 1938,
+					"column": 10,
+					"label": ""
+				},
+				{
+					"line": 2066,
 					"column": 8,
 					"label": ""
 				},
 				{
-					"line": 629,
-					"column": 0,
+					"line": 2224,
+					"column": 21,
+					"label": ""
+				},
+				{
+					"line": 2250,
+					"column": 31,
+					"label": ""
+				},
+				{
+					"line": 2432,
+					"column": 8,
+					"label": ""
+				},
+				{
+					"line": 2530,
+					"column": 28,
+					"label": ""
+				},
+				{
+					"line": 2560,
+					"column": 27,
+					"label": ""
+				},
+				{
+					"line": 2682,
+					"column": 36,
 					"label": ""
 				}
 			]

@@ -6,10 +6,12 @@ __lua__
 
 function _init()
 	--never repeat button presses
-	poke(0X5F5C, 255)
+	poke(0X5f5c, 255)
 	p=player:new(64,64)
-  pickups:add(coin(32,32))
+  load_map_items()
 	cam={x=0, y=0}
+	
+	register("coin_collected", add_coin)
 end
 
 function _update()
@@ -19,19 +21,22 @@ function _update()
 		right=btn(➡️),
 		up=btn(⬆️),
 		down=btn(⬇️),
-		x=btn(X),
-		o=btn(O),
+		x=btn(❎),
+		o=btn(🅾️),
 		left_p=btnp(⬅️),
 		right_p=btnp(➡️),
 		up_p=btnp(⬆️),
 		down_p=btnp(⬇️),
-		x_p=btnp(X),
-		o_p=btnp(O),
+		x_p=btnp(❎),
+		o_p=btnp(🅾️),
+		jump=(btn(⬆️) or btn(❎)),
+		jump_p=(btnp(⬆️) or btnp(❎)),
 	}
 
 	p:update()
   pickups:update()
 	particles:update()
+	timer:update()
 end
 
 function _draw()
@@ -42,12 +47,11 @@ function _draw()
   pickups:draw()
 	particles:draw()
 
-	timer:update()
+	draw_ui()
 
-	-- debugging
-	debug.state = p:state()
-	camera()
- draw_debug()
+	--debugging
+	--debug.state = p:state()
+	draw_debug()
 end
 
 -->8
@@ -72,21 +76,31 @@ class={
 
 --sprite helpers
 function sprite(t, ...)
-  return {curframe=1, animticks=0, ticks=t, frames={...}}
+  return {ticks=t, frames={...}}
 end
 
-function draw_sprite(s, x, y, w, h, f)
-  --draw
-  spr(s.frames[s.curframe],x,y,w or 1,h or 1,f or false)
-
-  --update
-  s.animticks-=1
+function update_sprite(s)
+	s.animticks-=1
   if s.animticks <= 0 then
     s.curframe += 1
     if s.curframe > #s.frames then
       s.curframe = 1
     end
     s.animticks =  s.ticks
+  end
+end
+
+function draw_sprite(s, x, y, w, h, f)
+	--draw
+  spr(s.sprite.frames[s.curframe],x,y,w or 1,h or 1,f or false)
+	--tick
+	s.animticks-=1
+  if s.animticks <= 0 then
+    s.curframe += 1
+    if s.curframe > #s.sprite.frames then
+      s.curframe = 1
+    end
+    s.animticks =  s.sprite.ticks
   end
 end
 
@@ -136,6 +150,24 @@ function join(a,b)
     add(t,v)
   end
   return t
+end
+
+--mapping helpers
+
+
+function load_map_items()
+	local map_items = {
+		[17]=coin
+	}
+	for x=1,128 do
+		for y=1,32 do
+			local pu = map_items[mget(x,y)]
+			if pu then
+				pickups:add(pu(x*8, y*8))
+				mset(x,y,0)
+			end
+		end
+	end
 end
 
 --collision helpers
@@ -257,6 +289,34 @@ function statemachine:new()
 	return sm
 end
 
+--signals
+signals = {}
+
+function register(signal_name, callback)
+  if not signals[signal_name] then signals[signal_name] = {} end
+  add(signals[signal_name], callback)
+end
+
+function emit(signal_name, ...)
+  if not signals[signal_name] then return end
+  
+  for i=1, #signals[signal_name] do
+    signals[signal_name][i](...)
+  end
+end
+
+function unregister(signal_name, callback)
+  if not signals[signal_name] then return end
+
+  for i=1, #signals[signal_name] do
+    if signals[signal_name][i] == callback then deli(signals[signal_name], i) end
+  end
+end
+
+function clear_signal(signal_name)
+  signals[signal_name] = nil
+end
+
 -- states
 state = {
 	__tostring=function(self)
@@ -340,6 +400,20 @@ function timer.new()
 	return setmetatable({functions={}}, {__index=timer})
 end
 
+-->8
+--ui
+
+score = 0
+
+function draw_ui()
+	camera()
+	print("score: "..tostr(score), 4, 4, 7)
+end
+
+function add_coin()
+	score += 1
+end
+
 
 -->8
 --player helpers
@@ -394,7 +468,7 @@ function run_state:update(plr)
 		return
 	end
 
-	if inputs.up_p then
+	if inputs.jump_p then
 		plr:goto_state "jump"
 	end
 
@@ -418,7 +492,7 @@ function idle_state:update(plr)
 		return
 	end
 
-	if inputs.up_p then
+	if inputs.jump_p then
 		plr:goto_state "jump"
 	end
 
@@ -450,7 +524,7 @@ function fall_state:update(plr)
 	move_player_x(plr, get_dx()*self.maxspeed)
 
 	self.jump_buffer -= 1
-	if inputs.up_p then
+	if inputs.jump_p then
 		self.jump_buffer = 5
 	end
 
@@ -462,7 +536,7 @@ function fall_state:update(plr)
 		end
 	end
 
-	if self.coyote_time > 0 and inputs.up_p then
+	if self.coyote_time > 0 and inputs.jump_p then
 		plr:goto_state "jump"
 	end
 end
@@ -489,7 +563,7 @@ function jump_state:update(plr)
 	move_player_x(plr, get_dx()*self.speed)
 	self.time += 1
 
-	if (self.time >= self.min_time and not inputs.up)
+	if (self.time >= self.min_time and not inputs.jump)
 	or dy == 0
 	or self.time >= self.max_time
 	then
@@ -695,7 +769,7 @@ end
 particles:add_type({
 	name="dot",
 	spawn=function(store, x,y)
-		add(store,  {name="dot", x=x, y=y, life=20})
+		add(store, {name="dot", x=x, y=y, life=20})
 	end,
 
 	update=function(p)
@@ -721,6 +795,30 @@ particles:add_type({
 
 	draw=function(p)
 		circfill(p.x, p.y, 10, 7)
+	end
+})
+
+particles:add_type({
+	name="line",
+	spawn=function(store, x, y, dir)
+		add(store, {name="line", pos=vector:new(x,y), dir=vector:new(cos(dir), sin(dir)), life=8})
+	end,
+	update=function(p)
+		p.pos += p.dir
+		p.life -= 1
+	end,
+	draw=function(p)
+		local d = p.pos + (p.dir*3)
+		line(p.pos.x, p.pos.y, d.x, d.y, 7)
+	end
+})
+
+particles:add_type({
+	name="sparkle",
+	spawn=function(store,x,y)
+		for i=1,6 do
+			particles:spawn("line",x,y,i/6)
+		end
 	end
 })
 
@@ -750,6 +848,8 @@ pickup = class:extend({col=12, width=8, height=8})
 
 function pickup:new(x, y)
   self.pos = vector:new(x,y)
+	self.curframe=1
+	self.animticks=0
 end
 
 function pickup:collide_plr()
@@ -760,16 +860,23 @@ function pickup:collide_plr()
 end
 
 function pickup:update()
-  self.dead = self:collide_plr()
+  if self:collide_plr() and not self.dead then
+		self.dead = true
+		self:destroy()
+	end
 end
 
+function pickup:destroy() end
+
 function pickup:draw()
-  draw_sprite(self.sprite, self.pos.x, self.pos.y)
+  draw_sprite(self, self.pos.x, self.pos.y)
 end
 
 coin=pickup:extend({sprite=sprite(5,17,18,19,18,17)})
-
-
+function coin:destroy()
+	emit("coin_collected")
+	particles:spawn("sparkle", self.pos.x+4, self.pos.y+4)
+end
 
 __gfx__
 00000000000000000009900000000000900000000000000900000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -793,7 +900,7 @@ __gff__
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 1010101010101010101010101010101010101010101010101010101010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-1000000000000000000000001000000000111111111111111111111111000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+1011000000000000000000001000000000111111111111111111111111000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000111111110000000000001010101010101010101010101010100010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000000000000001010000000000011111111000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 1000000000000000000010101010101010110000000000000000000010101010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
