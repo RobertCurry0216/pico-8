@@ -1,7 +1,28 @@
 pico-8 cartridge // http://www.pico-8.com
 version 35
 __lua__
---main
+--main <=============================================
+
+-- [x] state machine system
+-- [x] basic collision detection
+-- [x] basic platforming controls (moving/jumping)
+-- [x] improve jumping
+-- [x] coyote time
+-- [x] edge bump
+-- [x] sprite animation system
+-- [x] particles
+-- [x] pickups/coins
+-- [ ] enemies
+-- [ ] hazzards/spikes
+-- [ ] improve camera following
+-- [ ] jump through platforms
+-- [ ] wall jump
+-- [ ] moving platforms
+-- [ ] double jump
+-- [ ] pushable blocks
+-- [ ] acceleration
+
+
 #include debug.lua 
 
 function _init()
@@ -19,16 +40,16 @@ function _update()
 	inputs = {
 		left=btn(⬅️),
 		right=btn(➡️),
-		up=btn(⬆️),
-		down=btn(⬇️),
-		x=btn(❎),
-		o=btn(🅾️),
-		left_p=btnp(⬅️),
-		right_p=btnp(➡️),
-		up_p=btnp(⬆️),
-		down_p=btnp(⬇️),
-		x_p=btnp(❎),
-		o_p=btnp(🅾️),
+		-- up=btn(⬆️),
+		-- down=btn(⬇️),
+		-- x=btn(❎),
+		-- o=btn(🅾️),
+		-- left_p=btnp(⬅️),
+		-- right_p=btnp(➡️),
+		-- up_p=btnp(⬆️),
+		-- down_p=btnp(⬇️),
+		-- x_p=btnp(❎),
+		-- o_p=btnp(🅾️),
 		jump=(btn(⬆️) or btn(❎)),
 		jump_p=(btnp(⬆️) or btnp(❎)),
 	}
@@ -55,9 +76,9 @@ function _draw()
 end
 
 -->8
---util
+--util <=============================================
 
--- class
+--class
 class={
 	extend = function (self, subtype)
 	subtype = subtype or {}
@@ -74,7 +95,7 @@ class={
  new = function() end,
 }
 
---sprite helpers
+--sprite helpers <=============================================
 function sprite(t, ...)
   return {ticks=t, frames={...}}
 end
@@ -104,7 +125,7 @@ function draw_sprite(s, x, y, w, h, f)
   end
 end
 
---constants
+--constants <=============================================
 inf = 32767
 
 darkenshademap = {
@@ -126,7 +147,7 @@ darkenshademap = {
 		"15,9,4,2,1,0",
 	}
 
---utils
+--utils <=============================================
 function _nothing_() end
 
 function round(v)
@@ -152,9 +173,7 @@ function join(a,b)
   return t
 end
 
---mapping helpers
-
-
+--mapping helpers <=============================================
 function load_map_items()
 	local map_items = {
 		[17]=coin
@@ -170,7 +189,7 @@ function load_map_items()
 	end
 end
 
---collision helpers
+--collision helpers <=============================================
 function aabb(x1,y1,w1,h1, x2,y2,w2,h2)
   return x1 < x2+w2
   and x2 < x1+w1
@@ -258,7 +277,7 @@ function bump_out(plr)
 	end
 end
 
---state machine
+--state machine <=============================================
 statemachine = {}
 
 function statemachine:new()
@@ -289,7 +308,7 @@ function statemachine:new()
 	return sm
 end
 
---signals
+--signals <=============================================
 signals = {}
 
 function register(signal_name, callback)
@@ -317,7 +336,6 @@ function clear_signal(signal_name)
   signals[signal_name] = nil
 end
 
--- states
 state = {
 	__tostring=function(self)
 		return "<state: "..self.name..">"
@@ -328,7 +346,7 @@ function state:new(name)
 	return setmetatable({name = name}, state)
 end
 
---timer
+--timer <=============================================
 timer = {functions = {}}
 setmetatable(timer, {__index=timer})
 
@@ -401,7 +419,7 @@ function timer.new()
 end
 
 -->8
---ui
+--ui <=============================================
 
 score = 0
 
@@ -416,7 +434,7 @@ end
 
 
 -->8
---player helpers
+--player helpers <=============================================
 
 function move_player_x(plr, delta)
 	--calc collusion
@@ -452,7 +470,7 @@ function move_player_y(plr, delta)
 	return delta
 end
 
---player states
+--player states <=============================================
 
 -- run state
 run_state = state:new "run"
@@ -577,7 +595,7 @@ function get_dx()
 	return (inputs.right and 1 or 0) - (inputs.left and 1 or 0)
 end
 
---player class
+--player class <=============================================
 
 player={
 	__tostring=function(self)
@@ -602,10 +620,10 @@ function player:new(x,y)
 	p.width=8 --pixel width
 	p.height=8 --pixel height
 	p.flipx=false
-	
+
 	p.curframe=1
 	p.animtick=0
-	
+
 	--methods
 	function p:draw()
 		local a=self:sprite()
@@ -625,7 +643,7 @@ function player:new(x,y)
 
 	function p:update()
 		self.sm.state:update(self)
-		
+
 		--update anim
 		local a = self:sprite()
 		self.animtick-=1
@@ -667,7 +685,7 @@ function player:new(x,y)
 end
 
 -->8
---math
+--math <=============================================
 
 --vectors
 vector = {
@@ -736,7 +754,7 @@ end
 
 
 -->8
---particles
+--particles <=============================================
 
 particles = {}
 
@@ -781,23 +799,6 @@ particles:add_type({
 	end
 })
 
-
---big dot particle
-particles:add_type({
-	name="big_dot",
-	spawn=function(store, x,y)
-		add(store, {name="big_dot", x=x, y=y, life=15})
-	end,
-
-	update=function(p)
-		p.life -= 1
-	end,
-
-	draw=function(p)
-		circfill(p.x, p.y, 10, 7)
-	end
-})
-
 particles:add_type({
 	name="line",
 	spawn=function(store, x, y, dir)
@@ -823,7 +824,7 @@ particles:add_type({
 })
 
 -->8
---pickups
+--pickups <=============================================
 pickups = {}
 function pickups:add(pu)
   add(self, pu)
@@ -877,6 +878,12 @@ function coin:destroy()
 	emit("coin_collected")
 	particles:spawn("sparkle", self.pos.x+4, self.pos.y+4)
 end
+
+
+-->8
+--enemies <=============================================
+enemy = class:extend()
+
 
 __gfx__
 00000000000000000009900000000000900000000000000900000000000000000000000000000000000000000000000000000000000000000000000000000000
