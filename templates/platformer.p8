@@ -76,9 +76,7 @@ function _draw()
 end
 
 -->8
---util <=============================================
-
---class
+--class <=============================================
 class={
 	extend = function (self, subtype)
 	subtype = subtype or {}
@@ -221,60 +219,88 @@ function collide_map(x,y,w,h,f,dx,dy)
 		fget(mget(x3,y3)))&f == f
 end
 
-function plr_collide_map(plr, dx, dy)
-	return collide_map(plr.pos.x,plr.pos.y,plr.width,plr.height,nil,dx,dy) 
+--collider class <=============================================
+collider=class:extend({width=8, height=8})
+function collider:new(actor)
+  self.actor = actor
 end
 
-function get_collisions_x(x,y,dx,w,h,f)
-	local delta=0
-	local signx = sgn(dx)
-	x=round(x)
-	dx = round(dx)
+function collider:collide_map(dx, dy, f)
+  local pos = self.actor.pos
+  return collide_map(pos.x, pos.y, self.width, self.height, f, dx, dy)
+end
+
+function collider:push_x(dx, f) --> new_x, delta
+  local delta, signx = 0, sgn(dx)
+  local x, y, w, h = self.actor.pos.x, self.actor.pos.y, self.width, self.height
+	dx=round(dx)
 
 	for d = 0,dx,signx do
-		if collide_map(x+d,y,w,h,f) then
-			break
+		if collide_map(round(x)+d,y,w,h,f) then
+			return round(x)+delta, delta
 		end
 		delta = d
 	end
-	return delta
+	return x+dx, dx
 end
 
-function get_collisions_y(x,y,dy,w,h,f)
-	local delta=0
-	local signy = sgn(dy)
-	y=round(y)
-	dy = round(dy)
-
+function collider:push_y(dy, f) --> new_y, delta
+  local delta, signy = 0, sgn(dy)
+  local x, y, w, h = self.actor.pos.x, self.actor.pos.y, self.width, self.height
+	dy=round(dy)
 
 	for d = 0,dy,signy do
-		if collide_map(x,y+d,w,h,f) then
-			break
+		if collide_map(x,round(y)+d,w,h,f) then
+			return round(y)+delta, delta
 		end
 		delta = d
 	end
- return	delta
+	return y+dy, dy
 end
 
-function edge_bump_vert(plr, dy)
-	local dx = plr.pos.x - (round(plr.pos.x / 8) * 8)
-	if not plr_collide_map(plr,-dx,dy) then
-		plr.pos.x -= dx
+function collider:bump_x(dy)
+  dy = dy or 0
+  local dx = (round(self.actor.pos.x / 8) * 8) - self.actor.pos.x
+	if not self:collide_map(dx,dy) then
+		self.actor.pos.x -= dx
 	end
 end
 
-function edge_bump_horiz(plr, dy)
-	local dx = plr.pos.x - (round(plr.pos.x / 8) * 8)
-	if not plr_collide_map(plr,-dx,dy) then
-		plr.pos.x -= dx
+function collider:bump_y(dx)
+  dx = dx or 0
+  local dy = (round(self.actor.pos.y / 8) * 8) - self.actor.pos.y
+	if not self:collide_map(dx,dy) then
+		self.actor.pos.y -= dy
 	end
 end
 
-function bump_out(plr)
-	if plr_collide_map(plr, 0, 0) then
-		edge_bump_vert(plr, 0, 0)
-		edge_bump_horiz(plr, 0, 0)
+function collider:bump_out()
+  if self:collide_map() then
+    self:bump_x()
+    self:bump_y()
+  end
+end
+
+function collider:move_x(dx)
+  local new_x = self.actor.pos.x + dx
+	if self:collide_map(dx, 0) then
+		new_x, dx = self:push_x(dx)
 	end
+
+	self.actor.pos.x = new_x
+
+	return dx
+end
+
+function collider:move_y(dy)
+  local new_y = self.actor.pos.y + dy
+	if self:collide_map(0, dy) then
+		new_y, dy = self:push_y(dy)
+	end
+
+	self.actor.pos.y = new_y
+
+	return dy
 end
 
 --state machine <=============================================
@@ -479,9 +505,9 @@ run_state.sprite = {ticks=5, frames={1,2}}
 
 function run_state:update(plr)
 	--calc movement
-	move_player_x(plr, get_dx() *self.maxspeed)
+	plr.collider:move_x(get_dx()*self.maxspeed)
 
-	if not plr:collide_under() then
+	if not plr.collider:collide_map(0, 1) then
 		plr:goto_state("fall", nil, true)
 		return
 	end
@@ -501,11 +527,11 @@ idle_state = state:new "idle"
 idle_state.sprite = {ticks=1,frames={1}}
 
 function idle_state:on_enter(plr)
-	bump_out(plr)
+	plr.collider:bump_out()
 end
 
 function idle_state:update(plr)
-	if not plr:collide_under() then
+	if not plr.collider:collide_map(0, 1) then
 		plr:goto_state("fall", nil, true)
 		return
 	end
@@ -538,15 +564,15 @@ end
 function fall_state:update(plr)
 	self.coyote_time -= 1
 	self.fallspeed = min(self.fallspeed+self.grav, self.maxfallspeed)
-	local delta = move_player_y(plr, self.fallspeed)
-	move_player_x(plr, get_dx()*self.maxspeed)
+	local delta = plr.collider:move_y(self.fallspeed)
+	plr.collider:move_x(get_dx()*self.maxspeed)
 
 	self.jump_buffer -= 1
 	if inputs.jump_p then
 		self.jump_buffer = 5
 	end
 
-	if plr:collide_under() then
+	if plr.collider:collide_map(0,1) then
 		if self.jump_buffer > 0 then
 			plr:goto_state "jump"
 		else
@@ -574,11 +600,11 @@ function jump_state:on_enter(plr)
 end
 
 function jump_state:update(plr)
-	if plr:collide_over() then
-		edge_bump_vert(plr, self.lift)
+	if plr.collider:collide_map(0,-1) then
+    plr.collider:bump_x(self.lift)
 	end
-	local dy = move_player_y(plr, self.lift)
-	move_player_x(plr, get_dx()*self.speed)
+	local dy = plr.collider:move_y(self.lift)
+	plr.collider:move_x(get_dx()*self.speed)
 	self.time += 1
 
 	if (self.time >= self.min_time and not inputs.jump)
@@ -617,8 +643,7 @@ function player:new(x,y)
 	p.sm = sm
 
 
-	p.width=8 --pixel width
-	p.height=8 --pixel height
+	p.collider = collider(p)
 	p.flipx=false
 
 	p.curframe=1
@@ -661,7 +686,7 @@ function player:new(x,y)
 	function p:state()
 		return self.sm.state
 	end
-	
+
 	function p:sprite()
 		return self.sm.state.sprite
 	end
@@ -856,7 +881,7 @@ end
 function pickup:collide_plr()
   return aabb(
     self.pos.x,self.pos.y,self.width,self.height,
-    p.pos.x,p.pos.y,p.width,p.height
+    p.pos.x,p.pos.y,p.collider.width,p.collider.height
   )
 end
 
