@@ -262,7 +262,7 @@ function collider:bump_x(dy)
   dy = dy or 0
   local dx = (round(self.actor.pos.x / 8) * 8) - self.actor.pos.x
 	if not self:collide_map(dx,dy) then
-		self.actor.pos.x -= dx
+		self.actor.pos.x += dx
 	end
 end
 
@@ -270,7 +270,7 @@ function collider:bump_y(dx)
   dx = dx or 0
   local dy = (round(self.actor.pos.y / 8) * 8) - self.actor.pos.y
 	if not self:collide_map(dx,dy) then
-		self.actor.pos.y -= dy
+		self.actor.pos.y += dy
 	end
 end
 
@@ -462,40 +462,6 @@ end
 -->8
 --player helpers <=============================================
 
-function move_player_x(plr, delta)
-	--calc collusion
-	local posx, posy = plr.pos.x, plr.pos.y
-	local collision = collide_map(posx,posy,plr.width,plr.height,nil,delta)
-	if collision then
-		posx = round(posx)
-		delta = get_collisions_x(posx, posy, delta, plr.width, plr.height)
-	end
-	
-	--update pos
-	plr.pos.x = posx + delta
-
-	--flip x
-	if delta != 0 then
-		plr.flipx = delta < 0
-	end
-
-	return delta
-end
-
-function move_player_y(plr, delta)
-	--calc collusion
-	local posx, posy = plr.pos.x, plr.pos.y
-	local collision = collide_map(posx,posy,plr.width,plr.height,nil,nil,delta)
-	if collision then
-		posy = round(posy)
-		delta = get_collisions_y(plr.pos.x, posy, delta, plr.width, plr.height)
-	end
-	
-	--update pos
-	plr.pos.y = posy + delta
-	return delta
-end
-
 --player states <=============================================
 
 -- run state
@@ -505,7 +471,8 @@ run_state.sprite = {ticks=5, frames={1,2}}
 
 function run_state:update(plr)
 	--calc movement
-	plr.collider:move_x(get_dx()*self.maxspeed)
+	local dx = plr.collider:move_x(get_dx()*self.maxspeed)
+  if (dx != 0) plr.flipx = dx < 0
 
 	if not plr.collider:collide_map(0, 1) then
 		plr:goto_state("fall", nil, true)
@@ -604,7 +571,8 @@ function jump_state:update(plr)
     plr.collider:bump_x(self.lift)
 	end
 	local dy = plr.collider:move_y(self.lift)
-	plr.collider:move_x(get_dx()*self.speed)
+	local dx = plr.collider:move_x(get_dx()*self.speed)
+  if (dx != 0) plr.flipx = dx < 0
 	self.time += 1
 
 	if (self.time >= self.min_time and not inputs.jump)
@@ -658,8 +626,8 @@ function player:new(x,y)
 		spr(a.frames[self.curframe],
 		self.pos.x,
 		self.pos.y,
-		self.width/8,
-		self.height/8,
+		self.collider.width/8,
+		self.collider.height/8,
 		self.flipx,
 		false)
 
