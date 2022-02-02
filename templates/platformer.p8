@@ -98,17 +98,6 @@ function sprite(t, ...)
   return {ticks=t, frames={...}}
 end
 
-function update_sprite(s)
-	s.animticks-=1
-  if s.animticks <= 0 then
-    s.curframe += 1
-    if s.curframe > #s.frames then
-      s.curframe = 1
-    end
-    s.animticks =  s.ticks
-  end
-end
-
 function draw_sprite(s, x, y, w, h, f)
 	--draw
   spr(s.sprite.frames[s.curframe],x,y,w or 1,h or 1,f or false)
@@ -306,7 +295,8 @@ end
 --state machine <=============================================
 statemachine = {}
 
-function statemachine:new()
+function statemachine:new(...)
+  local states = {...}
 	local sm = {
 		-- properties
 		states = {},
@@ -325,12 +315,13 @@ function statemachine:new()
 			self.state = self.states[name]
 			self.state:on_enter(...)
 		end,
-
-		add_state = function(self, state)
-			self.states[state.name] = state
-		end,
 	}
 	setmetatable(sm, statemachine)
+  for s in all(states) do
+    sm.states[s.name] = s
+  end
+
+  sm.state = states[1]
 	return sm
 end
 
@@ -597,13 +588,12 @@ function player:new(x,y)
   self.super.new(self, self)
 
 	self.pos=vector:new(x,y)
-	local sm=statemachine:new()
-	sm:add_state(run_state)
-	sm:add_state(idle_state)
-	sm:add_state(fall_state)
-	sm:add_state(jump_state)
-	sm.state = idle_state
-	self.sm = sm
+	self.sm = statemachine:new(
+    idle_state,
+    run_state,
+    fall_state,
+    jump_state
+  )
 
 	self.flipx=false
 	self.curframe=1
@@ -825,7 +815,7 @@ function pickups:draw()
   end
 end
 
-pickup = class:extend({col=12, width=8, height=8})
+pickup = class:extend({width=8, height=8})
 
 function pickup:new(x, y)
   self.pos = vector:new(x,y)
@@ -862,7 +852,7 @@ end
 
 -->8
 --enemies <=============================================
-enemy = class:extend()
+enemy = collider:extend()
 
 
 __gfx__
