@@ -4,8 +4,93 @@
 			"path": "templates/platformer.p8",
 			"bookmarks": [
 				{
-					"line": 291,
-					"column": 9,
+					"line": 3,
+					"column": 53,
+					"label": ""
+				},
+				{
+					"line": 78,
+					"column": 54,
+					"label": ""
+				},
+				{
+					"line": 95,
+					"column": 63,
+					"label": ""
+				},
+				{
+					"line": 114,
+					"column": 58,
+					"label": ""
+				},
+				{
+					"line": 136,
+					"column": 54,
+					"label": ""
+				},
+				{
+					"line": 162,
+					"column": 64,
+					"label": ""
+				},
+				{
+					"line": 196,
+					"column": 66,
+					"label": ""
+				},
+				{
+					"line": 228,
+					"column": 63,
+					"label": ""
+				},
+				{
+					"line": 312,
+					"column": 62,
+					"label": ""
+				},
+				{
+					"line": 345,
+					"column": 56,
+					"label": ""
+				},
+				{
+					"line": 383,
+					"column": 54,
+					"label": ""
+				},
+				{
+					"line": 456,
+					"column": 51,
+					"label": ""
+				},
+				{
+					"line": 471,
+					"column": 62,
+					"label": ""
+				},
+				{
+					"line": 596,
+					"column": 61,
+					"label": ""
+				},
+				{
+					"line": 675,
+					"column": 53,
+					"label": ""
+				},
+				{
+					"line": 744,
+					"column": 58,
+					"label": ""
+				},
+				{
+					"line": 814,
+					"column": 56,
+					"label": ""
+				},
+				{
+					"line": 851,
+					"column": 56,
 					"label": ""
 				}
 			]
