@@ -11,24 +11,83 @@ __lua__
 --25: game/round won
 --26: game over
 
+--data
+email_data = {
+	{from="BOSS", message=[[meeting tomorrow at 9am!!]]},
+}
+
+stats_data = {
+	time_wasted=0,
+	emails_sent=0,
+	msgs_sent=0,
+	work_done=0
+}
+
 -->8
 --main<===============================
 
 function _init()
-
+  computer = computer_screen()
 end
 
 
 function _update()
-
+	handle_inputs()
+  timer:update()
+  computer:update()
 end
 
 function _draw()
-
+  cls()
+  map()
+  computer:draw()
 end
 
 -->8
 --utils<===============================
+function _nothing_() end
+
+function join(strt, joiner)
+	local s = ""
+	for i, str in ipairs(strt) do
+		if i == 1 then
+			s = str
+		else 
+			s = s..joiner..str
+		end
+	end
+	return s
+end
+
+
+inputs = {}
+function handle_inputs()
+	inputs = {
+		up = btn(⬆️),
+		down = btn(⬇️),
+		up_p = btnp(⬆️),
+		down_p = btnp(⬇️),
+		select = btn(❎),
+		select_p = btnp(❎),
+	}
+
+	inputs.dy = tonum(inputs.down) - tonum(inputs.up)
+	inputs.dy_p = tonum(inputs.down_p) - tonum(inputs.up_p)
+end
+
+--font
+
+function resetfont()
+ memset(0x5600,0x0,2048)
+end
+
+--one font by thattomhall
+function set_big_font()
+	poke(0x5600,6,6,8)
+	poke4(0x5708,unpack(split"0x0606.0606,0x0006.0006,0x001b.1b1b,0x0000.0000,0x0a1f.0a00,0x0000.0a1f,0x0e03.1e0c,0x0006.0f18,0x0e18.1b1b,0x001b.1b03,0x0603.1e0c,0x000c.1e03,0x0006.0c0c,0x0000.0000,0x0606.060c,0x000c.0606,0x0c0c.0c06,0x0006.0c0c,0x1f0e.1b1b,0x001b.1b0e,0x0f06.0000,0x0000.0006,0x0000.0000,0x0003.0606,0x1f00.0000,0x0000.0000,0x0000.0000,0x0003.0300,0x0e1c.1818,0x0003.0307,0x1b1b.1b0e,0x000e.1b1b,0x0c0c.0e0c,0x001e.0c0c,0x0e18.1b0e,0x001f.0303,0x0c18.1b0e,0x000e.1b18,0x1e1b.1b1b,0x0018.1818,0x0f03.1b1f,0x000e.1b18,0x0f03.1b0e,0x000e.1b1b,0x0c18.1b1f,0x0006.0606,0x0e1b.1b0e,0x000e.1b1b,0x1e1b.1b0e,0x000e.1b18,0x0006.0600,0x0000.0606,0x0006.0600,0x0003.0606,0x0306.0c18,0x0018.0c06,0x001f.0000,0x0000.001f,0x180c.0603,0x0003.060c,0x0c18.1b0e,0x0006.0006,0x1b1f.1b0e,0x000e.030f,0x180e.0000,0x001e.1b1e,0x1b0f.0303,0x000f.1b1b,0x1b0e.0000,0x000e.1b03,0x1b1e.1818,0x001e.1b1b,0x1b0e.0000,0x001e.031f,0x0f03.1b0e,0x0003.0303,0x1b1e.0000,0x000f.181e,0x1b0f.0303,0x001b.1b1b,0x0607.0006,0x000f.0606,0x1c00.1800,0x000e.1b18,0x0f1b.0303,0x001b.0f07,0x0606.0607,0x000f.0606,0x1f0f.0000,0x001b.1f1f,0x1b0f.0000,0x001b.1b1b,0x1b0e.0000,0x000e.1b1b,0x1b0f.0000,0x0003.0f1b,0x1b1e.0000,0x0010.181e,0x1b0f.0000,0x0003.0303,0x031e.0000,0x000f.180e,0x060f.0600,0x000c.0606,0x1b1b.0000,0x001e.1b1b,0x1b1b.0000,0x0004.0e1f,0x1f1b.0000,0x0011.1b1f,0x0e1f.0000,0x001b.0e04,0x1b1b.0000,0x000f.181e,0x181f.0000,0x001f.060c,0x0606.060e,0x000e.0606,0x0e1c.1818,0x0003.0307,0x0c0c.0c0e,0x000e.0c0c,0x0000.1b0e,0x0000.0000,0x0000.0000,0x001f.0000,0x0018.0c06,0x0000.0000,0x1f1b.1b0e,0x001b.1b1b,0x0f1b.1b0f,0x000f.1b1b,0x0303.1b0e,0x000e.1b03,0x1b1b.1b0f,0x000f.1b1b,0x0f03.1b1f,0x001f.1b03,0x0f03.1b1f,0x0003.0303,0x1b03.1b0e,0x001e.1b1b,0x1f1b.1b1b,0x001b.1b1b,0x0606.060f,0x000f.0606,0x1818.181c,0x000e.1b18,0x070f.1b1b,0x001b.1b0f,0x0303.0303,0x001f.1b03,0x1f1f.1b11,0x001b.1b1b,0x1f1f.1b19,0x0013.1b1f,0x1b1b.1b0e,0x000e.1b1b,0x0f1b.1b0f,0x0003.0303,0x1b1b.1b0e,0x001e.0f1f,0x0f1b.1b0f,0x001b.1b1b,0x0e03.1b0e,0x000e.1b18,0x0606.061f,0x000c.0606,0x1b1b.1b1b,0x000e.1b1b,0x1b1b.1b1b,0x0004.0e1f,0x1f1b.1b1b,0x0011.1b1f,0x040e.1b1b,0x001b.1b0e,0x1e1b.1b1b,0x000e.1b18,0x0e18.1b1f,0x001f.1b03,0x0706.060c,0x000c.0606,0x0e1c.1818,0x0003.0307,0x1c0c.0c06,0x0006.0c0c,0x000c.1f16,0x0000.0000,0x0a15.0a15,0x0015.0a15"))
+end
+
+
 ---------------------------------------
 --class
 ---------------------------------------
@@ -126,7 +185,7 @@ end
 ---------------------------------------
 signals = {}
 
-function register(signal_name, callback)
+function subscribe(signal_name, callback)
   if not signals[signal_name] then signals[signal_name] = {} end
   add(signals[signal_name], callback)
 end
@@ -139,7 +198,7 @@ function emit(signal_name, ...)
   end
 end
 
-function unregister(signal_name, callback)
+function unsubscribe(signal_name, callback)
   if not signals[signal_name] then return end
 
   for i=1, #signals[signal_name] do
@@ -245,6 +304,312 @@ end
 function timer.new()
 	return setmetatable({functions={}}, {__index=timer})
 end
+
+-->8
+--computer_screen
+
+computer_screen = class:extend()
+
+function computer_screen:new()
+  self.statusbar = statusbar()
+  self.menu = menu()
+  self.screen = screen()
+end
+
+function computer_screen:update()
+  self.statusbar:update()
+  self.menu:update()
+  self.screen:update()
+end
+
+function computer_screen:draw()
+  self.statusbar:draw()
+  self.menu:draw()
+  self.screen:draw()
+end
+
+--status bar
+
+statusbar = class:extend()
+
+function statusbar:new()
+  self.mins = 30
+  self.hours = 8
+  timer:every(30, function()
+    self.mins +=1
+    if self.mins >= 60 then
+      self.mins = 0
+      self.hours += 1
+    end
+  end, 999999)
+end
+
+function statusbar:update() end
+
+function statusbar:draw()
+  clip(4,4,120,13)	
+	local y = 6
+
+	--time
+  local hours = self.hours > 9 and tostr(self.hours) or "0"..tostr(self.hours)
+  local mins = self.mins > 9 and tostr(self.mins) or "0"..tostr(self.mins)
+  print("5/02/22-"..hours..":"..mins, 70, y, 6)
+  line(0,15,127,15,13)
+  line(0,16,127,16,0)
+  clip()
+end
+
+--menu
+
+menu = class:extend()
+
+home_menu = {
+		["name"] = "HOME",
+    "EMAIL",
+		"MSGR",
+    "WORK",
+    "GAMES",
+    "PREFS",
+    "LOGOUT",
+    "POWER",
+  }
+
+settings_menu = {
+	["name"] = "PREFS",
+	"INPUTS",
+	"SOUND",
+	"STATS",
+	"HOME",
+}
+
+function menu:new()
+  self.items = home_menu
+	self.current = 1
+	self.sprite = sprite(15, 70, 118)
+	self.curframe = 1
+	self.animticks = 0
+
+	subscribe("menu_select", function(name)
+		if (name == "HOME") self.items = home_menu
+		if (name == "PREFS") self.items = settings_menu
+		self.current = 1
+	end)
+
+	subscribe("set_menu", function(items)
+		self.current = 0
+		self.items = items
+	end)
+end
+
+function menu:update()
+	self.current += inputs.dy_p
+	self.current = mid(1, self.current, #self.items)
+
+	if (inputs.select_p) emit("menu_select", self.items[self.current], self.current)
+end
+
+function menu:draw()
+  clip(4,16,28,84)
+	-- draw menu
+	local x, y = 5, 18
+	print(self.items.name, x, y, 6)
+	line(x+1, y+7, x+21, y+7, 13)
+	y+= 10
+
+	for i, item in ipairs(self.items) do
+		print(item, x, y, 6)
+		if i == self.current then
+			draw_sprite(self, x+20, y-1)
+		end
+		y+= 8
+	end
+
+	line(31,0,31,127, 0)
+  line(30,0,30,127, 13)
+  clip()
+end
+
+-->8
+--screen
+screen = class:extend()
+
+function screen:new()
+	self.sm = statemachine:new(
+		screen_home_state,
+		screen_email_state,
+		screen_msgr_state,
+		screen_work_state,
+		screen_games_state,
+		screen_logout_state,
+		screen_power_state,
+		screen_inputs_state,
+		screen_sound_state,
+		screen_stats_state
+	)
+
+	subscribe("menu_select", function(name)
+		if (name == "HOME") self.sm:goto_state "home"
+		if (name == "EMAIL") self.sm:goto_state "email"
+		if (name == "MSGR") self.sm:goto_state "msgr"
+		if (name == "WORK") self.sm:goto_state "work"
+		if (name == "GAMES") self.sm:goto_state "games"
+		if (name == "LOGOUT") self.sm:goto_state "logout"
+		if (name == "POWER") self.sm:goto_state "power"
+		if (name == "INPUTS") self.sm:goto_state "inputs"
+		if (name == "SOUND") self.sm:goto_state "sound"
+		if (name == "STATS") self.sm:goto_state "stats"
+		self.current = 1
+	end)
+
+end
+
+function screen:update()
+	self.sm:update(self)
+end
+
+function screen:draw()
+  clip(32,16,92,84)
+	self.sm:draw(self,32,16,92,84)
+  clip()
+end
+
+---------------------------------------
+--home state
+---------------------------------------
+screen_home_state = state:new "home"
+function screen_home_state:draw(obj, x, y, w, h)
+local s = [[we are excited for you
+to join our family!!
+
+please make good use
+of your time and be
+a valued employee]]
+	print("\^t\^wwelcome", x+18, y+10, 6)
+	print(s, x+2, y+28, 6)
+end
+
+---------------------------------------
+--email state
+---------------------------------------
+screen_email_state = state:new "email"
+function screen_email_state:on_enter(obj)
+	local emails = {}
+	for v in all(email_data) do
+		add(emails, v.from)
+	end
+	add(emails, "HOME")
+	emails.name = "EMAIL"
+	emit("set_menu", emails)
+end
+
+
+function screen_email_state:draw(obj, x, y, w, h)
+	print("email", x+35, y+35, 6)
+end
+
+---------------------------------------
+--msgr state
+---------------------------------------
+screen_msgr_state = state:new "msgr"
+function screen_msgr_state:on_enter(obj)
+
+end
+
+function screen_msgr_state:draw(obj, x, y, w, h)
+	print("msgr", x+35, y+35, 6)
+end
+
+---------------------------------------
+--work state
+---------------------------------------
+screen_work_state = state:new "work"
+function screen_work_state:on_enter(obj)
+
+end
+
+function screen_work_state:draw(obj, x, y, w, h)
+	print("work", x+35, y+35, 6)
+end
+
+---------------------------------------
+--games state
+---------------------------------------
+screen_games_state = state:new "games"
+function screen_games_state:on_enter(obj)
+
+end
+
+function screen_games_state:draw(obj, x, y, w, h)
+	print("games", x+35, y+35, 6)
+end
+
+---------------------------------------
+--logout state
+---------------------------------------
+screen_logout_state = state:new "logout"
+function screen_logout_state:on_enter(obj)
+
+end
+
+function screen_logout_state:draw(obj, x, y, w, h)
+	print("logout", x+35, y+35, 6)
+end
+
+---------------------------------------
+--power state
+---------------------------------------
+screen_power_state = state:new "power"
+function screen_power_state:on_enter(obj)
+
+end
+
+function screen_power_state:draw(obj, x, y, w, h)
+	print("power", x+35, y+35, 6)
+end
+
+---------------------------------------
+--inputs state
+---------------------------------------
+screen_inputs_state = state:new "inputs"
+function screen_inputs_state:on_enter(obj)
+
+end
+
+function screen_inputs_state:draw(obj, x, y, w, h)
+	print("inputs", x+35, y+35, 6)
+end
+
+---------------------------------------
+--sound state
+---------------------------------------
+screen_sound_state = state:new "sound"
+function screen_sound_state:on_enter(obj)
+
+end
+
+function screen_sound_state:draw(obj, x, y, w, h)
+	print("sound", x+35, y+35, 6)
+end
+
+---------------------------------------
+--stats state
+---------------------------------------
+screen_stats_state = state:new "stats"
+function screen_stats_state:on_enter(obj)
+
+end
+
+function screen_stats_state:draw(obj, x, y, w, h)
+	local x, y = x+2, y+4
+	for k,v in pairs(stats_data) do
+		local s = join(split(k, "_"), " ")
+		s = s.." "..sub("---------------> ", #s)..tostr(v)
+		print(s, x, y, 6)
+		y += 8
+	end
+end
+
+
 
 __gfx__
 00000000000000000900000000bb00000000000000000000000000000222220000000000000000440000000001111100011111000111110000249200bbb00bbb
@@ -388,8 +753,8 @@ __map__
 5051515151515151515151515151515200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 5051515151515151515151515151515200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 5051515151515151515151515151515200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-5051515151515151515151515151515200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 6061616161616161616161616161616200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 c000000000000000000000000000e0e100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 d000000000000000000000008c00f0f100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __sfx__
