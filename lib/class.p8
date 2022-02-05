@@ -1,7 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 35
 __lua__
--- class
+---------------------------------------
+--class
+---------------------------------------
 class={
 	extend = function (self, subtype)
 	 subtype = subtype or {}

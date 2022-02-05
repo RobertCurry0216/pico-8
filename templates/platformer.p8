@@ -351,6 +351,16 @@ function statemachine:new(...)
 	return sm
 end
 
+state = {
+	__tostring=function(self)
+		return "<state: "..self.name..">"
+	end,
+  __index=function() return _nothing_ end
+}
+function state:new(name)
+	return setmetatable({name = name}, state)
+end
+
 --signals <=============================================
 signals = {}
 
@@ -377,16 +387,6 @@ end
 
 function clear_signal(signal_name)
   signals[signal_name] = nil
-end
-
-state = {
-	__tostring=function(self)
-		return "<state: "..self.name..">"
-	end,
-  __index=function() return _nothing_ end
-}
-function state:new(name)
-	return setmetatable({name = name}, state)
 end
 
 --timer <=============================================

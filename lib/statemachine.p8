@@ -1,36 +1,38 @@
 pico-8 cartridge // http://www.pico-8.com
 version 35
 __lua__
+---------------------------------------
 --state machine
-statemachine = {}
+---------------------------------------
+statemachine = {
+	__index=function(self, key)
+		return self.state[key]
+	end
+}
 
-function statemachine:new()
-	return setmetatable({
+function statemachine:new(...)
+	local states = {...}
+	local sm = setmetatable({
 		-- properties
 		states = {},
 
 		-- methods
-		update = function(self, ...)
-			self.state:update(...)
-		end,
-
-		draw = function(self, ...)
-			self.state:draw(...)
-		end,
-
 		goto_state = function(self, name, ...)
 			self.state:on_exit(...)
 			self.state = self.states[name]
 			self.state:on_enter(...)
 		end,
-
-		add_state = function(self, state)
-			self.states[state.name] = state
-		end,
 	}, statemachine)
+
+  for s in all(states) do
+    sm.states[s.name] = s
+  end
+
+  sm.state = states[1]
+	return sm
 end
 
--- states
+--states
 state = {
 	__tostring=function(self)
 		return "<state: "..self.name..">"
@@ -43,6 +45,35 @@ function state:new(name)
 	return setmetatable({name = name}, state)
 end
 
+-->8
+--example
+state_a = state:new "a"
+
+function state_a:draw()
+	print("a")
+end
+
+state_b = state:new "b"
+
+function state_b:draw()
+	print("b")
+end
+
+function _init()
+	sm = statemachine:new(state_a, state_b)
+end
+
+function _draw()
+	if btnp(❎) then
+		sm:goto_state "b"
+	end
+	if btnp(🅾️) then
+		sm:goto_state "a"
+	end
+
+	cls()
+	sm:draw()
+end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
