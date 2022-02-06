@@ -11,9 +11,25 @@ __lua__
 --25: game/round won
 --26: game over
 
+#include debug.lua
+
+logs = {}
+
+function log(s)
+	add(logs, s)
+end
+
+function print_logs()
+	foreach(logs, print)
+end
+
+--constants
+text_col = 6
+line_col = 13
+
 --data
 email_data = {
-	{from="BOSS", message=[[meeting tomorrow at 9am!!]]},
+	{from="BOSS", message="meeting tomorrow\nat 9am!!", read=false},
 }
 
 stats_data = {
@@ -41,6 +57,8 @@ function _draw()
   cls()
   map()
   computer:draw()
+
+	draw_debug()
 end
 
 -->8
@@ -65,28 +83,21 @@ function handle_inputs()
 	inputs = {
 		up = btn(⬆️),
 		down = btn(⬇️),
+		left = btn(⬅️),
+		right = btn(➡️),
 		up_p = btnp(⬆️),
 		down_p = btnp(⬇️),
+		left_p = btnp(⬅️),
+		right_p = btnp(➡️),
 		select = btn(❎),
 		select_p = btnp(❎),
 	}
 
 	inputs.dy = tonum(inputs.down) - tonum(inputs.up)
+	inputs.dx = tonum(inputs.right) - tonum(inputs.left)
 	inputs.dy_p = tonum(inputs.down_p) - tonum(inputs.up_p)
+	inputs.dx_p = tonum(inputs.right_p) - tonum(inputs.left_p)
 end
-
---font
-
-function resetfont()
- memset(0x5600,0x0,2048)
-end
-
---one font by thattomhall
-function set_big_font()
-	poke(0x5600,6,6,8)
-	poke4(0x5708,unpack(split"0x0606.0606,0x0006.0006,0x001b.1b1b,0x0000.0000,0x0a1f.0a00,0x0000.0a1f,0x0e03.1e0c,0x0006.0f18,0x0e18.1b1b,0x001b.1b03,0x0603.1e0c,0x000c.1e03,0x0006.0c0c,0x0000.0000,0x0606.060c,0x000c.0606,0x0c0c.0c06,0x0006.0c0c,0x1f0e.1b1b,0x001b.1b0e,0x0f06.0000,0x0000.0006,0x0000.0000,0x0003.0606,0x1f00.0000,0x0000.0000,0x0000.0000,0x0003.0300,0x0e1c.1818,0x0003.0307,0x1b1b.1b0e,0x000e.1b1b,0x0c0c.0e0c,0x001e.0c0c,0x0e18.1b0e,0x001f.0303,0x0c18.1b0e,0x000e.1b18,0x1e1b.1b1b,0x0018.1818,0x0f03.1b1f,0x000e.1b18,0x0f03.1b0e,0x000e.1b1b,0x0c18.1b1f,0x0006.0606,0x0e1b.1b0e,0x000e.1b1b,0x1e1b.1b0e,0x000e.1b18,0x0006.0600,0x0000.0606,0x0006.0600,0x0003.0606,0x0306.0c18,0x0018.0c06,0x001f.0000,0x0000.001f,0x180c.0603,0x0003.060c,0x0c18.1b0e,0x0006.0006,0x1b1f.1b0e,0x000e.030f,0x180e.0000,0x001e.1b1e,0x1b0f.0303,0x000f.1b1b,0x1b0e.0000,0x000e.1b03,0x1b1e.1818,0x001e.1b1b,0x1b0e.0000,0x001e.031f,0x0f03.1b0e,0x0003.0303,0x1b1e.0000,0x000f.181e,0x1b0f.0303,0x001b.1b1b,0x0607.0006,0x000f.0606,0x1c00.1800,0x000e.1b18,0x0f1b.0303,0x001b.0f07,0x0606.0607,0x000f.0606,0x1f0f.0000,0x001b.1f1f,0x1b0f.0000,0x001b.1b1b,0x1b0e.0000,0x000e.1b1b,0x1b0f.0000,0x0003.0f1b,0x1b1e.0000,0x0010.181e,0x1b0f.0000,0x0003.0303,0x031e.0000,0x000f.180e,0x060f.0600,0x000c.0606,0x1b1b.0000,0x001e.1b1b,0x1b1b.0000,0x0004.0e1f,0x1f1b.0000,0x0011.1b1f,0x0e1f.0000,0x001b.0e04,0x1b1b.0000,0x000f.181e,0x181f.0000,0x001f.060c,0x0606.060e,0x000e.0606,0x0e1c.1818,0x0003.0307,0x0c0c.0c0e,0x000e.0c0c,0x0000.1b0e,0x0000.0000,0x0000.0000,0x001f.0000,0x0018.0c06,0x0000.0000,0x1f1b.1b0e,0x001b.1b1b,0x0f1b.1b0f,0x000f.1b1b,0x0303.1b0e,0x000e.1b03,0x1b1b.1b0f,0x000f.1b1b,0x0f03.1b1f,0x001f.1b03,0x0f03.1b1f,0x0003.0303,0x1b03.1b0e,0x001e.1b1b,0x1f1b.1b1b,0x001b.1b1b,0x0606.060f,0x000f.0606,0x1818.181c,0x000e.1b18,0x070f.1b1b,0x001b.1b0f,0x0303.0303,0x001f.1b03,0x1f1f.1b11,0x001b.1b1b,0x1f1f.1b19,0x0013.1b1f,0x1b1b.1b0e,0x000e.1b1b,0x0f1b.1b0f,0x0003.0303,0x1b1b.1b0e,0x001e.0f1f,0x0f1b.1b0f,0x001b.1b1b,0x0e03.1b0e,0x000e.1b18,0x0606.061f,0x000c.0606,0x1b1b.1b1b,0x000e.1b1b,0x1b1b.1b1b,0x0004.0e1f,0x1f1b.1b1b,0x0011.1b1f,0x040e.1b1b,0x001b.1b0e,0x1e1b.1b1b,0x000e.1b18,0x0e18.1b1f,0x001f.1b03,0x0706.060c,0x000c.0606,0x0e1c.1818,0x0003.0307,0x1c0c.0c06,0x0006.0c0c,0x000c.1f16,0x0000.0000,0x0a15.0a15,0x0015.0a15"))
-end
-
 
 ---------------------------------------
 --class
@@ -188,19 +199,24 @@ signals = {}
 function subscribe(signal_name, callback)
   if not signals[signal_name] then signals[signal_name] = {} end
   add(signals[signal_name], callback)
+	add(logs, "subscribe: "..signal_name)
+	return callback
 end
 
 function emit(signal_name, ...)
+	add(logs, signal_name)
   if not signals[signal_name] then return end
   
   for i=1, #signals[signal_name] do
-    signals[signal_name][i](...)
+		if signals[signal_name][i] then
+	    signals[signal_name][i](...)
+		end
   end
 end
 
 function unsubscribe(signal_name, callback)
   if not signals[signal_name] then return end
-
+	add(logs, "unsubscribe: "..signal_name)
   for i=1, #signals[signal_name] do
     if signals[signal_name][i] == callback then deli(signals[signal_name], i) end
   end
@@ -353,7 +369,7 @@ function statusbar:draw()
 	--time
   local hours = self.hours > 9 and tostr(self.hours) or "0"..tostr(self.hours)
   local mins = self.mins > 9 and tostr(self.mins) or "0"..tostr(self.mins)
-  print("5/02/22-"..hours..":"..mins, 70, y, 6)
+  print("5/02/22-"..hours..":"..mins, 70, y, text_col)
   line(0,15,127,15,13)
   line(0,16,127,16,0)
   clip()
@@ -388,16 +404,21 @@ function menu:new()
 	self.sprite = sprite(15, 70, 118)
 	self.curframe = 1
 	self.animticks = 0
+	self.active = true
 
 	subscribe("menu_select", function(name)
+		if (not self.active) return
 		if (name == "HOME") self.items = home_menu
 		if (name == "PREFS") self.items = settings_menu
-		self.current = 1
 	end)
 
 	subscribe("set_menu", function(items)
-		self.current = 0
+		self.current = 1
 		self.items = items
+	end)
+
+	subscribe("set_menu_active", function(active)
+		self.active = active
 	end)
 end
 
@@ -405,20 +426,24 @@ function menu:update()
 	self.current += inputs.dy_p
 	self.current = mid(1, self.current, #self.items)
 
-	if (inputs.select_p) emit("menu_select", self.items[self.current], self.current)
+	if inputs.select_p and self.active then
+		emit("menu_select", self.items[self.current], self.current)
+		inputs.select_p = false
+	end
 end
 
 function menu:draw()
   clip(4,16,28,84)
 	-- draw menu
 	local x, y = 5, 18
-	print(self.items.name, x, y, 6)
+	print(self.items.name, x, y, text_col)
 	line(x+1, y+7, x+21, y+7, 13)
 	y+= 10
 
+	color(self.active and text_col or line_col)
 	for i, item in ipairs(self.items) do
-		print(item, x, y, 6)
-		if i == self.current then
+		print(item, x, y)
+		if i == self.current and self.active then
 			draw_sprite(self, x+20, y-1)
 		end
 		y+= 8
@@ -484,8 +509,8 @@ to join our family!!
 please make good use
 of your time and be
 a valued employee]]
-	print("\^t\^wwelcome", x+18, y+10, 6)
-	print(s, x+2, y+28, 6)
+	print("\^t\^wwelcome", x+18, y+10, text_col)
+	print(s, x+2, y+28, text_col)
 end
 
 ---------------------------------------
@@ -493,6 +518,7 @@ end
 ---------------------------------------
 screen_email_state = state:new "email"
 function screen_email_state:on_enter(obj)
+	--set menu items
 	local emails = {}
 	for v in all(email_data) do
 		add(emails, v.from)
@@ -500,11 +526,71 @@ function screen_email_state:on_enter(obj)
 	add(emails, "HOME")
 	emails.name = "EMAIL"
 	emit("set_menu", emails)
+
+	self.email = false
+	self.handler = subscribe("menu_select", function(_, i)
+		if (i > #email_data) return
+		self.email = i
+		inputs.select_p = false
+		emit("set_menu_active", false)
+	end)
+
+	self.options = {"ignore", "reply"}
+	self.current = 1
+
+	self.sprite = sprite(15, 70, 118)
+	self.curframe = 1
+	self.animticks = 0
 end
 
+function screen_email_state:on_exit()
+	unsubscribe("menu_select", self.handler)
+	emit("set_menu_active", true)
+end
+
+function screen_email_state:update()
+	self.current += inputs.dx_p
+	self.current = mid(1, self.current, #self.options)
+	if inputs.select_p and self.email then
+		email_data[self.email].read = true
+		self.email = false
+		emit("set_menu_active", true)
+	end
+end
 
 function screen_email_state:draw(obj, x, y, w, h)
-	print("email", x+35, y+35, 6)
+	local tx = x + 2
+	local ty = y + 2
+	debug.email = self.email
+	if type(self.email) != "number" then
+		print("FROM:", tx, ty, text_col) ty+=8
+		print("CC:", tx, ty, text_col) ty+= 8
+		print("BCC:", tx, ty, text_col) ty+= 8
+		line(tx, ty, x+w, ty, line_col)
+		line(tx, ty+1, x+w, ty+1, 0)
+		return
+	end
+	local email = email_data[self.email]
+	if type(email) != "table" then stop(self.email) end
+	--print email
+	print("FROM:"..email.from, tx, ty, text_col) ty+=8
+	print("CC:", tx, ty, text_col) ty+= 8
+	print("BCC:", tx, ty, text_col) ty+= 8
+	line(tx, ty, x+w, ty, line_col)
+	line(tx, ty+1, x+w, ty+1, 0) ty+= 4
+	print(email.message, tx, ty, text_col)
+	
+	--print options
+	ty = y + h - 8
+	tx += 8
+	local options = email.read and {"back"} or {"ignore", "reply"}
+	for i, o in ipairs(options) do
+		print(o, tx, ty+1)
+		if i == self.current then
+			draw_sprite(self, tx+(#o * 4), ty)
+		end
+		tx += #o*4 + 8
+	end
 end
 
 ---------------------------------------
@@ -516,7 +602,7 @@ function screen_msgr_state:on_enter(obj)
 end
 
 function screen_msgr_state:draw(obj, x, y, w, h)
-	print("msgr", x+35, y+35, 6)
+	print("msgr", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -528,7 +614,7 @@ function screen_work_state:on_enter(obj)
 end
 
 function screen_work_state:draw(obj, x, y, w, h)
-	print("work", x+35, y+35, 6)
+	print("work", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -540,7 +626,7 @@ function screen_games_state:on_enter(obj)
 end
 
 function screen_games_state:draw(obj, x, y, w, h)
-	print("games", x+35, y+35, 6)
+	print("games", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -552,7 +638,7 @@ function screen_logout_state:on_enter(obj)
 end
 
 function screen_logout_state:draw(obj, x, y, w, h)
-	print("logout", x+35, y+35, 6)
+	print("logout", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -564,7 +650,7 @@ function screen_power_state:on_enter(obj)
 end
 
 function screen_power_state:draw(obj, x, y, w, h)
-	print("power", x+35, y+35, 6)
+	print("power", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -576,7 +662,7 @@ function screen_inputs_state:on_enter(obj)
 end
 
 function screen_inputs_state:draw(obj, x, y, w, h)
-	print("inputs", x+35, y+35, 6)
+	print("inputs", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -588,7 +674,7 @@ function screen_sound_state:on_enter(obj)
 end
 
 function screen_sound_state:draw(obj, x, y, w, h)
-	print("sound", x+35, y+35, 6)
+	print("sound", x+35, y+35, text_col)
 end
 
 ---------------------------------------
@@ -604,7 +690,7 @@ function screen_stats_state:draw(obj, x, y, w, h)
 	for k,v in pairs(stats_data) do
 		local s = join(split(k, "_"), " ")
 		s = s.." "..sub("---------------> ", #s)..tostr(v)
-		print(s, x, y, 6)
+		print(s, x, y, text_col)
 		y += 8
 	end
 end

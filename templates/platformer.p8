@@ -61,12 +61,18 @@ function _update()
 end
 
 function _draw()
-	cls(1)
-	camera(p.pos.x-64, 0)
+	cls()
+	before_draw()
+
+	rectfill(0,0,127,127,1)
+	cam = {x=p.pos.x-64, y=0}
+	camera(cam.x, cam.y)
 	map()
 	p:draw()
   map_items:draw()
 	particles:draw()
+
+	after_draw()
 
 	draw_ui()
 
@@ -474,6 +480,111 @@ end
 function add_coin()
 	score += 1
 end
+
+
+--lights
+--circle clipping v1
+-- function before_draw()
+-- 	circle = {x=p.pos.x+4-cam.x, y=p.pos.y+4, r=abs(sin(t()/10))*40}
+-- 	clip(circle.x-circle.r, circle.y-circle.r, circle.r*2, circle.r*2)
+-- end
+
+-- function after_draw()
+-- 	clip()
+-- 	camera()
+
+-- 	local y = flr(circle.y - circle.r) 
+-- 	for i=1,flr(circle.r*2) do
+-- 		local x = flr(i + circle.x - circle.r - 1)
+-- 		local j = (i / circle.r) - 1
+-- 		local y1 = (1-sqrt(1-j*j)) * circle.r
+-- 		line(x, y, x, y+y1, 0)
+-- 		line(x, y+(circle.r*2), x, y+(circle.r*2)-y1, 0)
+-- 	end
+-- end
+
+
+--circle clipping v2
+-- function before_draw()
+-- 	circle = {x=p.pos.x+4-cam.x, y=p.pos.y+4, r=abs(sin(t()/10))*40}
+-- end
+
+-- function after_draw()
+-- 	clip()
+-- 	camera()
+
+-- 	--remap the sprites to be the screen
+-- 	poke(0x5f54, 0x60)
+
+-- 	local cx1, cx2 = flr(circle.x-circle.r), flr(circle.x+circle.r)
+-- 	local cy1, cy2 = flr(circle.y-circle.r), flr(circle.y+circle.r)
+
+-- 	for i=0,15 do
+-- 		pal(i, darken(i, 5))
+-- 	end
+
+-- 	--pal({0,1,1,2,0,5,5,2,5,13,3,1,1,2,13})
+
+	
+-- 	sspr(0,0,128,cy1,0,0)
+-- 	sspr(0,cy2-1, 128, 127, 0, cy2-1)
+-- 	sspr(0, cy1, cx1, cy2-cy1-1, 0, cy1)
+-- 	sspr(cx2, cy1, 127, cy2-cy1-1, cx2, cy1)
+
+-- 	for i=1,ceil(circle.r*2) do
+-- 		local x = i + cx1 -1
+-- 		local j = (i / circle.r) - 1
+-- 		local d = (1-sqrt(1-j*j)) * circle.r
+-- 		ssline(x, cy1, x, cy1+d)
+-- 		ssline(x, cy2-d, x, cy2)
+-- 	end
+
+-- 	--reset
+-- 	poke(0x5f54, 0)
+-- 	pal()
+
+-- end
+
+-- function ssline(x1,y1,x2,y2)
+-- 	sspr(x1, y1, 1, y2-y1, x1, y1)
+-- end
+
+-- circle clipping v3
+function before_draw()
+	circle = {x=p.pos.x+4-cam.x, y=p.pos.y+4, r=abs(sin(t()/10))*40}
+end
+
+function after_draw()
+	clip()
+	camera()
+
+	local cx1, cx2 = flr(circle.x-circle.r), flr(circle.x+circle.r)
+	local cy1, cy2 = flr(circle.y-circle.r), flr(circle.y+circle.r)
+
+	--now drawing to sprite sheet
+	poke(0x5f55, 0)
+	cls(0)
+	--draw clipping mask
+	fillp(0b1010101010101010)
+	circfill(circle.x, circle.y, circle.r+5, 7)
+	fillp()
+	circfill(circle.x, circle.y, circle.r, 7)
+	--set white to transparent
+	palt(7, true)
+	palt(0, false)
+	--draw full sprite sheet to screen
+	poke(0x5f55, 0x60)
+	sspr(0,0,128,128,0,0)
+
+	--reset
+	poke(0x5f54, 0)
+	poke(0x5f55, 0x60)
+	reload(0,0,0x2000)
+	pal()
+	palt()
+
+end
+
 
 
 -->8
