@@ -16,7 +16,7 @@ __lua__
 logs = {}
 
 function log(s)
-	add(logs, s)
+	add(logs, "\# "..s)
 end
 
 function print_logs()
@@ -199,12 +199,10 @@ signals = {}
 function subscribe(signal_name, callback)
   if not signals[signal_name] then signals[signal_name] = {} end
   add(signals[signal_name], callback)
-	add(logs, "subscribe: "..signal_name)
 	return callback
 end
 
 function emit(signal_name, ...)
-	add(logs, signal_name)
   if not signals[signal_name] then return end
   
   for i=1, #signals[signal_name] do
@@ -216,7 +214,6 @@ end
 
 function unsubscribe(signal_name, callback)
   if not signals[signal_name] then return end
-	add(logs, "unsubscribe: "..signal_name)
   for i=1, #signals[signal_name] do
     if signals[signal_name][i] == callback then deli(signals[signal_name], i) end
   end
@@ -410,6 +407,7 @@ function menu:new()
 		if (not self.active) return
 		if (name == "HOME") self.items = home_menu
 		if (name == "PREFS") self.items = settings_menu
+		self.current = 1
 	end)
 
 	subscribe("set_menu", function(items)
@@ -427,8 +425,8 @@ function menu:update()
 	self.current = mid(1, self.current, #self.items)
 
 	if inputs.select_p and self.active then
-		emit("menu_select", self.items[self.current], self.current)
 		inputs.select_p = false
+		emit("menu_select", self.items[self.current], self.current)
 	end
 end
 
@@ -527,20 +525,22 @@ function screen_email_state:on_enter(obj)
 	emails.name = "EMAIL"
 	emit("set_menu", emails)
 
-	self.email = false
+	self.email = -1
 	self.handler = subscribe("menu_select", function(_, i)
-		if (i > #email_data) return
-		self.email = i
-		inputs.select_p = false
-		emit("set_menu_active", false)
+		self:on_menu_select(i)
 	end)
 
-	self.options = {"ignore", "reply"}
 	self.current = 1
 
 	self.sprite = sprite(15, 70, 118)
 	self.curframe = 1
 	self.animticks = 0
+end
+
+function screen_email_state:on_menu_select(i)
+	if (i > #email_data or i < 1) return
+	self.email = i
+	emit("set_menu_active", false)
 end
 
 function screen_email_state:on_exit()
@@ -549,11 +549,15 @@ function screen_email_state:on_exit()
 end
 
 function screen_email_state:update()
+	debug.email = self.email
+	if (self.email < 1) return
+
 	self.current += inputs.dx_p
-	self.current = mid(1, self.current, #self.options)
-	if inputs.select_p and self.email then
-		email_data[self.email].read = true
-		self.email = false
+	self.current = mid(1, self.current, 2)
+	if inputs.select_p then
+		--email_data[self.email].read = true
+		self.email = -1
+		inputs.select_p = false
 		emit("set_menu_active", true)
 	end
 end
@@ -561,8 +565,9 @@ end
 function screen_email_state:draw(obj, x, y, w, h)
 	local tx = x + 2
 	local ty = y + 2
-	debug.email = self.email
-	if type(self.email) != "number" then
+	--why the fuck does this happen?
+	if not computer.menu.active and self.email < 1 then self.email = 1 end
+	if self.email < 1 then
 		print("FROM:", tx, ty, text_col) ty+=8
 		print("CC:", tx, ty, text_col) ty+= 8
 		print("BCC:", tx, ty, text_col) ty+= 8
@@ -571,7 +576,6 @@ function screen_email_state:draw(obj, x, y, w, h)
 		return
 	end
 	local email = email_data[self.email]
-	if type(email) != "table" then stop(self.email) end
 	--print email
 	print("FROM:"..email.from, tx, ty, text_col) ty+=8
 	print("CC:", tx, ty, text_col) ty+= 8
