@@ -29,7 +29,7 @@ line_col = 13
 
 --data
 email_data = {
-	{from="BOSS", message="meeting tomorrow\nat 9am!!", read=false},
+	{from="HR", message="welcome\nyour password is 1234\nplease make sure you\nchange it", read=false},
 }
 
 stats_data = {
@@ -100,7 +100,7 @@ function handle_inputs()
 end
 
 ---------------------------------------
---class
+--class<===============================
 ---------------------------------------
 class={
 	extend = function (self, subtype)
@@ -118,7 +118,7 @@ class={
 }
 
 ---------------------------------------
---state machine
+--state machine<===============================
 ---------------------------------------
 statemachine = {
 	__index=function(self, key)
@@ -162,7 +162,7 @@ function state:new(name)
 end
 
 ---------------------------------------
---particles
+--particles<===============================
 ---------------------------------------
 particles = {}
 
@@ -192,7 +192,7 @@ function particles:draw()
 end
 
 ---------------------------------------
---signal
+--signal<===============================
 ---------------------------------------
 signals = {}
 
@@ -224,7 +224,7 @@ function clear_signal(signal_name)
 end
 
 ---------------------------------------
---anim sprite
+--anim sprite<===============================
 ---------------------------------------
 function sprite(t, ...)
   return {ticks=t, frames={...}}
@@ -245,7 +245,7 @@ function draw_sprite(s, x, y, w, h, f)
 end
 
 ---------------------------------------
---timer
+--timer<===============================
 ---------------------------------------
 timer = {functions = {}}
 setmetatable(timer, {__index=timer})
@@ -319,7 +319,7 @@ function timer.new()
 end
 
 -->8
---computer_screen
+--computer_screen<===============================
 
 computer_screen = class:extend()
 
@@ -341,7 +341,7 @@ function computer_screen:draw()
   self.screen:draw()
 end
 
---status bar
+--status bar<===============================
 
 statusbar = class:extend()
 
@@ -372,7 +372,7 @@ function statusbar:draw()
   clip()
 end
 
---menu
+--menu<===============================
 
 menu = class:extend()
 
@@ -453,7 +453,7 @@ function menu:draw()
 end
 
 -->8
---screen
+--screen<===============================
 screen = class:extend()
 
 function screen:new()
@@ -497,7 +497,7 @@ function screen:draw()
 end
 
 ---------------------------------------
---home state
+--home state<===============================
 ---------------------------------------
 screen_home_state = state:new "home"
 function screen_home_state:draw(obj, x, y, w, h)
@@ -512,18 +512,26 @@ a valued employee]]
 end
 
 ---------------------------------------
---email state
+--email state<===============================
 ---------------------------------------
-screen_email_state = state:new "email"
-function screen_email_state:on_enter(obj)
-	--set menu items
-	local emails = {}
+function set_email_menu()
+  local emails = {}
 	for v in all(email_data) do
-		add(emails, v.from)
+    if v.read then
+		  add(emails, "\fd"..v.from)
+    else
+		  add(emails, v.from)
+    end
 	end
 	add(emails, "HOME")
 	emails.name = "EMAIL"
 	emit("set_menu", emails)
+end
+
+screen_email_state = state:new "email"
+function screen_email_state:on_enter(obj)
+	--set menu items
+	set_email_menu()
 
 	self.email = -1
 	self.handler = subscribe("menu_select", function(_, i)
@@ -549,16 +557,17 @@ function screen_email_state:on_exit()
 end
 
 function screen_email_state:update()
-	debug.email = self.email
 	if (self.email < 1) return
-
 	self.current += inputs.dx_p
 	self.current = mid(1, self.current, 2)
 	if inputs.select_p then
-		--email_data[self.email].read = true
+		email_data[self.email].read = true
 		self.email = -1
 		inputs.select_p = false
+	  set_email_menu()
 		emit("set_menu_active", true)
+
+    if (self.current == 2) reply_email(self.email)
 	end
 end
 
@@ -597,8 +606,17 @@ function screen_email_state:draw(obj, x, y, w, h)
 	end
 end
 
+function send_email(email)
+  add(email_data, email)
+  emit "new_email"
+end
+
+function reply_email(email)
+
+end
+
 ---------------------------------------
---msgr state
+--msgr state<===============================
 ---------------------------------------
 screen_msgr_state = state:new "msgr"
 function screen_msgr_state:on_enter(obj)
@@ -610,7 +628,7 @@ function screen_msgr_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---work state
+--work state<===============================
 ---------------------------------------
 screen_work_state = state:new "work"
 function screen_work_state:on_enter(obj)
@@ -622,7 +640,7 @@ function screen_work_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---games state
+--games state<===============================
 ---------------------------------------
 screen_games_state = state:new "games"
 function screen_games_state:on_enter(obj)
@@ -634,7 +652,7 @@ function screen_games_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---logout state
+--logout state<===============================
 ---------------------------------------
 screen_logout_state = state:new "logout"
 function screen_logout_state:on_enter(obj)
@@ -646,7 +664,7 @@ function screen_logout_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---power state
+--power state<===============================
 ---------------------------------------
 screen_power_state = state:new "power"
 function screen_power_state:on_enter(obj)
@@ -658,7 +676,7 @@ function screen_power_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---inputs state
+--inputs state<===============================
 ---------------------------------------
 screen_inputs_state = state:new "inputs"
 function screen_inputs_state:on_enter(obj)
@@ -670,7 +688,7 @@ function screen_inputs_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---sound state
+--sound state<===============================
 ---------------------------------------
 screen_sound_state = state:new "sound"
 function screen_sound_state:on_enter(obj)
@@ -682,7 +700,7 @@ function screen_sound_state:draw(obj, x, y, w, h)
 end
 
 ---------------------------------------
---stats state
+--stats state<===============================
 ---------------------------------------
 screen_stats_state = state:new "stats"
 function screen_stats_state:on_enter(obj)
