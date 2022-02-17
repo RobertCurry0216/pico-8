@@ -833,35 +833,32 @@ vector = {
     return sqrt(self.x*self.x + self.y*self.y)
   end
 }
+--methods
+function vector:copy()
+  return vector:new(self.x, self.y)
+end
+
+function vector:dot(other)
+  return self.x*other.x + self.y*other.y
+end
+
+function vector:cross(other)
+  return self.x*other.y - self.y*other.x
+end
+
+function vector:norm()
+  local l = #self
+  if l==0 then 
+    return self:copy()
+  end
+  return self/l
+end
 
 function vector:new(x, y)
-  --constructor
   local v = {}
   setmetatable(v, vector)
   v.x = x or 0
   v.y = y or 0
-
-  --methods
-  function v:copy()
-    return vector:new(self.x, self.y)
-  end
-
-  function v:dot(other)
-	  return self.x*other.x + self.y*other.y
-  end
-
-  function v:cross(other)
-    return self.x*other.y - self.y*other.x
-  end
-
-  function v:norm()
-		local l = #self
-  	if l==0 then 
-  		return self:copy()
-   end
-   return self/l
-  end
-
   return v
 end
 

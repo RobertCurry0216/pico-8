@@ -1,47 +1,18 @@
 pico-8 cartridge // http://www.pico-8.com
 version 35
 __lua__
----------------------------------------
---class
----------------------------------------
-class={
-	extend = function (self, subtype)
-	 subtype = subtype or {}
- 	local meta={__index=subtype}
- 	return setmetatable(subtype,{
-  	__index = self,
-  	__call=function(self, ...)
- 		 local instance=setmetatable({},meta)
-  	 return instance,instance:new(...)
-   end
-  })
- end,
- new = function() end,
-}
+--libs
+#include class.lua
+#include particles.lua
+#include signal.lua
+#include statemachine.lua
+#include timer.lua
+#include vector.lua
 
--->8
+--classes
 
-animal = class:extend()
-function animal:new(name)
-	self.name = name
-end
-
-function animal:speak()
-	print(self.name)
-end
-
-cat = animal:extend()
-
-function cat:speak()
-	print("meow.."..self.name)
-end
-
-function _init()
-	a = animal("bob")
-	c = cat("larry")
-	a:speak()
-	c:speak()
-end
+--main
+#include main.lua
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
