@@ -2,14 +2,22 @@ pico-8 cartridge // http://www.pico-8.com
 version 35
 __lua__
 --libs
-#include class.lua
-#include particles.lua
-#include signal.lua
-#include statemachine.lua
-#include timer.lua
-#include vector.lua
+#include lib\class.lua
+#include lib\particles.lua
+#include lib\signal.lua
+#include lib\statemachine.lua
+#include lib\timer.lua
+#include lib\vector.lua
+#include lib\logger.lua
 
 --classes
+#include particals.lua
+
+--player
+#include player\state_rotate.lua
+#include player\state_thrust.lua
+#include player\state_fall.lua
+#include player\player.lua
 
 --main
 #include main.lua

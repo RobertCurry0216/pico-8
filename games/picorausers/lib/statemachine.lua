@@ -27,14 +27,12 @@ function statemachine:new(...)
 end
 
 --states
-state = {
-	__tostring=function(self)
-		return "<state: "..self.name..">"
-	end,
-  --[[provides an empty function for
-      any callback not overridden]]
-  __index=function() return function() end end
-}
-function state:new(name)
-	return setmetatable({name = name}, state)
+state = class:extend()
+state.name = "state"
+
+function state:on_enter() end
+function state:on_exit() end
+
+function state:__tostring() 
+	return "<state: "..self.name..">"
 end
