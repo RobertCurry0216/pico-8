@@ -13,7 +13,6 @@ function update_inputs()
   inputs.dx = tonum(inputs.right) - tonum(inputs.left)
 end
 
-
 function _init()
   plr = player(64,64)
 end
@@ -26,6 +25,10 @@ end
 
 function _draw()
   cls()
+  for i=0,7 do
+    rectfill(256*i,0,256+256*i,256,7+i)
+  end
+  camera(plr.pos.x-64, plr.pos.y-64)
   particles:draw()
   plr:draw()
 end

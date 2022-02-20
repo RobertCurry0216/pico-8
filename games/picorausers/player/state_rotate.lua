@@ -6,6 +6,11 @@ function state_rotate:update(p)
     p.heading:rotate(0.02*inputs.dx)
   end
   p.pos += p.momentum
+  if p.pos.x < 0 then
+    p.pos.x += width
+  elseif p.pos.x > width then
+    p.pos.x -= width
+  end
 end
 
 function state_rotate:draw(p)
