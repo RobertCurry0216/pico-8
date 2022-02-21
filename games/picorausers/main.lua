@@ -25,10 +25,32 @@ end
 
 function _draw()
   cls()
-  for i=0,7 do
-    rectfill(256*i,0,256+256*i,256,7+i)
+  -- draw background
+  rectfill(left_max,0,right_max,height,15)
+  for i=-1,16 do
+    spr(16,128*i,0,16,3)
   end
-  camera(plr.pos.x-64, plr.pos.y-64)
+  -- debug drawing
+  line(0,0,0,height, 8)
+  line(width,0,width,height, 11)
+
+  camera(plr.pos.x-64, mid(plr.pos.y-64, 0, height - 128))
   particles:draw()
   plr:draw()
+
+
+  -- draw water
+  local camy = mid(plr.pos.y-64, 0, height - 128)
+  local camx = plr.pos.x-64
+  local wl = water_line - camy
+  if wl < 128 then
+    --set GFX to use screen memory
+    poke(0x5f54, 0x60)
+    pal(15,12)
+    sspr(0, 0, 127, wl, camx, water_line, 127, wl, false, true)
+    pal()
+    --reset GFX
+    poke(0x5f54, 0x00)
+  end
+  line(left_max, water_line, right_max, water_line, 7)
 end

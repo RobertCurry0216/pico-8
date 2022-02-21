@@ -22,5 +22,14 @@ end
 function particles:draw()
 	for p in all(self) do
 		self[p.name].draw(p)
+    if p.x < 128 then
+      p.x+=width
+      self[p.name].draw(p)
+      p.x-=width
+    elseif width - p.x < 128 then
+      p.x-=width
+      self[p.name].draw(p)
+      p.x+=width
+    end
 	end
 end
