@@ -46,11 +46,13 @@ function _draw()
   if wl < 128 then
     --set GFX to use screen memory
     poke(0x5f54, 0x60)
-    pal(15,12)
-    sspr(0, 0, 127, wl, camx, water_line, 127, wl, false, true)
-    pal()
+    --pal({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0})
+    pal({1,14,3,4,5,6,6,8,9,10,11,12,13,14,7,0})
+
+    --sspr(0, 0, 127, wl, camx, water_line, 127, wl, false, true)
     --reset GFX
     poke(0x5f54, 0x00)
+    pal()
   end
   line(left_max, water_line, right_max, water_line, 7)
 end

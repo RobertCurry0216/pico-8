@@ -11,6 +11,10 @@ function state_rotate:update(p)
   elseif p.pos.x > width then
     p.pos.x -= width
   end
+  if p.pos.y < 0 then p.pos.y = 0 end
+  if p.pos.y > height then p.pos.y = height end
+
+  log(p.heading:angle())
 end
 
 function state_rotate:draw(p)

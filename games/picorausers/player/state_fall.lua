@@ -9,7 +9,3 @@ function state_fall:update(p)
     p.sm:goto_state("thrust")
   end
 end
-
--- function state_fall:draw(p)
---   self.super:draw(p)
--- end

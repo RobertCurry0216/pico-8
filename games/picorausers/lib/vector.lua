@@ -63,6 +63,10 @@ function vector:rotate(theta)
   self.y = y_tick
 end
 
+function vector:angle()
+  return atan2(self.x, self.y)
+end
+
 function vector:limit(mag)
   if #self < abs(mag) then return end
 
