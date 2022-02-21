@@ -6,7 +6,8 @@ function player:new(x,y)
   self.momentum = vector(0,0)
   self.sm = statemachine:new(
     state_fall,
-    state_thrust
+    state_thrust,
+    state_water
   )
 end
 

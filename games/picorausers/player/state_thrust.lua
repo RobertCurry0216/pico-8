@@ -1,4 +1,4 @@
-state_thrust = state_rotate:extend()
+state_thrust = state_fly:extend()
 state_thrust.name = "thrust"
 
 function state_thrust:update(p)

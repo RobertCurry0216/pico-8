@@ -11,4 +11,10 @@ function state_water:update(p)
   else
     p.heading:rotate((h-1)*0.3)
   end
+
+  p.momentum += p.heading*(0.3 + tonum(inputs.up)*0.2)
+
+  if p.pos.y <= water_line then
+    p.sm:goto_state("thrust")
+  end
 end

@@ -1,4 +1,4 @@
-state_fall = state_rotate:extend()
+state_fall = state_fly:extend()
 state_fall.name = "fall"
 
 function state_fall:update(p)

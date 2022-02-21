@@ -14,7 +14,7 @@ function update_inputs()
 end
 
 function _init()
-  plr = player(64,64)
+  plr = player(width/2,height)
 end
 
 function _update()
@@ -49,7 +49,7 @@ function _draw()
     --pal({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0})
     pal({1,14,3,4,5,6,6,8,9,10,11,12,13,14,7,0})
 
-    --sspr(0, 0, 127, wl, camx, water_line, 127, wl, false, true)
+    sspr(0, 0, 127, wl, camx, water_line, 127, wl, false, true)
     --reset GFX
     poke(0x5f54, 0x00)
     pal()

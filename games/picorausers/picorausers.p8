@@ -18,6 +18,8 @@ __lua__
 
 --player
 #include player/state_rotate.lua
+#include player/state_flying.lua
+#include player/state_water.lua
 #include player/state_thrust.lua
 #include player/state_fall.lua
 #include player/player.lua
