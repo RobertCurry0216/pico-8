@@ -13,7 +13,6 @@ end
 
 function player:update()
   self.sm:update(self)
-  --log(self.sm.state.name, "h", self.heading, "m", self.momentum, "p", self.pos)
 end
 
 function player:draw()

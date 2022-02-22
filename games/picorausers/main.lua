@@ -24,9 +24,9 @@ function _update()
 end
 
 function _draw()
-  cls()
+  cls(15)
   -- draw background
-  rectfill(left_max,0,right_max,height,15)
+  --rectfill(left_max,0,right_max,height,15)
   for i=-1,16 do
     spr(16,128*i,0,16,3)
   end

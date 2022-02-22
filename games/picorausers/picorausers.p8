@@ -8,6 +8,7 @@ __lua__
 #include lib/statemachine.lua
 #include lib/timer.lua
 #include lib/vector.lua
+#include lib/trifill.lua
 #include lib/logger.lua
 
 --globals
