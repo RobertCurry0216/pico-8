@@ -6,6 +6,11 @@ function state_fall:update(p)
   p.momentum.y += 0.05
   p.momentum:limit(2)
   if inputs.up then
-    p.sm:goto_state("thrust")
+    p.sm:goto_state("thrust", p)
   end
+end
+
+
+function state_fall:on_enter(p)
+  p.turning_speed = 0.02
 end
