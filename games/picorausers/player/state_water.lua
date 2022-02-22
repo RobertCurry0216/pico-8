@@ -7,9 +7,9 @@ function state_water:update(p)
   local h = p.heading:angle()
   h -= 0.25
   if h < 0.5 then
-    p.heading:rotate(h*0.3)
+    p.heading:rotate(h*0.1)
   else
-    p.heading:rotate((h-1)*0.3)
+    p.heading:rotate((h-1)*0.1)
   end
 
   p.momentum += p.heading*(0.3 + tonum(inputs.up)*0.2)
