@@ -19,6 +19,8 @@ end
 
 function _update()
   update_inputs()
+  timer:update()
+  bullets:update()
   particles:update()
   plr:update()
 end
@@ -35,6 +37,7 @@ function _draw()
   line(width,0,width,height, 11)
 
   camera(plr.pos.x-64, mid(plr.pos.y-64, 0, height - 128))
+  bullets:draw()
   particles:draw()
   plr:draw()
 

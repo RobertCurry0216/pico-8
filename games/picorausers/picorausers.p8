@@ -17,6 +17,10 @@ __lua__
 --classes
 #include particals.lua
 
+--bullets
+#include bullets/bullets.lua
+#include bullets/base_bullet.lua
+
 --player
 #include player/state_rotate.lua
 #include player/state_flying.lua

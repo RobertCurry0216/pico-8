@@ -1,6 +1,8 @@
 timer = {functions = {}}
 setmetatable(timer, {__index=timer})
 
+function _nothing_() end
+
 function update_timer_handle(handle)
 		-- handle: {
 		--   time = <number>,
