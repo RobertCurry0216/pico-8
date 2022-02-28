@@ -17,7 +17,8 @@ __lua__
 --classes
 #include particals.lua
 
---bullets
+--bullets / weapons
+#include player/weapon.lua
 #include bullets/bullets.lua
 #include bullets/base_bullet.lua
 

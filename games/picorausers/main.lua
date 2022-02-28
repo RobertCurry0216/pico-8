@@ -11,6 +11,7 @@ function update_inputs()
   }
 
   inputs.dx = tonum(inputs.right) - tonum(inputs.left)
+  inputs.shoot = inputs.down
 end
 
 function _init()

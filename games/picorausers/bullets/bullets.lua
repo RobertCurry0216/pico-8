@@ -25,7 +25,3 @@ function bullets:draw()
     end
 	end
 end
-
-function shoot(bullet, ...)
-  add(bullets, bullet(...))
-end

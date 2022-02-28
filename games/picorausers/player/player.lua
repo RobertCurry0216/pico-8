@@ -11,15 +11,14 @@ function player:new(x,y)
     state_water
   )
   self.sm.p = self
-
-  timer:every(3, function()
-    local a = self.heading:copy()
-    shoot(base_bullet, self.pos + self.heading*5, a*3 + self.momentum, 60)
-  end, 9999)
+  self.weapon = weapon(base_bullet)
 end
 
 function player:update()
   self.sm:update(self)
+  if inputs.shoot then
+    self.weapon:shoot(self.pos, self.heading, self.momentum)
+  end
 end
 
 function player:draw()
