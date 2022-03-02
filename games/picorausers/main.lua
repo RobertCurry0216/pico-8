@@ -11,7 +11,8 @@ function update_inputs()
   }
 
   inputs.dx = tonum(inputs.right) - tonum(inputs.left)
-  inputs.shoot = inputs.down
+  inputs.thrust = inputs.up or inputs.o
+  inputs.shoot = inputs.x
 end
 
 function _init()
