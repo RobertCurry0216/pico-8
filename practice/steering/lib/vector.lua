@@ -32,8 +32,16 @@ function vector:__div(other)
   )
 end
 
-function vector:__len()
+function vector:mag()
   return sqrt(self.x*self.x + self.y*self.y)
+end
+
+function vector:magsq()
+  return self.x*self.x + self.y*self.y
+end
+
+function vector:__len()
+  return self:mag()
 end
 
 function vector:copy()
@@ -81,4 +89,10 @@ end
 function vector:new(x, y)
   self.x = x or 0
   self.y = y or 0
+end
+
+function vector.from_polar(theta, mag)
+  mag = mag or 1
+  local v = vector(cos(theta), -sin(theta)) * mag
+  return v
 end

@@ -1,11 +1,11 @@
 vechicle = class:extend()
 
-function vechicle:new(pos, col, steering)
+function vechicle:new(pos, col, steering, ms)
   self.pos = pos
-  self.vel = vector(0,0)
   self.col = col
   self.steering = steering
-  self.max_speed = 2
+  self.max_speed = ms or 2
+  self.vel = vector.from_polar(rnd(), self.max_speed)
 end
 
 function vechicle:update(target)
@@ -17,9 +17,9 @@ function vechicle:update(target)
 end
 
 function vechicle:draw()
-  local e = self.pos + (self.vel * 3)
+  local e = self.pos + (self.vel * 2)
   line(self.pos.x, self.pos.y, e.x, e.y, self.col)
-  circfill(self.pos.x, self.pos.y, 2)
+  --circfill(self.pos.x, self.pos.y, 2)
 end
 
 function vechicle:wrap()

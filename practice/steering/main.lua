@@ -1,16 +1,19 @@
 function _init()
-  target = vechicle(vector(rnd(128),rnd(128)), 12, random())
-  persuer = vechicle(vector(rnd(128),rnd(128)), 8, evade)
+  for i=1,40 do
+    add(vechicles, vechicle(vector(rnd(128),rnd(128)), 3, flock, 1.2))
+  end
 end
 
 function _update()
   timer:update()
-  target:update()
-  persuer:update(target)
+  for v in all(vechicles) do
+    v:update()
+  end
 end
 
 function _draw()
-  cls(5)
-  target:draw()
-  persuer:draw()
+  cls()
+  for v in all(vechicles) do
+    v:draw()
+  end
 end
