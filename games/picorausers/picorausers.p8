@@ -10,6 +10,7 @@ __lua__
 #include lib/vector.lua
 #include lib/trifill.lua
 #include lib/logger.lua
+#include lib/rect_area.lua
 
 --globals
 #include globals.lua
@@ -31,6 +32,7 @@ __lua__
 #include player/player.lua
 
 --main
+#include follow_cam.lua
 #include main.lua	
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

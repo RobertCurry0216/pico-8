@@ -17,6 +17,8 @@ end
 
 function _init()
   plr = player(width/2,height)
+  cam = follow_cam(plr)
+  cam.bounds = {-64,0, width+64,height-128}
 end
 
 function _update()
@@ -25,12 +27,12 @@ function _update()
   bullets:update()
   particles:update()
   plr:update()
+  cam:update()
 end
 
 function _draw()
   cls(15)
   -- draw background
-  --rectfill(left_max,0,right_max,height,15)
   for i=-1,16 do
     spr(16,128*i,0,16,3)
   end
@@ -38,15 +40,14 @@ function _draw()
   line(0,0,0,height, 8)
   line(width,0,width,height, 11)
 
-  camera(plr.pos.x-64, mid(plr.pos.y-64, 0, height - 128))
   bullets:draw()
   particles:draw()
   plr:draw()
 
 
   -- draw water
-  local camy = mid(plr.pos.y-64, 0, height - 128)
-  local camx = plr.pos.x-64
+  local camy = cam.pos.y
+  local camx = cam.pos.x
   local wl = water_line - camy
   if wl < 128 then
     --set GFX to use screen memory
@@ -54,7 +55,7 @@ function _draw()
     --pal({1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0})
     pal({1,14,3,4,5,6,6,8,9,10,11,12,13,14,7,0})
 
-    sspr(0, 0, 127, wl, camx, water_line, 127, wl, false, true)
+    sspr(0, 0, 127, wl, camx, water_line, 128, wl, false, true)
     --reset GFX
     poke(0x5f54, 0x00)
     pal()

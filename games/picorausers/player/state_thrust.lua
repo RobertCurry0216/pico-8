@@ -9,6 +9,9 @@ function state_thrust:update(p)
   p.momentum:limit(4)
   local pos = p.pos - p.heading*8
   particles:spawn("circle", pos.x, pos.y)
+
+  --look ahead
+  cam:add_interest(p.pos + p.heading*40)
 end
 
 function state_thrust:on_enter(p)
