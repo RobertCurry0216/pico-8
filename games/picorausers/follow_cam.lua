@@ -37,9 +37,6 @@ function follow_cam:update()
   camera(self.pos.x, self.pos.y)
 end
 
-function follow_cam:set_bounds(...)
-  self.bounds = {...}
-end
 
 function follow_cam:add_interest(p)
   add(self.i_points, p)
