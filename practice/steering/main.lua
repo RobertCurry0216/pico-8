@@ -1,5 +1,5 @@
 function _init()
-  for i=1,40 do
+  for i=1,25 do
     add(vechicles, vechicle(vector(rnd(128),rnd(128)), 3, flock, 1.2))
   end
 end

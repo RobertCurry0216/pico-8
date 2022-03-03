@@ -17,9 +17,10 @@ function vechicle:update(target)
 end
 
 function vechicle:draw()
-  local e = self.pos + (self.vel * 2)
-  line(self.pos.x, self.pos.y, e.x, e.y, self.col)
+  --local e = self.pos + (self.vel * 3)
+  --line(self.pos.x, self.pos.y, e.x, e.y, self.col)
   --circfill(self.pos.x, self.pos.y, 2)
+  pset(self.pos.x, self.pos.y, self.col)
 end
 
 function vechicle:wrap()
