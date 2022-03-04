@@ -12,11 +12,12 @@ function update_inputs()
 
   inputs.dx = tonum(inputs.right) - tonum(inputs.left)
   inputs.thrust = inputs.up or inputs.o
-  inputs.shoot = inputs.x
+  inputs.shoot = inputs.x or inputs.down
 end
 
 function _init()
   plr = player(width/2,height)
+  bmr = bomber()
   cam = follow_cam(plr)
   cam.bounds = {-64,0, width+64,height-128}
 end
@@ -27,6 +28,7 @@ function _update()
   bullets:update()
   particles:update()
   plr:update()
+  bmr:update()
   cam:update()
 end
 
@@ -43,6 +45,7 @@ function _draw()
   bullets:draw()
   particles:draw()
   plr:draw()
+  bmr:draw()
 
 
   -- draw water

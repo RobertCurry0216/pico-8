@@ -31,6 +31,12 @@ __lua__
 #include player/state_fall.lua
 #include player/player.lua
 
+--enemies
+#include enemies/behaviours/seek.lua
+
+#include enemies/enemy.lua
+#include enemies/bomber.lua
+
 --main
 #include follow_cam.lua
 #include main.lua	

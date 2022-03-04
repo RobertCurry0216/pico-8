@@ -16,7 +16,7 @@ function find_neighbors(vechicle, vechicles)
   for v in all(vechicles) do
     local dist = v.pos - vechicle.pos
     if v != vechicle then
-      if dist:magsq() < 400 then
+      if dist:magsq() < 200 then
         add(n, v)
       end
     end

@@ -1,0 +1,1 @@
+bomber = enemy:extend()
