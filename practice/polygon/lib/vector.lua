@@ -69,6 +69,7 @@ function vector:rotate(theta)
   local y_tick = (self.x * sin(-theta)) + (self.y * cos(theta))
   self.x = x_tick
   self.y = y_tick
+  return self
 end
 
 function vector:angle()
@@ -82,8 +83,9 @@ function vector:set_mag(mag)
 end
 
 function vector:limit(mag)
-  if #self < abs(mag) then return end
+  if #self < abs(mag) then return self end
   self:set_mag(mag)
+  return self
 end
 
 function vector:new(x, y)
