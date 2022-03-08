@@ -32,8 +32,23 @@ function vector:__div(other)
   )
 end
 
+function vector:magsq()
+  local _x = self.x
+  local _y = self.y
+  local m = _x*_x + _y*_y
+  if m < 0 then
+    return 0x7fff
+  else
+    return m
+  end
+end
+
+function vector:mag()
+  return sqrt(self:magsq())
+end
+
 function vector:__len()
-  return sqrt(self.x*self.x + self.y*self.y)
+  return self:mag()
 end
 
 function vector:copy()
@@ -67,15 +82,24 @@ function vector:angle()
   return atan2(self.x, self.y)
 end
 
-function vector:limit(mag)
-  if #self < abs(mag) then return end
-
+function vector:set_mag(mag)
   local v = self:norm() * mag
   self.x = v.x
   self.y = v.y
 end
 
+function vector:limit(mag)
+  if #self < abs(mag) then return end
+  self:set_mag(mag)
+end
+
 function vector:new(x, y)
   self.x = x or 0
   self.y = y or 0
+end
+
+function vector.from_polar(theta, mag)
+  mag = mag or 1
+  local v = vector(cos(theta), -sin(theta)) * mag
+  return v
 end

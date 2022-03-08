@@ -17,7 +17,10 @@ end
 
 function _init()
   plr = player(width/2,height)
-  bmr = bomber()
+  enemies = {}
+  for i=1,10 do
+    add(enemies, bomber(width/2, 0))
+  end
   cam = follow_cam(plr)
   cam.bounds = {-64,0, width+64,height-128}
 end
@@ -28,7 +31,9 @@ function _update()
   bullets:update()
   particles:update()
   plr:update()
-  bmr:update()
+  for bmr in all(enemies) do
+    bmr:update()
+  end
   cam:update()
 end
 
@@ -45,7 +50,9 @@ function _draw()
   bullets:draw()
   particles:draw()
   plr:draw()
-  bmr:draw()
+  for bmr in all(enemies) do
+    bmr:draw()
+  end
 
 
   -- draw water

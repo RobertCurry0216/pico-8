@@ -29,7 +29,12 @@ function follow_cam:update()
   --apply limit
   if self.bounds then
     local x1,y1,x2,y2 = unpack(self.bounds)
-    self.pos.x = mid(self.pos.x, x1, x2)
+    local w = x2 - x1
+    if self.pos.x < x1 then
+      self.pos.x += w
+    elseif self.pos.x > x2 then
+      self.pos.x -= w
+    end
     self.pos.y = mid(self.pos.y, y1, y2)
   end
 

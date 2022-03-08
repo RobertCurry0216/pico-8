@@ -18,6 +18,7 @@ __lua__
 #include behaviours/evade.lua
 #include behaviours/wander.lua
 #include behaviours/flock.lua
+#include behaviours/arrive.lua
 
 --classes
 #include vechicle.lua
