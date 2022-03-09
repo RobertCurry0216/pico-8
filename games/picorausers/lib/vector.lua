@@ -44,7 +44,8 @@ function vector:magsq()
 end
 
 function vector:mag()
-  return sqrt(self:magsq())
+  local v = self / 10
+  return sqrt(v:magsq()) * 10
 end
 
 function vector:__len()
