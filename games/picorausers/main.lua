@@ -32,7 +32,7 @@ function _update()
   particles:update()
   plr:update()
   for bmr in all(enemies) do
-    bmr:update()
+    bmr:update(plr)
   end
   cam:update()
 end

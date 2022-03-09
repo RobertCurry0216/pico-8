@@ -4,7 +4,9 @@ function bomber:new(...)
   self.super.new(self, ...)
   self.vel = vector(0,3)
   self.max_speed = 3
-  self.max_steer = 0.18 + rnd(0.4) 
+  self.max_steer = 0.3
+  self.area = rect_area(0,0,4,4,true)
+  self.damage = 5
 end
 
 function bomber:draw()
@@ -19,5 +21,4 @@ function bomber:draw()
   local tail = self.pos - dir
 
   vtrifill(head, tail+off, tail-off, 2)
-  --line(head.x, head.y, tail.x, tail.y, 2)
 end
