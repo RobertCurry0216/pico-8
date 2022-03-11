@@ -3,7 +3,7 @@ function seek(target)
     --seperate
     local v_sep = vector()
     for e in all(enemies) do
-      if e != vechicle then
+      if e != vechicle and (e.pos - vechicle.pos):magsq() < 100 then
         v_sep -= (e.pos - vechicle.pos):norm()
       end
     end

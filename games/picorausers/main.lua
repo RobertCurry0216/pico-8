@@ -17,8 +17,7 @@ end
 
 function _init()
   plr = player(width/2,height)
-  enemies = {}
-  for i=1,10 do
+  for i=1,20 do
     add(enemies, bomber(width/2, 0))
   end
   cam = follow_cam(plr)
@@ -30,30 +29,29 @@ function _update()
   timer:update()
   bullets:update()
   particles:update()
+  enemies:update(plr)
   plr:update()
-  for bmr in all(enemies) do
-    bmr:update(plr)
-  end
   cam:update()
 end
 
 function _draw()
   cls(15)
-  -- draw background
-  for i=-1,16 do
-    spr(16,128*i,0,16,3)
-  end
+
   -- debug drawing
   line(0,0,0,height, 8)
   line(width,0,width,height, 11)
 
+  -- draw actors
+
   bullets:draw()
+  enemies:draw()
   particles:draw()
   plr:draw()
-  for bmr in all(enemies) do
-    bmr:draw()
-  end
 
+  -- draw background
+  for i=-1,16 do
+    spr(16,128*i,0,16,3)
+  end
 
   -- draw water
   local camy = cam.pos.y
@@ -71,4 +69,9 @@ function _draw()
     pal()
   end
   line(left_max, water_line, right_max, water_line, 7)
+
+
+  --ui
+  camera()
+  print(plr.health, 2, 2, 2)
 end

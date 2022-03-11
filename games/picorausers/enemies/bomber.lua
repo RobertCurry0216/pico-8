@@ -22,3 +22,8 @@ function bomber:draw()
 
   vtrifill(head, tail+off, tail-off, 2)
 end
+
+function bomber:die()
+  self.super.die(self)
+  particles:spawn("smoke_cloud", self.pos.x, self.pos.y)
+end

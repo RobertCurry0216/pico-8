@@ -34,6 +34,7 @@ __lua__
 --enemies
 #include enemies/behaviours/seek.lua
 
+#include enemies/enemies.lua
 #include enemies/enemy.lua
 #include enemies/bomber.lua
 

@@ -13,6 +13,7 @@ function player:new(x,y)
   )
   self.sm.p = self
   self.weapon = weapon(base_bullet)
+  self.health = 100
 end
 
 function player:update()
@@ -48,6 +49,17 @@ function player:draw()
 
 
   self.sm:draw(self)
-  local x1, y1, x2, y2 = self.area:get_extents()
-  rect(x1, y1, x2, y2, 9)
+  -- local x1, y1, x2, y2 = self.area:get_extents()
+  -- rect(x1, y1, x2, y2, 9)
+end
+
+function player:on_hit(damage)
+  self.health -= damage
+  if self.health <= 0 then
+    self:die()
+  end
+end
+
+function player:die()
+  stop("dead")
 end

@@ -8,6 +8,7 @@ function enemy:new(x, y)
   self.steering = seek(plr)
   self.area = rect_area(x,y,4,4,true)
   self.dead = false
+  self.health = 1
 end
 
 function enemy:update(plr)
@@ -21,9 +22,8 @@ function enemy:update(plr)
   -- collisions
   self.area.pos = self.pos
   if self.area:overlaps(plr.area) then
-    self.col = 8
-  else
-    self.col = 6
+    plr:on_hit(self.damage)
+    self:on_hit(1)
   end
 
 
@@ -34,10 +34,17 @@ function enemy:update(plr)
 end
 
 function enemy:draw()
-  local x1, y1, x2, y2 = self.area:get_extents()
-  rect(x1, y1, x2, y2, self.col)
+  -- local x1, y1, x2, y2 = self.area:get_extents()
+  -- rect(x1, y1, x2, y2, 6)
 end
 
 function enemy:die()
   self.dead = true
+end
+
+function enemy:on_hit(damage)
+  self.health -= damage
+  if self.health <= 0 then
+    self:die()
+  end
 end
