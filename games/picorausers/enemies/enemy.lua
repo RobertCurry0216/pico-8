@@ -43,6 +43,7 @@ function enemy:die()
 end
 
 function enemy:on_hit(damage)
+  if self.dead then return end
   self.health -= damage
   if self.health <= 0 then
     self:die()
