@@ -3,28 +3,27 @@ follow_cam = class:extend()
 function follow_cam:new(follow)
   self.follow = follow
   self.pos = follow and follow.pos - vector(64,64) or vector(64,64)
+  self.max_offset = 32
+  self.offset = vector()
   self.i_points = {}
 end
 
 function follow_cam:update()
-  --follow
-  local target = self.follow.pos - vector(64,64)
-
   --add interest
+  local i_point = vector()
   if #self.i_points > 0 then
-    local i_point = vector()
     for p in all(self.i_points) do
-      i_point += p
+      i_point += p - self.follow.pos
     end
     i_point /= #self.i_points
-    i_point -= self.follow.pos
 
-    target += i_point
     self.i_points = {}
   end
 
   --set pos
-  self.pos += (target - self.pos) * 0.12
+  self.offset += (i_point - self.offset) * 0.12
+  self.offset:limit(self.max_offset)
+  self.pos = self.offset + self.follow.pos - vector(64,64)
 
   --apply limit
   if self.bounds then

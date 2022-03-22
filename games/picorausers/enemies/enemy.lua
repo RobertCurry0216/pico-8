@@ -27,7 +27,9 @@ function enemy:update(plr)
   end
 
 
-  --cam:add_interest(self.pos)
+  if (plr.pos - self.pos):magsq() < 10000 then
+    cam:add_interest(self.pos)
+  end
 
   --wrap
   --TODO
