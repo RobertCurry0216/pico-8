@@ -38,8 +38,8 @@ function _draw()
   cls(15)
 
   -- debug drawing
-  line(0,0,0,height, 8)
-  line(width,0,width,height, 11)
+  --line(0,0,0,height, 8)
+  --line(width,0,width,height, 11)
 
   -- draw actors
 

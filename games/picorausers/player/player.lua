@@ -1,4 +1,5 @@
 player = class:extend()
+plr_mx_health = 50
 
 function player:new(x,y)
   self.pos = vector(x, y)
@@ -13,7 +14,7 @@ function player:new(x,y)
   )
   self.sm.p = self
   self.weapon = weapon(base_bullet)
-  self.health = 100
+  self.health = plr_mx_health
 end
 
 function player:update()
@@ -21,6 +22,8 @@ function player:update()
   self.area.pos = self.pos
   if inputs.shoot then
     self.weapon:shoot(self.pos, self.heading, self.momentum)
+  else
+    self.health = min(self.health+0.25, plr_mx_health)
   end
 end
 
