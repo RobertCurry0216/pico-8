@@ -14,11 +14,11 @@ end
 function bullets:draw()
 	for b in all(self) do
 		b:draw()
-    if b.pos.x < 64 then
+    if b.pos.x < 128 then
       b.pos.x+=width
       b:draw()
       b.pos.x-=width
-    elseif width - b.pos.x < 64 then
+    elseif width - b.pos.x < 128 then
       b.pos.x-=width
       b:draw()
       b.pos.x+=width

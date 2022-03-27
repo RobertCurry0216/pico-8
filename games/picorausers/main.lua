@@ -21,7 +21,7 @@ function _init()
     add(enemies, bomber(width/2, 0))
   end
   cam = follow_cam(plr)
-  cam.bounds = {-64,0, width+64,height-128}
+  cam.bounds = {-128,0, width+128,height-128}
 end
 
 function _update()

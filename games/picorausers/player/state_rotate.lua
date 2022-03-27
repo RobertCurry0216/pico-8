@@ -6,11 +6,7 @@ function state_rotate:update(p)
     p.heading:rotate(p.turning_speed*inputs.dx)
   end
   p.pos += p.momentum
-  if p.pos.x < 0 then
-    p.pos.x += width
-  elseif p.pos.x > width then
-    p.pos.x -= width
-  end
+  p.pos:wrap()
   if p.pos.y < 0 then p.pos.y = 0 end
   if p.pos.y > height then p.pos.y = height end
 end

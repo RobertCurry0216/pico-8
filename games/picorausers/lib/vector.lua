@@ -104,3 +104,24 @@ function vector.from_polar(theta, mag)
   local v = vector(cos(theta), -sin(theta)) * mag
   return v
 end
+
+
+-- utils to allow wrapping
+function vector:to(other)
+  if abs(self.x - other.x) > width / 2 then
+    if self.x - other.x < 0 then
+      return other - (self + vector(width, 0))
+    else
+      return (other + vector(width, 0)) - self
+    end
+  end
+  return other - self
+end
+
+function vector:wrap()
+  if self.x < 0 then
+    self.x += width
+  elseif self.x > width then
+    self.x -= width
+  end
+end

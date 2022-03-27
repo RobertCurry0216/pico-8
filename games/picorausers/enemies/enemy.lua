@@ -27,12 +27,12 @@ function enemy:update(plr)
   end
 
 
-  if (plr.pos - self.pos):magsq() < 10000 then
+  if self.pos:to(plr.pos):magsq() < 10000 then
     cam:add_interest(self.pos)
   end
 
   --wrap
-  --TODO
+  self.pos:wrap()
 end
 
 function enemy:draw()

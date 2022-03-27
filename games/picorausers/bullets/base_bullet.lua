@@ -16,6 +16,7 @@ end
 
 function base_bullet:update()
   self.pos += self.heading
+  self.pos:wrap()
   self.area.pos = self.pos
 
   for e in all(enemies) do

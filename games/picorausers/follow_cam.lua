@@ -13,7 +13,7 @@ function follow_cam:update()
   local i_point = vector()
   if #self.i_points > 0 then
     for p in all(self.i_points) do
-      i_point += p - self.follow.pos
+      i_point += self.follow.pos:to(p)
     end
     i_point /= #self.i_points
 

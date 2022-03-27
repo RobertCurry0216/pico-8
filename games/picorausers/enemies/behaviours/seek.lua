@@ -10,7 +10,7 @@ function seek(target)
     v_sep:limit(1)
 
     --seek
-    local desired = target.pos - vechicle.pos
+    local desired = vechicle.pos:to(target.pos)
     desired:limit(vechicle.max_speed)
     local v_seek = desired - vechicle.vel
     local s = v_seek + v_sep
