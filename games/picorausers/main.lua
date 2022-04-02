@@ -35,7 +35,9 @@ function _update()
 end
 
 function _draw()
-  cls(15)
+  cls(7)
+
+  circfill(plr.pos.x, plr.pos.y, 128*((plr.health+5)/plr_mx_health), 15)
 
   -- debug drawing
   --line(0,0,0,height, 8)
@@ -73,5 +75,5 @@ function _draw()
 
   --ui
   camera()
-  print(plr.health, 2, 2, 2)
+  --print(plr.health, 2, 2, 2)
 end

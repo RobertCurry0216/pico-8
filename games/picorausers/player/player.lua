@@ -15,15 +15,24 @@ function player:new(x,y)
   self.sm.p = self
   self.weapon = weapon(base_bullet)
   self.health = plr_mx_health
+  self.healing_delay = 0
 end
 
 function player:update()
   self.sm:update(self)
   self.area.pos = self.pos
+
+  -- shooting
   if inputs.shoot then
     self.weapon:shoot(self.pos, self.heading, self.momentum)
-  else
+  elseif self.healing_delay == 0 then
+  --healing
     self.health = min(self.health+0.25, plr_mx_health)
+    if self.health != plr_mx_health then
+      particles:spawn("debris", self.pos.x, self.pos.y)
+    end
+  else
+    self.healing_delay = max(0, self.healing_delay - 1)
   end
 end
 
@@ -58,6 +67,7 @@ end
 
 function player:on_hit(damage)
   self.health -= damage
+  self.healing_delay = 30
   if self.health <= 0 then
     self:die()
   end

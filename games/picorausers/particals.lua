@@ -53,3 +53,26 @@ particles:add_type({
     end
   end
 })
+
+particles:add_type({
+  name="debris",
+  spawn=function(store,x,y,d)
+    add(store,{
+      name="debris",
+      x=x, y=y,
+      life=10,
+      col=2,
+      dir=d or vector.from_polar(rnd(0.5)+0.5, rnd(2))
+    })
+  end,
+  update=function(p)
+    p.life -= 1
+    p.x += p.dir.x
+    p.y += p.dir.y
+    p.dir.x *= 0.95
+    p.dir.y += 0.2
+  end,
+  draw=function(p)
+    pset(p.x, p.y, p.col)
+  end
+})
