@@ -54,7 +54,7 @@ function timer:after(delay, func)
 end
 
 function timer:every(delay, after, count)
-	local handle = { time = 0, during = _nothing_, after = after, limit = delay, count = count }
+	local handle = { time = 0, during = _nothing_, after = after, limit = delay, count = count or 32000 }
 	self.functions[handle] = true
 	return handle
 end

@@ -21,7 +21,7 @@ function follow_cam:update()
   end
 
   --set pos
-  self.offset += (i_point - self.offset) * 0.12
+  self.offset += (i_point - self.offset) * 0.01
   self.offset:limit(self.max_offset)
   self.pos = self.offset + self.follow.pos - vector(64,64)
 

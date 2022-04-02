@@ -9,6 +9,7 @@ function enemy:new(x, y)
   self.area = rect_area(x,y,4,4,true)
   self.dead = false
   self.health = 1
+  self.score = 10
 end
 
 function enemy:update(plr)
@@ -48,6 +49,7 @@ function enemy:on_hit(damage)
   if self.dead then return end
   self.health -= damage
   if self.health <= 0 then
+    emit("score", self.score, self.pos.x, self.pos.y - 10)
     self:die()
   end
 end

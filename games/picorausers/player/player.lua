@@ -66,6 +66,7 @@ function player:draw()
 end
 
 function player:on_hit(damage)
+  emit("player_hit")
   self.health -= damage
   self.healing_delay = 30
   if self.health <= 0 then

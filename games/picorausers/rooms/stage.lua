@@ -1,10 +1,19 @@
 stage = room:extend()
 
+multiplier_timeout = 150
+
 function stage:new()
   -- reset stores
   bullets = {}
   enemies = {}
   particles.store = {}
+
+  --score vars
+  self.score = 0
+  self.multiplier = 1
+  self.m_timeout = 0
+  self.m_target = 4
+  self.streak = 0
 
   -- create player
   plr = player(width/2,height)
@@ -17,6 +26,12 @@ function stage:new()
   for i=1,20 do
     add(enemies, bomber(width/2, 0))
   end
+
+  --listeners
+  self.listen_on_score = function(...) self:on_score(...) end
+  register("score", self.listen_on_score)
+  self.listen_on_player_hit = function(...) self:on_player_hit(...) end
+  register("player_hit", self.listen_on_player_hit)
 end
 
 function stage:update()
@@ -25,6 +40,12 @@ function stage:update()
   enemies_update(enemies, plr)
   plr:update()
   cam:update()
+
+  if self.m_timeout > 0 then
+    self.m_timeout -= 1
+  else
+    self.multiplier = 1
+  end
 end
 
 function stage:draw()
@@ -38,9 +59,9 @@ function stage:draw()
 
   -- draw actors
 
+  particles:draw()
   bullets_draw(bullets)
   enemies_draw(enemies)
-  particles:draw()
   plr:draw()
 
   -- draw background
@@ -68,5 +89,41 @@ function stage:draw()
 
   --ui
   camera()
-  --print(plr.health, 2, 2, 2)
+
+  --score
+  local score_str = tostr(self.score, 0x2)
+  score_str = sub("0000000000", 1, 10-#score_str)..score_str
+  print(score_str, 2, 2, 2)
+
+  --multiplier
+  print("X"..tostr(self.multiplier), 112,2,2)
+end
+
+function stage:finish()
+  unregister("score", self.listen_on_score)
+  unregister("player_hit", self.listen_on_player_hit)
+end
+
+function stage:on_score(value, x, y)
+  --inc multiplier
+  self.m_timeout = multiplier_timeout
+  self.streak += 1
+  if self.streak >= self.m_target then
+    self.streak = 0
+    self.m_target += 2
+    self.multiplier = min(64, self.multiplier*2)
+  end
+
+  --add score
+  local score = (value >> 16) * self.multiplier
+  self.score += score
+  if x != nil then
+    particles:spawn("text", x, y, tostr(score, 0x2))
+  end
+end
+
+function stage:on_player_hit()
+  self.streak = 0
+  self.m_target = 4
+  self.multiplier = 1
 end

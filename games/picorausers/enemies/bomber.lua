@@ -1,12 +1,23 @@
 bomber = enemy:extend()
 
-function bomber:new(...)
-  self.super.new(self, ...)
+function bomber:new()
+  self.super.new(self, plr.pos.x + rnd(50) - 25, -10)
   self.vel = vector(0,3)
-  self.max_speed = 3
-  self.max_steer = 0.3
+  self.max_speed = 3 + rnd(1)
+  self.max_steer = 0.15 + rnd(0.1)
   self.area = rect_area(0,0,4,4,true)
   self.damage = 5
+
+  self.tail = 5
+end
+
+function bomber:update(...)
+  self.super.update(self, ...)
+  self.tail -= 1
+  if self.tail == 0 then
+    self.tail = 2
+    particles:spawn("dot", self.pos.x, self.pos.y)
+  end
 end
 
 function bomber:draw()

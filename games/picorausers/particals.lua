@@ -76,3 +76,22 @@ particles:add_type({
     pset(p.x, p.y, p.col)
   end
 })
+
+particles:add_type({
+  name="text",
+  spawn=function(store,x,y,str)
+    add(store,{
+      name="text",
+      str=tostr(str),
+      x=x, y=y,
+      life=20
+    })
+  end,
+  update=function(p)
+    p.y -= cos(p.life / 40) * -1
+    p.life -= 1
+  end,
+  draw=function(p)
+    print(p.str, p.x, p.y, 2)
+  end
+})
