@@ -1,6 +1,6 @@
 enemies = {}
 
-function enemies:update(plr)
+function enemies_update(self, plr)
 	for i=#self,1,-1 do
 		local e = self[i]
 		e:update(plr)
@@ -11,7 +11,7 @@ function enemies:update(plr)
 	end
 end
 
-function enemies:draw()
+function enemies_draw(self)
 	for e in all(self) do
 		e:draw()
     if e.pos.x < 128 then

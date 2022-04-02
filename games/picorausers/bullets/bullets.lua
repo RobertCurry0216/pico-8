@@ -1,6 +1,6 @@
 bullets = {}
 
-function bullets:update()
+function bullets_update(self)
 	for i=#self,1,-1 do
 		local b = self[i]
 		b:update()
@@ -11,7 +11,7 @@ function bullets:update()
 	end
 end
 
-function bullets:draw()
+function bullets_draw(self)
 	for b in all(self) do
 		b:draw()
     if b.pos.x < 128 then

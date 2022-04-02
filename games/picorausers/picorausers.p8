@@ -11,6 +11,7 @@ __lua__
 #include lib/trifill.lua
 #include lib/logger.lua
 #include lib/rect_area.lua
+#include lib/rooms.lua
 
 --globals
 #include globals.lua
@@ -37,6 +38,9 @@ __lua__
 #include enemies/enemies.lua
 #include enemies/enemy.lua
 #include enemies/bomber.lua
+
+--rooms
+#include rooms/stage.lua
 
 --main
 #include follow_cam.lua
