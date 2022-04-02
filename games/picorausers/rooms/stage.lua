@@ -18,14 +18,12 @@ function stage:new()
   -- create player
   plr = player(width/2,height)
 
+  --game director
+  self.director = director(enemies)
+
   -- cam
   cam = follow_cam(plr)
   cam.bounds = {-128,0, width+128,height-128}
-
-  --temp
-  for i=1,20 do
-    add(enemies, bomber(width/2, 0))
-  end
 
   --listeners
   self.listen_on_score = function(...) self:on_score(...) end
@@ -102,6 +100,7 @@ end
 function stage:finish()
   unregister("score", self.listen_on_score)
   unregister("player_hit", self.listen_on_player_hit)
+  self.director:destroy()
 end
 
 function stage:on_score(value, x, y)

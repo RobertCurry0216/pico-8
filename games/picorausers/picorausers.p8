@@ -3,6 +3,7 @@ version 35
 __lua__
 --libs
 #include lib/class.lua
+#include lib/table_utils.lua
 #include lib/particles.lua
 #include lib/signal.lua
 #include lib/statemachine.lua
@@ -18,6 +19,7 @@ __lua__
 
 --classes
 #include particals.lua
+#include rooms/director.lua
 
 --bullets / weapons
 #include player/weapon.lua

@@ -10,6 +10,7 @@ function enemy:new(x, y)
   self.dead = false
   self.health = 1
   self.score = 10
+  self.difficulty = 1
 end
 
 function enemy:update(plr)
@@ -43,6 +44,7 @@ end
 
 function enemy:die()
   self.dead = true
+  emit("enemy_die", self)
 end
 
 function enemy:on_hit(damage)
