@@ -6,6 +6,8 @@ function follow_cam:new(follow)
   self.max_offset = 32
   self.offset = vector()
   self.i_points = {}
+  self.shake_time = 0
+  self.shake_value = 0
 end
 
 function follow_cam:update()
@@ -24,6 +26,14 @@ function follow_cam:update()
   self.offset += (i_point - self.offset) * 0.01
   self.offset:limit(self.max_offset)
   self.pos = self.offset + self.follow.pos - vector(64,64)
+
+  --shake
+  if self.shake_time > 0 then
+    self.shake_time -= 1
+    self.pos += vector.from_polar(rnd(1), self.shake_value)
+  else
+    self.shake_value = 0
+  end
 
   --apply limit
   if self.bounds then
@@ -44,4 +54,9 @@ end
 
 function follow_cam:add_interest(p)
   add(self.i_points, p)
+end
+
+function follow_cam:shake(t, v)
+  self.shake_time = max(self.shake_time, t or 10)
+  self.shake_value = max(self.shake_value, v or 5)
 end

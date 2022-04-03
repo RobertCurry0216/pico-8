@@ -9,6 +9,6 @@ function weapon:shoot(pos, heading, momentum)
   if self.can_shoot then
     self.can_shoot = false
     timer:after(5, function() self.can_shoot = true end)
-    add(bullets, self.weapon_type(pos + heading*5, heading*3 + momentum, 60))
+    add(bullets, self.weapon_type(pos + heading*5, heading*4 + momentum, 60))
   end
 end

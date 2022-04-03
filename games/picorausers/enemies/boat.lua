@@ -5,8 +5,8 @@ function boat:new(x)
   self.area = rect_area(0,0,32,8)
   self.area.offset = vector(0,8)
   self.health = 15
-  self.score = 25
-  self.difficulty = 3
+  self.score = 250
+  self.difficulty = 4
   self.ram_damage = 1
   self.timer = timer.new()
 

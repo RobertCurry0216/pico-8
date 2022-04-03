@@ -1,21 +1,28 @@
 director = class:extend()
 
 enemy_spawners = {
+  bomber_group_small={
+    difficulty=2,
+    spawn=function(store)
+      local x = plr.pos.x + (sign(plr.momentum.x) * 200) - 5
+      add(store, bomber(x))
+      add(store, bomber(x+10))
+    end
+  },
   bomber_group={
-    difficulty=5,
+    difficulty=4,
     spawn=function(store)
       local x = plr.pos.x + (sign(plr.momentum.x) * 200) - 20
-      add(store, bomber(x)) x+= 10
-      add(store, bomber(x)) x+= 10
-      add(store, bomber(x)) x+= 10
-      add(store, bomber(x)) x+= 10
       add(store, bomber(x))
+      add(store, bomber(x+10))
+      add(store, bomber(x+20))
+      add(store, bomber(x+30))
     end
   },
   boat={
-    difficulty=3,
+    difficulty=4,
     spawn=function(store)
-      add(store, boat(plr.pos.x-64 + rnd(128)))
+      add(store, boat(rnd(width)))
     end
   }
 }
@@ -24,7 +31,7 @@ function director:new(store)
   self.store = store
   self.difficulty = 1
   self.current_difficulty = 0
-  self.enemy_pool = {enemy_spawners.boat, enemy_spawners.bomber_group}
+  self.enemy_pool = {enemy_spawners.bomber_group_small}
   self.handlers = {}
   self.timer = timer.new()
 
@@ -37,6 +44,8 @@ function director:new(store)
   self.timer:every(150, function() self:spawn_wave() end)
 
   --enemy pool updates
+  self.timer:after(160, function() self.enemy_pool = {enemy_spawners.bomber_group} end)
+  self.timer:after(300, function() add(self.enemy_pool, enemy_spawners.boat) end)
 
   --initial wave
   self:spawn_wave()

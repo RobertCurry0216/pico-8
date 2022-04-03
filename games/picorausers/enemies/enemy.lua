@@ -9,7 +9,7 @@ function enemy:new(x, y)
   self.area = rect_area(0,0,4,4,true)
   self.dead = false
   self.health = 1
-  self.score = 10
+  self.score = 100
   self.ram_damage = 0
   self.difficulty = 1
 end
@@ -44,6 +44,7 @@ end
 
 function enemy:die()
   self.dead = true
+  cam:shake(7,1)
   emit("enemy_die", self)
 end
 
