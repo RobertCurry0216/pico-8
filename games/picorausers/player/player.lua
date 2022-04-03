@@ -16,6 +16,7 @@ function player:new(x,y)
   self.weapon = weapon(base_bullet)
   self.health = plr_mx_health
   self.healing_delay = 0
+  self.ram_damage=2
 end
 
 function player:update()

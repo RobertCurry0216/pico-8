@@ -1,21 +1,22 @@
 bomber = enemy:extend()
 
-function bomber:new()
-  self.super.new(self, plr.pos.x + rnd(50) - 25, -10)
+function bomber:new(x)
+  self.super.new(self, x, -10)
+  self.steering = seek(plr)
   self.vel = vector(0,3)
   self.max_speed = 3 + rnd(1)
   self.max_steer = 0.15 + rnd(0.1)
   self.area = rect_area(0,0,4,4,true)
-  self.damage = 5
+  self.ram_damage = 8
 
-  self.tail = 5
+  self.trail = 0
 end
 
 function bomber:update(...)
   self.super.update(self, ...)
-  self.tail -= 1
-  if self.tail == 0 then
-    self.tail = 2
+  self.trail -= 1
+  if self.trail == 0 then
+    self.trail = 2
     particles:spawn("dot", self.pos.x, self.pos.y)
   end
 end

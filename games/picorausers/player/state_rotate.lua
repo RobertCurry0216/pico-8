@@ -11,10 +11,6 @@ function state_rotate:update(p)
   if p.pos.y > height then p.pos.y = height end
 end
 
-function vline(p1, p2, ...)
-  line(p1.x, p1.y, p2.x, p2.y, ...)
-end
-
 function state_rotate:draw(p)
 
 end

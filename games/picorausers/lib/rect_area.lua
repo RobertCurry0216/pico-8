@@ -4,14 +4,14 @@ function rect_area:new(x, y, w, h, center)
   self.pos = vector(x,y)
   self.size = vector(w,h)
   if center then
-    self.offset = self.size / 2
+    self.offset = self.size / -2
   else
     self.offset = vector()
   end
 end
 
 function rect_area:get_extents()
-  local tl, br = self.pos-self.offset, self.pos+self.size-self.offset
+  local tl, br = self.pos+self.offset, self.pos+self.size+self.offset
   return tl.x, tl.y, br.x, br.y
 end
 

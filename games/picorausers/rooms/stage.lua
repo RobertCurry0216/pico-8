@@ -6,6 +6,7 @@ function stage:new()
   -- reset stores
   bullets = {}
   enemies = {}
+  enemy_bullets = {}
   particles.store = {}
 
   --score vars
@@ -33,9 +34,14 @@ function stage:new()
 end
 
 function stage:update()
+  self.director:update()
+
   bullets_update(bullets)
+  bullets_update(enemy_bullets)
   particles:update()
   enemies_update(enemies, plr)
+  bullets_collisions(bullets, enemies)
+  bullets_collisions(enemy_bullets, {plr})
   plr:update()
   cam:update()
 
@@ -59,6 +65,7 @@ function stage:draw()
 
   particles:draw()
   bullets_draw(bullets)
+  bullets_draw(enemy_bullets)
   enemies_draw(enemies)
   plr:draw()
 

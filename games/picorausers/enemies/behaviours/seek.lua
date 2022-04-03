@@ -11,7 +11,7 @@ function seek(target)
 
     --seek
     local desired = vechicle.pos:to(target.pos)
-    desired:limit(vechicle.max_speed)
+    desired:set_mag(vechicle.max_speed)
     local v_seek = desired - vechicle.vel
     local s = v_seek + v_sep
 
