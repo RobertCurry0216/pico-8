@@ -8,6 +8,7 @@ function update_inputs()
     down = btn(3),
     o = btn(4),
     x = btn(5),
+    any = btn() != 0
   }
 
   inputs.dx = tonum(inputs.right) - tonum(inputs.left)
@@ -16,7 +17,7 @@ function update_inputs()
 end
 
 function _init()
-  goto_room(stage)
+  goto_room(welcome)
 end
 
 function _update()

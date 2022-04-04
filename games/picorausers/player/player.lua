@@ -77,5 +77,5 @@ function player:on_hit(damage)
 end
 
 function player:die()
-  stop("dead")
+  goto_room(welcome)
 end

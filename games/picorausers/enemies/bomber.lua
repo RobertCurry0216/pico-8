@@ -4,7 +4,7 @@ function bomber:new(x)
   self.super.new(self, x, -10)
   self.steering = seek(plr)
   self.vel = vector(0,3)
-  self.max_speed = 3 + rnd(1)
+  self.max_speed = 3
   self.max_steer = 0.15 + rnd(0.1)
   self.area = rect_area(0,0,4,4,true)
   self.ram_damage = 8

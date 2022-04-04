@@ -47,6 +47,7 @@ __lua__
 #include enemies/boat.lua
 
 --rooms
+#include rooms/welcome.lua
 #include rooms/stage.lua
 
 --main
