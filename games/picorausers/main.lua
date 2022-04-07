@@ -1,5 +1,26 @@
 inputs = {}
 
+--[[
+  TODO:
+  screens:
+    better welcome screen
+    menu screen
+    endgame screen
+
+  enemies:
+    big boat
+    big enemy
+    blimp
+
+  sound:
+    all
+
+  art:
+    welcome screen
+]]
+
+
+
 function update_inputs()
   inputs = {
     left = btn(0),

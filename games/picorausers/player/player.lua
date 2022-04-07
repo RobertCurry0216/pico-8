@@ -26,6 +26,7 @@ function player:update()
   -- shooting
   if inputs.shoot then
     self.weapon:shoot(self.pos, self.heading, self.momentum)
+    cam:add_interest(plr.pos + plr.heading*50)
   elseif self.healing_delay == 0 then
   --healing
     self.health = min(self.health+0.25, plr_mx_health)

@@ -15,7 +15,9 @@ function follow_cam:update()
   local i_point = vector()
   if #self.i_points > 0 then
     for p in all(self.i_points) do
-      i_point += self.follow.pos:to(p)
+      local to = self.follow.pos:to(p)
+      local inf = mid(150 - min(#to, 150), 0, 150) / 150
+      i_point += to * inf
     end
     i_point /= #self.i_points
 
@@ -23,7 +25,7 @@ function follow_cam:update()
   end
 
   --set pos
-  self.offset += (i_point - self.offset) * 0.01
+  self.offset += (i_point - self.offset) * 0.1
   self.offset:limit(self.max_offset)
   self.pos = self.offset + self.follow.pos - vector(64,64)
 

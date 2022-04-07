@@ -12,5 +12,5 @@ end
 
 
 function state_fall:on_enter(p)
-  p.turning_speed = 0.02
+  p.turning_speed = 0.03
 end
