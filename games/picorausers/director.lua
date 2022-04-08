@@ -40,8 +40,8 @@ function director:new(store)
   register("enemy_die", self.listen_on_enemy_die)
 
   --timers
-  self.timer:every(90, function() self.difficulty += 1 end)
-  self.timer:every(150, function() self:spawn_wave() end)
+  self.timer:every(9, function() self.difficulty += 1 end)
+  self.timer:every(50, function() self:spawn_wave() end)
 
   --enemy pool updates
   self.timer:after(160, function() self.enemy_pool = {enemy_spawners.bomber_group} end)

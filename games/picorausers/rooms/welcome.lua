@@ -1,7 +1,7 @@
 welcome = room:extend()
 
 function welcome:new()
-
+  camera()
 end
 
 function welcome:update()
@@ -12,5 +12,5 @@ end
 
 function welcome:draw()
   cls(15)
-  print("picorausers", 20, 60, 2)
+  cprint("picorausers", 64, 64, 2)
 end

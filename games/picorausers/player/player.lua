@@ -78,5 +78,5 @@ function player:on_hit(damage)
 end
 
 function player:die()
-  goto_room(welcome)
+  goto_room(game_over)
 end
