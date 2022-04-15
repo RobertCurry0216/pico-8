@@ -49,6 +49,7 @@ __lua__
 --rooms
 #include rooms/welcome.lua
 #include rooms/stage.lua
+#include rooms/game_over.lua
 
 --main
 #include follow_cam.lua

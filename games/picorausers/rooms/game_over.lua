@@ -5,7 +5,7 @@ function game_over:new()
 end
 
 function game_over:update()
-  if inputs.x then
+  if inputs.x or inputs.o then
     goto_room(welcome)
   end
 

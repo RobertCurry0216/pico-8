@@ -1,16 +1,16 @@
 welcome = room:extend()
 
 function welcome:new()
-  camera()
 end
 
 function welcome:update()
-  if inputs.any then
+  if inputs.up then
     goto_room(stage)
   end
 end
 
 function welcome:draw()
+  camera()
   cls(15)
 
   --skull
@@ -28,5 +28,7 @@ function welcome:draw()
   --reset GFX
   poke(0x5f54, 0x00)
   pal()
+
+  cprint("⬆️ launch", 64, 86, 2)
 
 end
