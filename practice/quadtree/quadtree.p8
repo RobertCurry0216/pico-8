@@ -6,6 +6,7 @@ __lua__
 #include vector.lua
 #include rect_area.lua
 #include quadtree.lua
+#include sp_grid.lua
 
 --main
 #include main.lua

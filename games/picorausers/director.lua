@@ -4,7 +4,7 @@ enemy_spawners = {
   bomber_group_small={
     difficulty=2,
     spawn=function(store)
-      local x = plr.pos.x + (sign(plr.momentum.x) * 200) - 5
+      local x = plr.pos.x + (sign(plr.momentum.x) * 200)
       add(store, bomber(x))
       add(store, bomber(x+10))
     end
@@ -12,7 +12,7 @@ enemy_spawners = {
   bomber_group={
     difficulty=4,
     spawn=function(store)
-      local x = plr.pos.x + (sign(plr.momentum.x) * 200) - 20
+      local x = plr.pos.x + (sign(plr.momentum.x) * 200)
       add(store, bomber(x))
       add(store, bomber(x+10))
       add(store, bomber(x+20))
@@ -40,8 +40,8 @@ function director:new(store)
   register("enemy_die", self.listen_on_enemy_die)
 
   --timers
-  self.timer:every(9, function() self.difficulty += 1 end)
-  self.timer:every(50, function() self:spawn_wave() end)
+  self.timer:every(60, function() self.difficulty += 1 end)
+  self.timer:every(150, function() self:spawn_wave() end)
 
   --enemy pool updates
   self.timer:after(160, function() self.enemy_pool = {enemy_spawners.bomber_group} end)
