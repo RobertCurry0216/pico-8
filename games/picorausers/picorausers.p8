@@ -14,6 +14,7 @@ __lua__
 #include lib/logger.lua
 #include lib/rect_area.lua
 #include lib/rooms.lua
+#include lib/sp_grid.lua
 
 --globals
 #include globals.lua

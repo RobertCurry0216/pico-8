@@ -19,10 +19,8 @@ function sp_grid:clear()
   end
 end
 
-function sp_grid:insert(e)
-  local y = max(0, flr(e.pos.y / self.row_height))
-  local x = max(0, flr(e.pos.x / self.col_width))
-  add(self.areas[y][x], e)
+function sp_grid:insert(area)
+  add(self.areas[max(0, flr(area.pos.y / self.row_height))][max(0, flr(area.pos.x / self.col_width))], area)
 end
 
 function sp_grid:get(area)
@@ -35,7 +33,7 @@ function sp_grid:get(area)
   for y=y0,y1 do
     for x=x0,x1 do
       for v in all(self.areas[y][x]) do
-        if area:overlaps(v.area) then
+        if area:overlaps(v) then
           add(values, v)
         end
       end

@@ -24,6 +24,14 @@ enemy_spawners = {
     spawn=function(store)
       add(store, boat(rnd(width)))
     end
+  },
+  debug={
+    difficulty=1000,
+    spawn=function(store)
+      for i=1,40 do
+        add(store, bomber(rnd(width)))
+      end
+    end
   }
 }
 
@@ -31,7 +39,7 @@ function director:new(store)
   self.store = store
   self.difficulty = 1
   self.current_difficulty = 0
-  self.enemy_pool = {enemy_spawners.bomber_group_small}
+  self.enemy_pool = {enemy_spawners.debug}
   self.handlers = {}
   self.timer = timer.new()
 

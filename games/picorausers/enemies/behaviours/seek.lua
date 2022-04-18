@@ -2,7 +2,9 @@ function seek(target)
   return function(vechicle)
     --seperate
     local v_sep = vector()
-    for e in all(enemies) do
+    local area = rect_area(vechicle.pos.x-10, vechicle.pos.y-10, 20, 20)
+    for e in all(enemy_grid:get(area)) do
+    -- for e in all(enemies) do
       if e != vechicle and (e.pos - vechicle.pos):magsq() < 100 then
         v_sep -= (e.pos - vechicle.pos):norm()
       end

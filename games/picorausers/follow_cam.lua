@@ -3,6 +3,7 @@ follow_cam = class:extend()
 function follow_cam:new(follow)
   self.follow = follow
   self.pos = follow and follow.pos - vector(64,64) or vector(64,64)
+  self.area = rect_area(self.pos.x, self.pos.y, 128, 128)
   self.max_offset = 32
   self.offset = vector()
   self.i_points = {}
@@ -49,10 +50,11 @@ function follow_cam:update()
     self.pos.y = mid(self.pos.y, y1, y2)
   end
 
+  self.area.pos = self.pos
+
   --set camera
   camera(self.pos.x, self.pos.y)
 end
-
 
 function follow_cam:add_interest(p)
   add(self.i_points, p)
@@ -61,4 +63,8 @@ end
 function follow_cam:shake(t, v)
   self.shake_time = max(self.shake_time, t or 10)
   self.shake_value = max(self.shake_value, v or 5)
+end
+
+function follow_cam:in_frame(area)
+  return self.area:overlaps(area)
 end
