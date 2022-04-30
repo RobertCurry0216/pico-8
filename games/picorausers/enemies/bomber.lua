@@ -12,6 +12,12 @@ function bomber:new(x)
   self.trail = 0
 end
 
+function bomber:steering()
+  local v_seek = seek(plr, self)
+  local v_sep = seperate(self)
+  return v_seek + v_sep
+end
+
 function bomber:update(...)
   self.super.update(self, ...)
   self.trail -= 1

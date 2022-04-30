@@ -5,13 +5,16 @@ function enemy:new(x, y)
   self.vel = vector()
   self.max_speed = 2
   self.max_steer = 0.1
-  self.steering = sit
   self.area = rect_area(0,0,4,4,true)
   self.dead = false
   self.health = 1
   self.score = 100
   self.ram_damage = 0
   self.difficulty = 1
+end
+
+function enemy:steering()
+  return vector()
 end
 
 function enemy:update(plr)

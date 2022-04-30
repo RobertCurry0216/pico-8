@@ -29,6 +29,7 @@ __lua__
 #include bullets/bullets.lua
 #include bullets/base_bullet.lua
 #include bullets/enemy_bullet.lua
+#include bullets/missle.lua
 
 --player
 #include player/state_rotate.lua
@@ -40,12 +41,13 @@ __lua__
 
 --enemies
 #include enemies/behaviours/seek.lua
-#include enemies/behaviours/sit.lua
+#include enemies/behaviours/seperate.lua
 
 #include enemies/enemies.lua
 #include enemies/enemy.lua
 #include enemies/bomber.lua
 #include enemies/boat.lua
+#include enemies/submarine.lua
 
 --rooms
 #include rooms/welcome.lua

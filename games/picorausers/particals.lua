@@ -127,3 +127,31 @@ particles:add_type({
     particles:spawn("boat_hull", x, y)
   end
 })
+
+particles:add_type({
+  name="submarine_hull",
+  spawn=function(store,x,y)
+    add(store, {
+      name="submarine_hull",
+      x=x, y=y,
+      life=64
+    })
+  end,
+  update=function(p)
+    p.life-=1
+    p.y+=0.25
+  end,
+  draw=function(p)
+    spr(100, p.x, p.y, 6, 2)
+  end
+})
+
+particles:add_type({
+  name="submarine_sink",
+  spawn=function(store,x,y)
+    for i=1,rnd(20) do
+      particles:spawn("smoke_puff", x+rnd(32), y+rnd(8)+4, rnd(16))
+    end
+    particles:spawn("submarine_hull", x, y)
+  end
+})

@@ -25,11 +25,17 @@ enemy_spawners = {
       add(store, boat(rnd(width)))
     end
   },
+  submarine={
+    difficulty=6,
+    spawn=function(store)
+      add(store, boat(rnd(width)))
+    end
+  },
   debug={
     difficulty=1000,
     spawn=function(store)
-      for i=1,40 do
-        add(store, bomber(rnd(width)))
+      for i=1,5 do
+        add(store, submarine(rnd(width)))
       end
     end
   }

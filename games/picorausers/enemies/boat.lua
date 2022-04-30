@@ -1,7 +1,7 @@
 boat = enemy:extend()
 
 function boat:new(x)
-  self.super.new(self, x, water_line-16)
+  self.super.new(self, x, water_line)
   self.area = rect_area(0,0,32,8)
   self.area.offset = vector(0,8)
   self.health = 15
@@ -13,7 +13,6 @@ function boat:new(x)
   self.aim = vector()
   self.gun_pos = self.pos + vector(5,5)
   self.state = "raise"
-  self.pos.y += 16
 
   self.timer:during(32,
     function()

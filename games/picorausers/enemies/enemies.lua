@@ -1,5 +1,5 @@
 enemies = {}
-enemy_grid = sp_grid(width, height, 20)
+enemy_grid = sp_grid(width, height, 40)
 
 function enemies_update(self, plr)
 	enemy_grid:clear()
@@ -20,15 +20,15 @@ function enemies_draw(self)
 	for e in all(self) do
 		if cam:in_frame(e.area) then
 			e:draw()
-			if e.pos.x < 128 then
-				e.pos.x+=width
-				e:draw()
-				e.pos.x-=width
-			elseif width - e.pos.x < 128 then
-				e.pos.x-=width
-				e:draw()
-				e.pos.x+=width
-			end
+		end
+		if e.pos.x < 128 then
+			e.pos.x+=width
+			e:draw()
+			e.pos.x-=width
+		elseif width - e.pos.x < 128 then
+			e.pos.x-=width
+			e:draw()
+			e.pos.x+=width
 		end
 	end
 end
