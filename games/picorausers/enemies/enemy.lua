@@ -28,7 +28,7 @@ function enemy:update(plr)
   -- collisions
   self.area.pos = self.pos
   if self.area:overlaps(plr.area) then
-    plr:on_hit(self.ram_damage)
+    plr:on_ram(self.ram_damage)
     self:on_hit(plr.ram_damage)
   end
 

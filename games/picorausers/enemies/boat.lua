@@ -4,14 +4,14 @@ function boat:new(x)
   self.super.new(self, x, water_line)
   self.area = rect_area(0,0,32,8)
   self.area.offset = vector(0,8)
-  self.health = 15
+  self.health = 8
   self.score = 250
   self.difficulty = 4
   self.ram_damage = 1
   self.timer = timer.new()
 
   self.aim = vector()
-  self.gun_pos = self.pos + vector(5,5)
+  self.gun_pos = self.pos + vector(5,-11)
   self.state = "raise"
 
   self.timer:during(32,

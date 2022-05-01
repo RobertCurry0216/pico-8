@@ -2,7 +2,6 @@ bomber = enemy:extend()
 
 function bomber:new(x)
   self.super.new(self, x, -10)
-  self.steering = seek(plr)
   self.vel = vector(0,3)
   self.max_speed = 3
   self.max_steer = 0.15 + rnd(0.1)

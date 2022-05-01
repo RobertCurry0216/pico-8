@@ -7,7 +7,7 @@ function submarine:new(x)
   self.health = 20
   self.score = 500
   self.difficulty = 6
-  self.ram_damage = 1
+  self.ram_damage = 3
   self.timer = timer.new()
 
   self.gun_pos_1 = self.pos + vector(5,5)

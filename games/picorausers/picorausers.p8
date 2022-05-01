@@ -42,12 +42,14 @@ __lua__
 --enemies
 #include enemies/behaviours/seek.lua
 #include enemies/behaviours/seperate.lua
+#include enemies/behaviours/follow.lua
 
 #include enemies/enemies.lua
 #include enemies/enemy.lua
 #include enemies/bomber.lua
 #include enemies/boat.lua
 #include enemies/submarine.lua
+#include enemies/blimp.lua
 
 --rooms
 #include rooms/welcome.lua

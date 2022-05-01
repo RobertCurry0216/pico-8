@@ -69,6 +69,10 @@ end
 
 function player:on_hit(damage)
   emit("player_hit")
+  self:on_ram(damage)
+end
+
+function player:on_ram(damage)
   cam:shake()
   self.health -= damage
   self.healing_delay = 30

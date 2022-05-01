@@ -7,7 +7,7 @@ function base_bullet:new(p, h, t)
   self.area = rect_area(p.x,p.y,4,4,true)
   self.die_handler = timer:after(t, function() self:die() end)
   self.damage = 2
-  self.max_speed = 4
+  self.max_speed = 10
 end
 
 function base_bullet:die()

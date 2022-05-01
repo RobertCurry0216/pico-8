@@ -121,7 +121,7 @@ particles:add_type({
 particles:add_type({
   name="boat_sink",
   spawn=function(store,x,y)
-    for i=1,rnd(20) do
+    for i=1,rnd(10)+10 do
       particles:spawn("smoke_puff", x+rnd(32), y+rnd(8)+4, rnd(16))
     end
     particles:spawn("boat_hull", x, y)
@@ -149,9 +149,18 @@ particles:add_type({
 particles:add_type({
   name="submarine_sink",
   spawn=function(store,x,y)
-    for i=1,rnd(20) do
-      particles:spawn("smoke_puff", x+rnd(32), y+rnd(8)+4, rnd(16))
+    for i=1,rnd(20)+10 do
+      particles:spawn("smoke_puff", x+rnd(42), y+rnd(8)+4, rnd(16))
     end
     particles:spawn("submarine_hull", x, y)
+  end
+})
+
+particles:add_type({
+  name="blimp_die",
+  spawn=function(store,x,y)
+    for i=1,rnd(30)+10 do
+      particles:spawn("smoke_puff", x+rnd(32), y+rnd(16), rnd(16))
+    end
   end
 })
