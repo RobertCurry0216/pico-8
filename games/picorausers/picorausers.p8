@@ -30,6 +30,7 @@ __lua__
 #include bullets/base_bullet.lua
 #include bullets/enemy_bullet.lua
 #include bullets/missle.lua
+#include bullets/big_bullet.lua
 
 --player
 #include player/state_rotate.lua
@@ -50,6 +51,7 @@ __lua__
 #include enemies/boat.lua
 #include enemies/submarine.lua
 #include enemies/blimp.lua
+#include enemies/shooter.lua
 
 --rooms
 #include rooms/welcome.lua

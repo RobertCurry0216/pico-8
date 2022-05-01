@@ -10,8 +10,7 @@ function submarine:new(x)
   self.ram_damage = 3
   self.timer = timer.new()
 
-  self.gun_pos_1 = self.pos + vector(5,5)
-  self.gun_pos_2 = self.pos + vector(40,5)
+  self.gun_pos = self.pos + vector(24,0)
 
   self.timer:during(32,
     function()
@@ -19,7 +18,7 @@ function submarine:new(x)
     end,
     function()
       self:fire_burst()
-      self.timer:every(120, function() self:fire_burst() end)
+      self.timer:every(90, function() self:fire_burst() end)
     end
   )
 end
@@ -40,8 +39,7 @@ function submarine:die()
 end
 
 function submarine:fire_burst()
-  self.timer:every(6, function()
-    add(enemy_bullets, missle(self.gun_pos_1, vector(0,-4), 100))
-    add(enemy_bullets, missle(self.gun_pos_2, vector(0,-4), 100))
-  end, 4)
+  local target = plr.pos + plr.momentum*25
+  local aim = self.gun_pos:to(target)
+  add(enemy_bullets, big_bullet(self.gun_pos, aim, 500))
 end

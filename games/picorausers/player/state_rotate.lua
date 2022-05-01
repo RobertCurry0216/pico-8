@@ -10,7 +10,3 @@ function state_rotate:update(p)
   if p.pos.y < 0 then p.pos.y = 0 end
   if p.pos.y > height then p.pos.y = height end
 end
-
-function state_rotate:draw(p)
-
-end

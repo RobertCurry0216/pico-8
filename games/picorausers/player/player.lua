@@ -60,11 +60,6 @@ function player:draw()
   local tail_cross = self.heading*3*sin(self.heading:angle())
   tail_cross:rotate(0.25)
   vline(tail+tail_cross, tail-tail_cross, 2)
-
-
-  self.sm:draw(self)
-  -- local x1, y1, x2, y2 = self.area:get_extents()
-  -- rect(x1, y1, x2, y2, 9)
 end
 
 function player:on_hit(damage)

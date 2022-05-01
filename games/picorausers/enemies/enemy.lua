@@ -41,8 +41,6 @@ function enemy:update(plr)
 end
 
 function enemy:draw()
-  -- local x1, y1, x2, y2 = self.area:get_extents()
-  -- rect(x1, y1, x2, y2, 6)
 end
 
 function enemy:die()

@@ -6,11 +6,10 @@ function blimp:new(x)
   self.health = 8
   self.score = 250
   self.difficulty = 4
-  self.ram_damage = 1
+  self.ram_damage = 4
   self.max_speed = 0.1
   self.timer = timer.new()
 
-  self.aim = vector()
   self.gun_offset = vector(12,-8)
   self.gun_pos = self.pos + self.gun_offset
 
@@ -47,6 +46,6 @@ end
 
 function blimp:fire_burst()
   self.timer:every(5, function()
-    add(enemy_bullets, missle(self.gun_pos, self.aim, 200))
+    add(enemy_bullets, missle(self.gun_pos, vector(0,1), 200))
   end, 4)
 end

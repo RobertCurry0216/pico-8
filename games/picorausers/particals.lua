@@ -164,3 +164,12 @@ particles:add_type({
     end
   end
 })
+
+particles:add_type({
+  name="shooter_die",
+  spawn=function(store,x,y)
+    for i=1,rnd(30)+10 do
+      particles:spawn("smoke_puff", x+rnd(16), y+rnd(16), rnd(16))
+    end
+  end
+})
