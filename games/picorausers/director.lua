@@ -29,14 +29,14 @@ enemy_spawners = {
   submarine={
     difficulty=6,
     spawn=function(store)
-      local x = plr.pos.x + (sign(plr.momentum.x) * rnd(300))
+      local x = plr.pos.x + (sign(plr.momentum.x) * rnd(600))
       add(store, submarine(x))
     end
   },
   blimp={
-    difficulty=4,
+    difficulty=8,
     spawn=function(store)
-      local x = plr.pos.x + (sign(plr.momentum.x) * rnd(300))
+      local x = plr.pos.x + (sign(plr.momentum.x) * rnd(600))
       add(store, blimp(x))
     end
   },
@@ -45,14 +45,6 @@ enemy_spawners = {
     spawn=function(store)
       local x = plr.pos.x + (sign(plr.momentum.x) * rnd(300))
       add(store, shooter(x))
-    end
-  },
-  debug={
-    difficulty=1000,
-    spawn=function(store)
-      for i=1,5 do
-        add(store, submarine(rnd(width)))
-      end
     end
   }
 }
@@ -77,9 +69,11 @@ function director:new(store)
   --enemy pool updates
   self.timer:after(160, function() self.enemy_pool = {enemy_spawners.bomber_group} end)
   self.timer:after(300, function() add(self.enemy_pool, enemy_spawners.boat) end)
-  self.timer:after(450, function() add(self.enemy_pool, enemy_spawners.blimp) end)
   self.timer:after(600, function() add(self.enemy_pool, enemy_spawners.shooter) end)
-  self.timer:after(900, function() add(self.enemy_pool, enemy_spawners.submarine) end)
+  self.timer:after(1200, function() add(self.enemy_pool, enemy_spawners.bomber_group) end)
+  self.timer:after(1200, function() add(self.enemy_pool, enemy_spawners.submarine) end)
+  self.timer:after(1500, function() add(self.enemy_pool, enemy_spawners.blimp) end)
+  self.timer:after(1500, function() add(self.enemy_pool, enemy_spawners.shooter) end)
 
   --initial wave
   self:spawn_wave()

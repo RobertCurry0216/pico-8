@@ -1,11 +1,15 @@
 game_over = room:extend()
 
-function game_over:new()
-
+function game_over:new(score)
+  self.ready = false
+  timer:after(90, function() self.ready = true end)
+  local score_str = tostr(score, 0x2)
+  self.score = sub("0000000000", 1, 10-#score_str)..score_str
+  self.time = tostr(ceil(t() - play_time)).."S"
 end
 
 function game_over:update()
-  if inputs.x or inputs.o then
+  if self.ready and (inputs.x or inputs.o) then
     goto_room(welcome)
   end
 
@@ -51,5 +55,16 @@ function game_over:draw()
 
   --game over screen
   camera()
-  cprint("game over", 20, 60, 2)
+
+  spr(195, 20, 24, 11, 2)
+
+  cprint("score:", 64, 56, 2)
+  cprint(self.score, 64, 64, 2)
+
+  cprint("time:", 64, 80, 2)
+  cprint(self.time, 64, 88, 2)
+
+  if self.ready then
+    cprint("❎/🅾️ retry", 62, 104, 2)
+  end
 end

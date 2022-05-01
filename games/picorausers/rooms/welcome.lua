@@ -29,6 +29,6 @@ function welcome:draw()
   poke(0x5f54, 0x00)
   pal()
 
-  cprint("⬆️ launch", 64, 86, 2)
+  cprint("⬆️/🅾️ launch", 64, 86, 2)
 
 end

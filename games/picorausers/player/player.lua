@@ -2,6 +2,7 @@ player = class:extend()
 plr_mx_health = 50
 
 function player:new(x,y)
+  self.dead = false
   self.pos = vector(x, y)
   self.area = rect_area(x-4,y-4,8,8, true)
   self.heading = vector(0,-1)
@@ -63,11 +64,13 @@ function player:draw()
 end
 
 function player:on_hit(damage)
+  if self.dead then return end
   emit("player_hit")
   self:on_ram(damage)
 end
 
 function player:on_ram(damage)
+  if self.dead then return end
   cam:shake()
   self.health -= damage
   self.healing_delay = 30
@@ -77,5 +80,6 @@ function player:on_ram(damage)
 end
 
 function player:die()
-  goto_room(game_over)
+  self.dead = true
+  goto_room(game_over, current_room.score)
 end

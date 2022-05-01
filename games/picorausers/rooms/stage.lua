@@ -2,8 +2,19 @@ stage = room:extend()
 
 multiplier_timeout = 150
 multiplier_target_base = 2
+multiplier_offsets = {
+  [1]={24, 8, 118},
+  [2]={32, 8, 118},
+  [4]={40, 8, 118},
+  [8]={48, 8, 118},
+  [16]={56, 16, 110},
+  [32]={72, 17, 109},
+  [64]={89, 17, 109}
+}
 
 function stage:new()
+  play_time = t()
+
   -- reset stores
   bullets = {}
   enemies = {}
@@ -102,7 +113,9 @@ function stage:draw()
   print(score_str, 2, 2, 2)
 
   --multiplier
-  print("X"..tostr(self.multiplier), 112,2,2)
+  local sx, sw, dx = unpack(multiplier_offsets[self.multiplier])
+  sspr(sx, 80, sw, 9, dx, 2)
+  spr(174, dx-8, 6)
 end
 
 function stage:finish()

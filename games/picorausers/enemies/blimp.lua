@@ -3,9 +3,9 @@ blimp = enemy:extend()
 function blimp:new(x)
   self.super.new(self, x, -16)
   self.area = rect_area(0,0,24,8)
-  self.health = 8
-  self.score = 250
-  self.difficulty = 4
+  self.health = 10
+  self.score = 750
+  self.difficulty = 8
   self.ram_damage = 4
   self.max_speed = 0.1
   self.timer = timer.new()

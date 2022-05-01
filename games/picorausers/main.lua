@@ -1,25 +1,5 @@
 inputs = {}
 
---[[
-  TODO:
-  screens:
-    better welcome screen
-    menu screen
-    endgame screen
-
-  enemies:
-    big boat
-    big enemy
-    blimp
-
-  sound:
-    all
-
-  art:
-    welcome screen
-]]
-
-
 
 function update_inputs()
   inputs = {
@@ -38,6 +18,8 @@ function update_inputs()
 end
 
 function _init()
+  play_time = t()
+  cam = follow_cam({pos=vector(width/2,height/2)})
   goto_room(welcome)
 end
 
