@@ -40,6 +40,7 @@ end
 
 function shooter:die()
   self.super.die(self)
+  sfx(0)
   particles:spawn("shooter_die", self.pos.x, self.pos.y)
   self.timer:clear()
 end

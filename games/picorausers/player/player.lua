@@ -33,6 +33,7 @@ function player:update()
     self.health = min(self.health+0.25, plr_mx_health)
     if self.health != plr_mx_health then
       particles:spawn("debris", self.pos.x, self.pos.y)
+      sfx(4)
     end
   else
     self.healing_delay = max(0, self.healing_delay - 1)
@@ -66,6 +67,7 @@ end
 function player:on_hit(damage)
   if self.dead then return end
   emit("player_hit")
+  sfx(1)
   self:on_ram(damage)
 end
 
@@ -81,5 +83,7 @@ end
 
 function player:die()
   self.dead = true
+  sfx(5)
+  particles:spawn("player_die", self.pos.x, self.pos.y)
   goto_room(game_over, current_room.score)
 end

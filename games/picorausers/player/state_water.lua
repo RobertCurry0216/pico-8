@@ -18,3 +18,8 @@ function state_water:update(p)
     p.sm:goto_state("thrust", p)
   end
 end
+
+
+function state_water:on_exit(p)
+  sfx(7)
+end

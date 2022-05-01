@@ -16,4 +16,9 @@ end
 
 function state_thrust:on_enter(p)
   p.turning_speed = 0.008
+  music(0, 1)
+end
+
+function state_thrust:on_exit(p)
+  music(-1)
 end

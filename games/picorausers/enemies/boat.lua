@@ -44,6 +44,7 @@ end
 
 function boat:die()
   self.super.die(self)
+  sfx(6)
   particles:spawn("boat_sink", self.pos.x, self.pos.y)
   self.timer:clear()
 end

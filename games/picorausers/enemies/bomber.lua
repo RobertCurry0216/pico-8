@@ -42,5 +42,6 @@ end
 
 function bomber:die()
   self.super.die(self)
+  sfx(0)
   particles:spawn("smoke_cloud", self.pos.x, self.pos.y)
 end

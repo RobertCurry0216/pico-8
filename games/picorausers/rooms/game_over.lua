@@ -6,6 +6,7 @@ function game_over:new(score)
   local score_str = tostr(score, 0x2)
   self.score = sub("0000000000", 1, 10-#score_str)..score_str
   self.time = tostr(ceil(t() - play_time)).."S"
+  music(-1)
 end
 
 function game_over:update()
