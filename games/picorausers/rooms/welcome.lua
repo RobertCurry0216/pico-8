@@ -4,7 +4,7 @@ function welcome:new()
 end
 
 function welcome:update()
-  if inputs.up then
+  if inputs.thrust then
     goto_room(stage)
   end
 end
