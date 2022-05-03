@@ -30,7 +30,7 @@ end
 function blimp:update(plr)
   self.super.update(self, plr)
   self.timer:update()
-  if self.pos.y > 128 then self.pos.y = 128 end
+  if self.pos.y > 256 then self.pos.y = 256 end
   self.gun_pos = self.pos + self.gun_offset
 end
 

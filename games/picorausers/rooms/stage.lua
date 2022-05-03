@@ -113,6 +113,21 @@ function stage:draw()
     local m_remaining = 9 * (self.m_timeout / multiplier_timeout)
     line(126, 10, 126, 10 - m_remaining, 2)
   end
+
+  --minimap
+  rectfill(95,110,125,125,15)
+  rectfill(95,122,125,125,7)
+  rect(94,109,126,126,2)
+
+  for e in all(enemies) do
+    local ex = mid(map_to(e.pos.x, 0, width, 95, 125), 95, 125)
+    local ey = mid(map_to(e.pos.y, 0, height, 110, 125), 110, 125)
+    pset(ex, ey, 14)
+  end
+
+  local px = mid(map_to(plr.pos.x, 0, width, 95, 125), 95, 125)
+  local py = mid(map_to(plr.pos.y, 0, height, 110, 125), 110, 125)
+  pset(px, py, 2)
 end
 
 function stage:finish()
