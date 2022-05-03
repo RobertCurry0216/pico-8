@@ -66,7 +66,6 @@ end
 
 function player:on_hit(damage)
   if self.dead then return end
-  emit("player_hit")
   sfx(1)
   self:on_ram(damage)
 end

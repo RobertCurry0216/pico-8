@@ -3,13 +3,13 @@ stage = room:extend()
 multiplier_timeout = 150
 multiplier_target_base = 2
 multiplier_offsets = {
-  [1]={24, 8, 118},
-  [2]={32, 8, 118},
-  [4]={40, 8, 118},
-  [8]={48, 8, 118},
-  [16]={56, 16, 110},
-  [32]={72, 17, 109},
-  [64]={89, 17, 109}
+  [1]={24, 8, 116},
+  [2]={32, 8, 116},
+  [4]={40, 8, 116},
+  [8]={48, 8, 116},
+  [16]={56, 16, 108},
+  [32]={72, 17, 107},
+  [64]={89, 17, 107}
 }
 
 function stage:new()
@@ -41,8 +41,6 @@ function stage:new()
   --listeners
   self.listen_on_score = function(...) self:on_score(...) end
   register("score", self.listen_on_score)
-  self.listen_on_player_hit = function(...) self:on_player_hit(...) end
-  register("player_hit", self.listen_on_player_hit)
 end
 
 function stage:update()
@@ -69,12 +67,7 @@ function stage:draw()
 
   circfill(plr.pos.x, plr.pos.y, 128*((plr.health+5)/plr_mx_health), 15)
 
-  -- debug drawing
-  --line(0,0,0,height, 8)
-  --line(width,0,width,height, 11)
-
   -- draw actors
-
   particles:draw()
   bullets_draw(bullets)
   bullets_draw(enemy_bullets)
@@ -116,11 +109,14 @@ function stage:draw()
   local sx, sw, dx = unpack(multiplier_offsets[self.multiplier])
   sspr(sx, 80, sw, 9, dx, 2)
   spr(174, dx-8, 6)
+  if self.m_timeout > 0 then
+    local m_remaining = 9 * (self.m_timeout / multiplier_timeout)
+    line(126, 10, 126, 10 - m_remaining, 2)
+  end
 end
 
 function stage:finish()
   unregister("score", self.listen_on_score)
-  unregister("player_hit", self.listen_on_player_hit)
   self.director:destroy()
 end
 
@@ -140,10 +136,4 @@ function stage:on_score(value, x, y)
   if x != nil then
     particles:spawn("text", x, y, tostr(score, 0x2))
   end
-end
-
-function stage:on_player_hit()
-  self.streak = 0
-  self.m_target = multiplier_target_base
-  self.multiplier = 1
 end

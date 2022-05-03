@@ -4,6 +4,7 @@ __lua__
 --picorausers
 --by robert curry
 
+-->8
 --libs
 #include lib/math.lua
 #include lib/class.lua
@@ -14,19 +15,21 @@ __lua__
 #include lib/timer.lua
 #include lib/vector.lua
 #include lib/trifill.lua
-#include lib/logger.lua
 #include lib/rect_area.lua
 #include lib/rooms.lua
 #include lib/sp_grid.lua
 
+-->8
 --globals
 #include globals.lua
 #include utils.lua
 
+-->8
 --classes
 #include particals.lua
 #include director.lua
 
+-->8
 --bullets / weapons
 #include player/weapon.lua
 #include bullets/bullets.lua
@@ -35,6 +38,7 @@ __lua__
 #include bullets/missle.lua
 #include bullets/big_bullet.lua
 
+-->8
 --player
 #include player/state_rotate.lua
 #include player/state_flying.lua
@@ -43,6 +47,7 @@ __lua__
 #include player/state_fall.lua
 #include player/player.lua
 
+-->8
 --enemies
 #include enemies/behaviours/seek.lua
 #include enemies/behaviours/seperate.lua
@@ -56,14 +61,16 @@ __lua__
 #include enemies/blimp.lua
 #include enemies/shooter.lua
 
+-->8
 --rooms
 #include rooms/welcome.lua
 #include rooms/stage.lua
 #include rooms/game_over.lua
 
+-->8
 --main
 #include follow_cam.lua
-#include main.lua	
+#include main.lua
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
